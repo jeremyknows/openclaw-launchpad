@@ -549,7 +549,15 @@ Your AI agent is alive. Here's what you have:
 
 ---
 
-## What's Next (Optional)
+## What's Next
+
+### First Chat: Meet Your Bot (~5 minutes)
+
+Open a chat with your bot (dashboard at `http://127.0.0.1:18789`, or Discord DM). If your workspace has a `BOOTSTRAP.md` file, the bot will walk you through 9 personalization questions — your name, timezone, preferred personality style, and what you want help with. It updates your workspace files and then deletes BOOTSTRAP.md when done.
+
+If you ran the autosetup script, BOOTSTRAP.md was already copied to your workspace. If not, paste the contents of `templates/workspace-scaffold-prompt.md` into your first chat to set up the workspace and run personalization in one go.
+
+### Foundation Playbook (Optional)
 
 The **[Foundation Playbook](OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md)** makes your
 bot smarter and more secure over time. It's 8 phases — **do one per week at your

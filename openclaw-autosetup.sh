@@ -56,7 +56,7 @@ MODE="interactive"   # interactive, minimal, full
 RESUME=false
 LOG_FILE=""
 STEP_COUNT=0
-STEP_TOTAL=16
+STEP_TOTAL=18
 
 # ═══════════════════════════════════════════════════════════════════
 # Output functions
@@ -542,18 +542,20 @@ show_help() {
     echo "  2.  Homebrew installation (if missing)"
     echo "  3.  Node.js 22 installation (if missing)"
     echo "  4.  OpenClaw install/update + version verification"
-    echo "  5.  Mac user account creation (human checkpoint)"
-    echo "  6.  Home directory permission lockdown"
-    echo "  7.  API key generation (human checkpoint)"
-    echo "  8.  Onboarding wizard (human checkpoint)"
-    echo "  9.  Gateway verification"
-    echo "  10. Discord setup (human checkpoint)"
-    echo "  11. Sleep prevention (pmset)"
-    echo "  12. Auto-update restart disable"
-    echo "  13. Config file permission hardening"
-    echo "  14. Access profile application"
-    echo "  15. openclaw doctor"
-    echo "  16. Final verification (openclaw-verify.sh)"
+    echo "  5.  Firewall + stealth mode (sudo)"
+    echo "  6.  Sleep prevention (pmset, sudo)"
+    echo "  7.  Auto-update restart disable (sudo)"
+    echo "  8.  Mac user account creation (human checkpoint)"
+    echo "  9.  Home directory permission lockdown"
+    echo "  10. API key generation (human checkpoint)"
+    echo "  11. Onboarding wizard (human checkpoint)"
+    echo "  12. Workspace scaffolding (templates + daily log)"
+    echo "  13. Gateway verification"
+    echo "  14. Discord setup (human checkpoint)"
+    echo "  15. Config file permission hardening"
+    echo "  16. Access profile application"
+    echo "  17. openclaw doctor"
+    echo "  18. Final verification (openclaw-verify.sh)"
     echo ""
 }
 
@@ -923,6 +925,87 @@ step_install_openclaw() {
     mark_step "$step_name"
 }
 
+step_enable_firewall() {
+    local step_name="enable_firewall"
+    if $RESUME && is_step_done "$step_name"; then
+        info "Skipping (already done): Firewall setup"
+        return 0
+    fi
+
+    step_header "Enable macOS Firewall"
+
+    # Check current state
+    local fw_state
+    fw_state=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null || echo "unknown")
+
+    if echo "$fw_state" | grep -qi "enabled"; then
+        pass "macOS firewall is already enabled"
+
+        # Check stealth mode
+        local stealth_state
+        stealth_state=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode 2>/dev/null || echo "unknown")
+        if echo "$stealth_state" | grep -qi "enabled"; then
+            pass "Stealth mode already enabled"
+        else
+            info "Stealth mode is not enabled"
+            if confirm_or_skip "Enable stealth mode? (makes Mac invisible on the network)"; then
+                sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on || {
+                    fail "Failed to enable stealth mode (sudo may have been denied)"
+                    info "Run manually: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on"
+                }
+            fi
+        fi
+
+        mark_step "$step_name"
+        return 0
+    fi
+
+    info "The firewall blocks uninvited incoming connections."
+    info "Stealth mode makes your Mac invisible on the network."
+    info "Your bot can still reach the internet — only inbound connections are blocked."
+    echo ""
+    info "This requires sudo (admin password)."
+    echo ""
+
+    if ! confirm_destructive "Enable macOS firewall + stealth mode? (requires sudo)"; then
+        warn "Skipping firewall setup"
+        info "Fix later: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on"
+        mark_step "$step_name"
+        return 0
+    fi
+
+    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on || {
+        fail "Failed to enable firewall (sudo may have been denied)"
+        info "Run manually: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on"
+        mark_step "$step_name"
+        return 0
+    }
+
+    sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on || {
+        warn "Firewall enabled but stealth mode failed"
+        info "Run manually: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on"
+    }
+
+    # Verify
+    local new_fw_state
+    new_fw_state=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null || echo "unknown")
+    if echo "$new_fw_state" | grep -qi "enabled"; then
+        pass "macOS firewall enabled"
+    else
+        warn "Firewall state after change: ${new_fw_state}"
+    fi
+
+    local new_stealth
+    new_stealth=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode 2>/dev/null || echo "unknown")
+    if echo "$new_stealth" | grep -qi "enabled"; then
+        pass "Stealth mode enabled"
+    else
+        warn "Stealth mode state after change: ${new_stealth}"
+    fi
+
+    mark_step "$step_name"
+}
+
 step_create_mac_user() {
     local step_name="create_mac_user"
     if $RESUME && is_step_done "$step_name"; then
@@ -1120,6 +1203,119 @@ step_run_onboard() {
     else
         warn "Config file not found — onboarding may not have completed"
         info "Re-run: openclaw onboard --install-daemon"
+    fi
+
+    mark_step "$step_name"
+}
+
+step_scaffold_workspace() {
+    local step_name="scaffold_workspace"
+    if $RESUME && is_step_done "$step_name"; then
+        info "Skipping (already done): Workspace scaffolding"
+        return 0
+    fi
+
+    step_header "Workspace Scaffolding"
+
+    local workspace_dir="$HOME/.openclaw/workspace"
+
+    # Skip if workspace doesn't exist (onboarding didn't run)
+    if [ ! -d "$workspace_dir" ]; then
+        warn "Workspace directory not found: ${workspace_dir}"
+        info "Onboarding (Step 11) creates this directory. Skipping scaffolding."
+        mark_step "$step_name"
+        return 0
+    fi
+
+    # Detect template directory
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local template_dir="${script_dir}/templates/workspace"
+
+    # Create subdirectories
+    for subdir in memory cron plans scripts; do
+        if [ ! -d "${workspace_dir}/${subdir}" ]; then
+            mkdir -p "${workspace_dir}/${subdir}"
+            pass "Created ${subdir}/"
+        else
+            info "${subdir}/ already exists"
+        fi
+    done
+
+    if [ -d "$template_dir" ]; then
+        # Copy templates (cp -n = don't overwrite existing)
+        local copied=0
+        local skipped=0
+        for template_file in "$template_dir"/*.md; do
+            local filename
+            filename=$(basename "$template_file")
+            if [ ! -f "${workspace_dir}/${filename}" ]; then
+                cp -n "$template_file" "${workspace_dir}/${filename}"
+                pass "Created ${filename}"
+                copied=$((copied + 1))
+            else
+                info "${filename} already exists (kept)"
+                skipped=$((skipped + 1))
+            fi
+        done
+        info "Templates: ${copied} created, ${skipped} already existed"
+    else
+        warn "Template directory not found: ${template_dir}"
+        info "Creating minimal workspace stubs instead..."
+
+        # Minimal AGENTS.md stub
+        if [ ! -f "${workspace_dir}/AGENTS.md" ]; then
+            cat > "${workspace_dir}/AGENTS.md" << 'STUB'
+# Agent Operating Instructions
+
+You are a helpful AI assistant. Operate with care and always ask before taking actions that affect external systems.
+
+See the OpenClaw Foundation Playbook for detailed operating guidelines.
+STUB
+            pass "Created minimal AGENTS.md"
+        fi
+
+        # Minimal MEMORY.md stub
+        if [ ! -f "${workspace_dir}/MEMORY.md" ]; then
+            cat > "${workspace_dir}/MEMORY.md" << 'STUB'
+# Memory
+
+This file stores persistent knowledge across sessions. Update after important decisions or events.
+STUB
+            pass "Created minimal MEMORY.md"
+        fi
+
+        # Minimal BOOTSTRAP.md stub
+        if [ ! -f "${workspace_dir}/BOOTSTRAP.md" ]; then
+            cat > "${workspace_dir}/BOOTSTRAP.md" << 'STUB'
+# First Run: Let's Get to Know Each Other
+
+Welcome! Answer these questions so I can personalize your workspace:
+
+1. What should I call you?
+2. What's your timezone?
+3. What personality style do you prefer? (formal, casual, direct, warm)
+4. What do you primarily use this bot for?
+5. What does success look like for you?
+
+After you answer, I'll update USER.md, SOUL.md, and IDENTITY.md with your preferences, then delete this file.
+STUB
+            pass "Created minimal BOOTSTRAP.md"
+        fi
+    fi
+
+    # Create today's daily log
+    local today
+    today=$(date '+%Y-%m-%d')
+    local daily_log="${workspace_dir}/memory/${today}.md"
+    if [ ! -f "$daily_log" ]; then
+        echo "# ${today}" > "$daily_log"
+        echo "" >> "$daily_log"
+        echo "## Session Notes" >> "$daily_log"
+        echo "" >> "$daily_log"
+        pass "Created today's daily log: memory/${today}.md"
+    else
+        info "Today's daily log already exists"
     fi
 
     mark_step "$step_name"
@@ -1911,7 +2107,7 @@ main() {
         info "Running in --minimal mode (gateway only)."
         info "Non-destructive steps skip confirmation."
         info "Destructive steps still require explicit approval."
-        STEP_TOTAL=10
+        STEP_TOTAL=16
     elif [ "$MODE" = "full" ]; then
         info "Running in --full mode (everything, with confirmations)."
     else
@@ -1934,6 +2130,11 @@ main() {
     # Step 1: Environment detection (always runs)
     step_detect_env
 
+    # Software installs run on the admin account first because:
+    # 1. Homebrew initial install requires admin privileges
+    # 2. /opt/homebrew is accessible to all users on Apple Silicon
+    # 3. The bot user inherits these tools after account switch
+
     # Step 2: Homebrew (if needed)
     step_install_homebrew
 
@@ -1943,7 +2144,19 @@ main() {
     # Step 4: OpenClaw install/update
     step_install_openclaw
 
-    # Step 5: Mac user creation (human checkpoint) — skip in minimal
+    # Steps 5-7: Admin tasks that require sudo — run before user creation
+    # because the bot user is Standard (no sudo access)
+
+    # Step 5: Firewall + stealth mode (sudo)
+    step_enable_firewall
+
+    # Step 6: Sleep prevention (sudo)
+    step_prevent_sleep
+
+    # Step 7: Auto-update restart disable (sudo)
+    step_disable_auto_updates
+
+    # Step 8: Mac user creation (human checkpoint) — skip in minimal
     if [ "$MODE" != "minimal" ]; then
         step_create_mac_user
     else
@@ -1951,19 +2164,22 @@ main() {
         info "Skipping Mac user creation in --minimal mode"
     fi
 
-    # Step 6: Home directory lockdown
+    # Step 9: Home directory lockdown
     step_lock_home_dir
 
-    # Step 7: API keys (human checkpoint)
+    # Step 10: API keys (human checkpoint)
     step_get_api_keys
 
-    # Step 8: Onboarding wizard (human checkpoint)
+    # Step 11: Onboarding wizard (human checkpoint)
     step_run_onboard
 
-    # Step 9: Gateway verification
+    # Step 12: Workspace scaffolding (copies templates + creates daily log)
+    step_scaffold_workspace
+
+    # Step 13: Gateway verification
     step_verify_gateway
 
-    # Step 10: Discord setup (human checkpoint) — skip in minimal
+    # Step 14: Discord setup (human checkpoint) — skip in minimal
     if [ "$MODE" != "minimal" ]; then
         step_setup_discord
     else
@@ -1971,22 +2187,16 @@ main() {
         info "Skipping Discord setup in --minimal mode"
     fi
 
-    # Step 11: Sleep prevention
-    step_prevent_sleep
-
-    # Step 12: Auto-update restart disable
-    step_disable_auto_updates
-
-    # Step 13: Permission hardening
+    # Step 15: Permission hardening
     step_harden_permissions
 
-    # Step 14: Access profile
+    # Step 16: Access profile
     step_apply_access_profile
 
-    # Step 15: openclaw doctor
+    # Step 17: openclaw doctor
     step_run_doctor
 
-    # Step 16: Final verification
+    # Step 18: Final verification
     step_final_verify
 
     # ─── Summary ───
@@ -1998,11 +2208,13 @@ main() {
     echo -e "  ${PASS} Environment detected and validated"
     echo -e "  ${PASS} Dependencies installed (Node.js, OpenClaw)"
     echo -e "  ${PASS} Gateway configured and verified"
-    echo -e "  ${PASS} Security hardening applied"
+    echo -e "  ${PASS} Workspace scaffolded (templates, daily log, subdirectories)"
+    echo -e "  ${PASS} Security hardening applied (firewall, permissions, sleep prevention)"
     echo ""
     echo -e "  ${BOLD}What you have now:${NC}"
     echo -e "  ${INFO} Running OpenClaw gateway (auto-starts on reboot)"
     echo -e "  ${INFO} AI provider configured"
+    echo -e "  ${INFO} Workspace with personality templates (run BOOTSTRAP.md in first chat)"
     if [ "$MODE" != "minimal" ]; then
         echo -e "  ${INFO} Communication channel connected"
     fi

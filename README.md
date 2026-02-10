@@ -42,10 +42,11 @@ The HTML guide also generates a customized version of the Claude.ai prompt on it
 | File | What it is |
 |------|-----------|
 | `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` | Optional hardening guide (security audit, backups, monitoring). Do Phase 1 this week; the rest at your own pace. |
+| `templates/workspace-scaffold-prompt.md` | Standalone prompt — paste into your bot's first chat to scaffold workspace + run first-time personalization. Use this if you didn't run autosetup.sh and aren't following the Playbook. |
 
 ### Workspace Templates
 
-The `templates/workspace/` folder contains starter files for your bot's workspace (`~/.openclaw/workspace/`). These are copied during setup or BOOTSTRAP:
+The `templates/workspace/` folder contains starter files for your bot's workspace (`~/.openclaw/workspace/`). The autosetup script copies them automatically (Step 12). For manual setup, use `templates/workspace-scaffold-prompt.md` or copy files directly:
 
 | File | Purpose |
 |------|---------|
@@ -84,7 +85,13 @@ You are here
     │           │               │
     └───────────┼───────────────┘
                 ▼
+        Workspace scaffolded ──── Templates copied, daily log created
+                │
+                ▼
         openclaw-verify.sh ──── Confirms everything is working
+                │
+                ▼
+        BOOTSTRAP.md ──── First-chat personalization (bot asks 9 questions)
                 │
                 ▼
         Foundation Playbook ──── Optional post-setup hardening
@@ -92,7 +99,9 @@ You are here
 
 ## What's Next
 
-After setup, open `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` — it's an optional hardening guide organized in 8 phases. **Only Phase 1 (Security Hardening) is urgent** — do it the same week you set up. Everything else can wait and be done at a pace of one phase per week.
+After setup, your workspace has template files ready to personalize. **Open a chat with your bot** — if BOOTSTRAP.md exists, it will walk you through 9 questions to set up your name, timezone, personality, and preferences. This takes about 5 minutes and makes the bot genuinely yours.
+
+Then open `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` — it's an optional hardening guide organized in 8 phases. **Only Phase 1 (Security Hardening) is urgent** — do it the same week you set up. Everything else can wait and be done at a pace of one phase per week.
 
 ## Version
 

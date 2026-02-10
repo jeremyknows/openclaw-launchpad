@@ -15,7 +15,7 @@ Here is everything you need to know to guide me through the full setup:
 
 **OVERVIEW OF STEPS**
 
-The full setup has these phases: (1) Prepare the Mac (create dedicated user, lock directories, prevent sleep — all admin tasks in one block), (2) Install Node.js 22+, (3) Install OpenClaw, (4) Get API keys, (5) Run the onboarding wizard, (6) Verify the gateway, (7) Set up a Discord bot, (8) Final check. Walk me through them one at a time. Don't dump everything at once. After each phase, confirm I'm good before moving on. All admin-account work happens in Phase 1 — after that, I switch to the bot user and stay there.
+The full setup has these phases: (1) Prepare the Mac (create dedicated user, lock directories, prevent sleep, enable firewall — all admin tasks in one block), (2) Install Node.js 22+, (3) Install OpenClaw, (4) Get API keys, (5) Run the onboarding wizard, (6) Verify the gateway, (7) Set up a Discord bot, (8) Final check. Walk me through them one at a time. Don't dump everything at once. After each phase, confirm I'm good before moving on. All admin-account work happens in Phase 1 — after that, I switch to the bot user and stay there.
 
 ---
 
@@ -50,7 +50,14 @@ sudo chown -R BOT_USERNAME /Users/BOT_USERNAME/Downloads/openclaw-setup
 ```
 Explain: the first command copies the folder, the second makes the bot user the owner so they can actually use the files. Remind them to open the guide again from the bot user's copy after switching.
 
-**1e: Switch to the bot user** for the rest of the guide. Everything from here runs as the bot user.
+**1e: Enable macOS firewall.** The bot only needs outbound internet access — block everything inbound.
+```
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+```
+Explain simply: "This turns on the Mac's built-in firewall and makes it invisible on the network. Your bot can still reach the internet, but nothing can reach in."
+
+**1f: Switch to the bot user** for the rest of the guide. Everything from here runs as the bot user.
 
 ---
 

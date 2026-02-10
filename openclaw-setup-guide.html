@@ -733,6 +733,18 @@ chmod 700 /Users/<span class="bot-username-code">YOUR_BOT_USERNAME</span></div>
     <p>Also prevent auto-restart for macOS updates:</p>
     <div class="code-wrapper"><div class="code-block" id="code-updates">sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool FALSE</div><button class="copy-btn" onclick="copyCode('code-updates')">Copy</button></div>
 
+    <h3>Enable the firewall</h3>
+    <p>The firewall blocks uninvited incoming connections. Stealth mode makes your Mac invisible on the network. Your bot can still reach the internet &#8212; only inbound connections are blocked.</p>
+    <div class="code-wrapper"><div class="code-block" id="code-firewall"># Enable the macOS firewall
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+
+# Enable stealth mode (your Mac won't respond to network probes)
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on</div><button class="copy-btn" onclick="copyCode('code-firewall')">Copy</button></div>
+    <details>
+      <summary>What does stealth mode do?</summary>
+      <div class="detail-body"><p>Normally, your Mac responds to network probes (like "ping") to say "I'm here." Stealth mode silences those responses &#8212; your Mac is still online, but it doesn't announce itself. This makes it harder for anyone on the network to discover it.</p></div>
+    </details>
+
     <details>
       <summary>Security note: macOS TCC permissions</summary>
       <div class="detail-body">
@@ -761,9 +773,10 @@ sudo chown -R <span class="bot-username-code">YOUR_BOT_USERNAME</span> /Users/<s
     <div class="check-item"><input type="checkbox" id="c1" onchange="saveCheck(this)"><label for="c1">New Mac user created (Standard, not Admin)</label></div>
     <div class="check-item"><input type="checkbox" id="c2" onchange="saveCheck(this)"><label for="c2">Home directories locked (<code>chmod 700</code>)</label></div>
     <div class="check-item"><input type="checkbox" id="c17" onchange="saveCheck(this)"><label for="c17">Mac sleep prevention configured</label></div>
+    <div class="check-item"><input type="checkbox" id="c-firewall" onchange="saveCheck(this)"><label for="c-firewall">Firewall enabled with stealth mode</label></div>
     <div class="check-item"><input type="checkbox" id="c-tcc" onchange="saveCheck(this)"><label for="c-tcc">I've checked TCC permissions for the bot user (zero special access)</label></div>
     <div class="check-item"><input type="checkbox" id="c3" onchange="saveCheck(this)"><label for="c3">Switched to the bot user account</label></div>
-    <div class="summary-box"><strong>What just happened:</strong> You created a dedicated Mac user for your bot with no admin privileges, locked down both home directories so neither account can snoop on the other, and prevented your Mac from sleeping. This is the security foundation &#8212; your bot runs in its own sandbox, separate from your personal files.</div>
+    <div class="summary-box"><strong>What just happened:</strong> You created a dedicated Mac user for your bot with no admin privileges, locked down both home directories so neither account can snoop on the other, prevented your Mac from sleeping, and enabled the firewall with stealth mode. This is the security foundation &#8212; your bot runs in its own sandbox, separate from your personal files, with no inbound network exposure.</div>
   </div>
 </div>
 
@@ -1681,7 +1694,7 @@ function generateClaudeAiPrompt(cfg) {
   if (cfg.email) channels.push('Email');
   const channelStr = channels.length ? channels.join(', ') : 'Dashboard only';
 
-  let phases = '(1) Prepare Mac — create bot user, lock dirs, prevent sleep, copy files, switch user';
+  let phases = '(1) Prepare Mac — create bot user, lock dirs, prevent sleep, enable firewall, copy files, switch user';
   phases += ', (2) Install Node.js 22+, (3) Install OpenClaw, (4) Get ' + provider + ' API key';
   phases += ', (5) Run openclaw onboard --install-daemon, (6) Verify the gateway';
   if (cfg.discord) phases += ', (7) Discord bot setup';

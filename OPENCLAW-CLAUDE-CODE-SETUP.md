@@ -8,14 +8,15 @@
 ## Setup Progress
 - [ ] Environment detected
 - [ ] Dedicated Mac user created (or skipped)
+- [ ] Sleep prevention, auto-update disable, and firewall configured (Step 1)
 - [ ] Node.js verified (v22+)
 - [ ] OpenClaw installed (v2026.1.29+)
 - [ ] API keys gathered and configured
 - [ ] Onboarding wizard completed (openclaw onboard --install-daemon)
+- [ ] Workspace scaffolded (templates copied, daily log created)
 - [ ] Access profile applied
 - [ ] Gateway verified (openclaw gateway status / openclaw health)
 - [ ] Discord bot configured
-- [ ] Mac sleep prevention configured
 - [ ] Permissions hardened (chmod 600/700)
 - [ ] Spending limits verified
 - [ ] openclaw doctor passed
@@ -88,8 +89,27 @@ If they choose their current account, that's fine — note it and move on. If th
    sudo cp -R ~/Downloads/openclaw-setup /Users/openclaw/Downloads/
    sudo chown -R openclaw /Users/openclaw/Downloads/openclaw-setup
    ```
-2. Guide them to switch via Fast User Switching or log out / log in as the new user.
-3. Remind them to open Terminal from the new user's session — all subsequent steps run there.
+
+2. **Prevent Mac sleep** (while still on admin — requires sudo):
+   ```bash
+   sudo pmset -a sleep 0 standby 0 hibernatemode 0 powernap 0 displaysleep 15 disksleep 0
+   ```
+   Explain: "This tells your Mac to never go to sleep, but still turns the screen off after 15 minutes to save energy. The bot keeps running either way."
+
+3. **Disable auto-update restarts:**
+   ```bash
+   sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool FALSE
+   ```
+
+4. **Enable firewall + stealth mode:**
+   ```bash
+   sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+   sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+   ```
+   Explain: "This turns on the Mac's built-in firewall and makes it invisible on the network. Your bot can still reach the internet, but nothing can reach in."
+
+5. Guide them to switch via Fast User Switching or log out / log in as the new user.
+6. Remind them to open Terminal from the new user's session — all subsequent steps run there.
 
 After this step, update the progress tracker.
 
@@ -290,6 +310,52 @@ Update the progress tracker.
 
 ---
 
+### Step 5c: Scaffold the Workspace
+
+The workspace (`~/.openclaw/workspace/`) needs template files for the bot's personality, memory, and operating instructions. Check if the setup package templates are available and copy them:
+
+```bash
+# Create workspace subdirectories
+mkdir -p ~/.openclaw/workspace/memory
+mkdir -p ~/.openclaw/workspace/cron
+mkdir -p ~/.openclaw/workspace/plans
+mkdir -p ~/.openclaw/workspace/scripts
+
+# Copy template files (don't overwrite existing)
+TEMPLATE_DIR="$HOME/Downloads/openclaw-setup/templates/workspace"
+if [ -d "$TEMPLATE_DIR" ]; then
+    for f in "$TEMPLATE_DIR"/*.md; do
+        dest="$HOME/.openclaw/workspace/$(basename "$f")"
+        [ ! -f "$dest" ] && cp "$f" "$dest" && echo "Created $(basename "$f")"
+    done
+else
+    echo "Template directory not found — create minimal stubs manually"
+fi
+
+# Create today's daily log
+TODAY=$(date '+%Y-%m-%d')
+DAILY_LOG="$HOME/.openclaw/workspace/memory/${TODAY}.md"
+if [ ! -f "$DAILY_LOG" ]; then
+    printf "# %s\n\n## Session Notes\n\n" "$TODAY" > "$DAILY_LOG"
+    echo "Created daily log: memory/${TODAY}.md"
+fi
+```
+
+After copying, verify the workspace has all 8 template files:
+
+```bash
+ls -la ~/.openclaw/workspace/*.md
+ls -la ~/.openclaw/workspace/memory/
+```
+
+Expected files: AGENTS.md, BOOTSTRAP.md, HEARTBEAT.md, IDENTITY.md, MEMORY.md, SOUL.md, TOOLS.md, USER.md.
+
+**BOOTSTRAP.md** is special — it's a first-conversation guide that walks the user through personalizing the other template files, then deletes itself. Don't edit or remove it; the bot handles it during the first chat session.
+
+Update the progress tracker.
+
+---
+
 ### Step 6: Verify the Gateway
 
 The gateway is the background service that manages agent sessions, handles API routing, and serves the Discord bot. After onboarding, it should be running as a LaunchAgent.
@@ -394,34 +460,7 @@ Update the progress tracker.
 
 ---
 
-### Step 8: Prevent Mac Sleep
-
-> **Note:** If the user followed the restructured guide, sleep prevention was already done in Step 1 as part of the admin tasks. Check first:
-
-```bash
-pmset -g | grep " sleep"
-```
-
-If `sleep` already shows `0`, this step is done — skip ahead. If not:
-
-```bash
-sudo pmset -a sleep 0 standby 0 hibernatemode 0 powernap 0 displaysleep 15 disksleep 0
-```
-
-Explain in plain English: "This tells your Mac to never go to sleep, but still turns the screen off after 15 minutes to save energy. The bot keeps running either way."
-
-Also disable auto-restart for macOS updates:
-```bash
-sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool FALSE
-```
-
-This requires admin/sudo access. Ask the user before running it.
-
-Update the progress tracker.
-
----
-
-### Step 9: Final Validation
+### Step 8: Final Validation
 
 Run the full diagnostic:
 
@@ -462,7 +501,7 @@ Update the progress tracker.
 
 ---
 
-### Step 10: Handoff to Foundation Playbook
+### Step 9: Handoff to Foundation Playbook
 
 Setup is complete. Inform the user:
 
@@ -480,7 +519,7 @@ Then print a summary:
 - Gateway LaunchAgent: `~/Library/LaunchAgents/ai.openclaw.gateway.plist`
 - Logs: `/tmp/openclaw/` and `~/.openclaw/logs/`
 
-*"You did it! Your AI agent is alive and running 24/7. The Foundation Playbook is the optional next step — it makes your bot smarter and more secure over time. Do Phase 1 (security audit) this week; the rest can wait. One phase per week at your own pace. If you have a Foundation Playbook file, open it now and I'll switch roles."*
+*"You did it! Your AI agent is alive and running 24/7. Your workspace is scaffolded with template files — open a chat with your bot and BOOTSTRAP.md will guide it through personalizing its name, personality, and your preferences. After that, the Foundation Playbook is the optional next step — it makes your bot smarter and more secure over time. Do Phase 1 (security audit) this week; the rest can wait. One phase per week at your own pace."*
 
 Update the progress tracker — mark all items complete.
 

@@ -752,19 +752,75 @@ Node.js 18+ resolves `localhost` to IPv6 (`::1`) first, but Ollama only listens 
 
 ---
 
-### 2.2 Verify Memory File Structure
+### 2.2 Create & Verify Workspace Structure
+
+**If you ran `openclaw-autosetup.sh`**, workspace files were copied automatically from `templates/workspace/` during Step 12. You can skip straight to the verification checklist below.
+
+**If setting up manually**, create the workspace subdirectories and copy the template files:
 
 ```bash
-ls -la ~/.openclaw/workspace/
-ls -la ~/.openclaw/workspace/memory/
+# Create subdirectories
+mkdir -p ~/.openclaw/workspace/memory
+mkdir -p ~/.openclaw/workspace/cron
+mkdir -p ~/.openclaw/workspace/plans
+mkdir -p ~/.openclaw/workspace/scripts
+
+# Copy templates (only if file doesn't already exist)
+TEMPLATE_DIR="$HOME/Downloads/openclaw-setup/templates/workspace"
+if [ -d "$TEMPLATE_DIR" ]; then
+    for f in "$TEMPLATE_DIR"/*.md; do
+        dest="$HOME/.openclaw/workspace/$(basename "$f")"
+        [ ! -f "$dest" ] && cp "$f" "$dest" && echo "Created $(basename "$f")"
+    done
+else
+    echo "Template directory not found at $TEMPLATE_DIR"
+    echo "Ask your bot to create minimal stubs for AGENTS.md, MEMORY.md, and BOOTSTRAP.md"
+fi
 ```
 
-- [ ] MEMORY.md exists in workspace (**Note:** MEMORY.md only loads in private sessions, not group channels — don't rely on it for shared Discord channel context)
-- [ ] `memory/` directory exists for daily logs
-- [ ] AGENTS.md exists (this is the primary operating instructions file — loaded every session)
-- [ ] USER.md exists (describes who the owner is — loaded every session)
-- [ ] SOUL.md, IDENTITY.md, TOOLS.md exist
-- [ ] All files are writable by the bot user
+**Template files** (all sourced from `templates/workspace/`):
+- **AGENTS.md** — primary operating instructions, loaded every session
+- **BOOTSTRAP.md** — first-conversation personalization guide (self-deletes after use)
+- **HEARTBEAT.md** — daily check-in schedule and routines
+- **IDENTITY.md** — bot name, emoji, and self-concept
+- **MEMORY.md** — persistent knowledge store (**Note:** only loads in private sessions, not group channels)
+- **SOUL.md** — personality framework and operating principles
+- **TOOLS.md** — tool usage guidelines and preferences
+- **USER.md** — owner profile and preferences, loaded every session
+
+**Verification checklist:**
+- [ ] `~/.openclaw/workspace/` contains all 8 `.md` files listed above
+- [ ] `memory/`, `cron/`, `plans/`, `scripts/` subdirectories exist
+- [ ] All files are writable by the bot user (`ls -la ~/.openclaw/workspace/`)
+- [ ] BOOTSTRAP.md exists (needed for the first-conversation flow in 2.2b)
+
+---
+
+### 2.2b First Conversation Protocol (BOOTSTRAP.md)
+
+BOOTSTRAP.md is a self-deleting first-conversation guide. When the bot opens a new session and finds this file, it walks the owner through 9 personalization questions:
+
+1. Bot name → updates IDENTITY.md
+2. Personality style → updates SOUL.md
+3. Emoji identity → updates IDENTITY.md
+4. Communication preferences → updates SOUL.md
+5. Owner name → updates USER.md
+6. Timezone → updates USER.md + HEARTBEAT.md
+7. Primary use case → updates USER.md
+8. Success criteria → updates USER.md
+9. Other preferences → updates SOUL.md + USER.md
+
+After collecting answers, the bot fills in the template files and **deletes BOOTSTRAP.md**. This signals that first-run personalization is complete.
+
+**How to trigger it:** Open a conversation with your bot (dashboard chat, Discord DM, or any private channel). If BOOTSTRAP.md exists in the workspace, the bot should automatically start the flow. If it doesn't, prompt: *"Please read BOOTSTRAP.md and follow the first-run process."*
+
+**If BOOTSTRAP.md was already deleted** (first conversation already happened), skip this step — you're already personalized.
+
+Don't stress about getting answers perfect. Preferences evolve over time and you can always edit USER.md, SOUL.md, and IDENTITY.md directly.
+
+- [ ] First conversation completed (bot asked personalization questions)
+- [ ] USER.md, SOUL.md, IDENTITY.md updated with your preferences
+- [ ] BOOTSTRAP.md deleted by the bot (confirms flow completed)
 
 ---
 
