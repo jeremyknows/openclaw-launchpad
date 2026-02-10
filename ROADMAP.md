@@ -26,13 +26,9 @@ These items were implemented across `openclaw-autosetup.sh` and `openclaw-verify
 
 ### Must-do before first public release
 
-- [ ] **Doc content gap: security features** — Scripts now implement env var substitution, mDNS disable, cryptographic token generation, FileVault check, browser deny, requireMention defaults — but NONE of the 5 doc files explain these features to users. Add sections to:
-  - `OPENCLAW-SETUP-GUIDE.md` (Steps 4 and 8)
-  - `openclaw-setup-guide.html` (Pages 5 and 9)
-  - `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` (Phase 1)
-  - `OPENCLAW-CLAUDE-CODE-SETUP.md` (Steps 5 and 8)
-  - `OPENCLAW-CLAUDE-SETUP-PROMPT.txt` (Security Reminders)
-- [ ] **Remove review artifacts** — Delete or gitignore `REVIEW-*.md` and `IMPLEMENTATION-PLAN.md` (internal quality checks, not user-facing)
+- [x] **Doc content gap: security features** — All 6 security features documented across all 5 doc files, voice-adapted per audience (Session 5)
+- [x] **Remove review artifacts** — `.gitignore` updated; `REVIEW-*.md` and `IMPLEMENTATION-PLAN.md` excluded from repo (Session 5)
+- [x] **Git identity + repo setup** — Pushed to `github.com/jeremyknows/openclaw-for-beginners` (private), 4 commits on main (Session 5)
 - [ ] **Browser QA testing** — Safari, Chrome, Firefox for HTML guide
 - [ ] **Fresh Mac QA** — Run `openclaw-autosetup.sh` end-to-end on a clean macOS install
 - [ ] **Run `openclaw-verify.sh`** on the target Mac after autosetup
@@ -40,7 +36,6 @@ These items were implemented across `openclaw-autosetup.sh` and `openclaw-verify
 
 ### Should-do before v1.0
 
-- [ ] **Git identity + repo setup** — Configure git identity, choose repo name/visibility, push to GitHub
 - [ ] **CONTRIBUTING.md** — Contributor guidelines, how to run scripts, how to test changes
 - [ ] **SECURITY.md** — Threat model, known limitations (gateway plaintext rewrite), responsible disclosure process
 - [ ] **workspace-scaffold-prompt.md** — Add "skip this if you ran autosetup" header
