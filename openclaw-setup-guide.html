@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Step-by-step interactive guide to setting up OpenClaw on your Mac">
+<title>OpenClaw Setup Guide</title>
+<style>
+  /* ─── Theme Variables ─── */
+  [data-theme="light"], [data-theme="system"] {
+    --bg: #f8f7f6;
+    --bg-card: #ffffff;
+    --bg-nav: rgba(248,247,246,0.92);
+    --text: #2c2825;
+    --text-heading: #1a1715;
+    --text-muted: #6b6560;
+    --text-light: #9c9590;
+    --accent: #e05a00;
+    --accent-hover: #c24e00;
+    --accent-text: #ffffff;
+    --accent-light: #fed7aa;
+    --accent-bg: #fff7ed;
+    --green: #15803d;
+    --green-light: #4ade80;
+    --green-bg: #f0fdf4;
+    --green-border: #86efac;
+    --blue: #1d4ed8;
+    --blue-bg: #eff6ff;
+    --blue-text: #1e40af;
+    --yellow: #a16207;
+    --yellow-bg: #fefce8;
+    --yellow-text: #854d0e;
+    --red: #b91c1c;
+    --red-bg: #fef2f2;
+    --red-text: #991b1b;
+    --border: #e0ddd9;
+    --border-light: #eeebe8;
+    --code-bg: #1e1e1e;
+    --code-text: #d4d4d4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.08);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"] {
+      --bg: #161412;
+      --bg-card: #221f1d;
+      --bg-nav: rgba(22,20,18,0.92);
+      --text: #e8e4e0;
+      --text-heading: #f5f3f0;
+      --text-muted: #a8a29e;
+      --text-light: #78716c;
+      --accent: #fb923c;
+      --accent-hover: #fdba74;
+      --accent-text: #1a1715;
+      --accent-light: #7c2d12;
+      --accent-bg: #3b1a08;
+      --green: #4ade80;
+      --green-light: #86efac;
+      --green-bg: #0a2614;
+      --green-border: #166534;
+      --blue: #60a5fa;
+      --blue-bg: #0f1d3a;
+      --blue-text: #93c5fd;
+      --yellow: #fbbf24;
+      --yellow-bg: #2a1e06;
+      --yellow-text: #fcd34d;
+      --red: #f87171;
+      --red-bg: #2a0a0a;
+      --red-text: #fca5a5;
+      --border: #3d3835;
+      --border-light: #2d2926;
+      --code-bg: #0c0a09;
+      --code-text: #d4d4d4;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4);
+      --shadow-lg: 0 4px 14px rgba(0,0,0,0.5);
+    }
+  }
+
+  /* Dark theme variables (shared with system dark mode above) */
+  [data-theme="dark"] {
+    --bg: #161412;
+    --bg-card: #221f1d;
+    --bg-nav: rgba(22,20,18,0.92);
+    --text: #e8e4e0;
+    --text-heading: #f5f3f0;
+    --text-muted: #a8a29e;
+    --text-light: #78716c;
+    --accent: #fb923c;
+    --accent-hover: #fdba74;
+    --accent-text: #1a1715;
+    --accent-light: #7c2d12;
+    --accent-bg: #3b1a08;
+    --green: #4ade80;
+    --green-light: #86efac;
+    --green-bg: #0a2614;
+    --green-border: #166534;
+    --blue: #60a5fa;
+    --blue-bg: #0f1d3a;
+    --blue-text: #93c5fd;
+    --yellow: #fbbf24;
+    --yellow-bg: #2a1e06;
+    --yellow-text: #fcd34d;
+    --red: #f87171;
+    --red-bg: #2a0a0a;
+    --red-text: #fca5a5;
+    --border: #3d3835;
+    --border-light: #2d2926;
+    --code-bg: #0c0a09;
+    --code-text: #d4d4d4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+    min-height: 100vh;
+  }
+
+  /* ─── Top Bar ─── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 20px;
+  }
+  .topbar-inner {
+    max-width: 720px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo { font-size: 22px; }
+  .topbar-title { font-weight: 600; font-size: 15px; color: var(--text-heading); }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+
+  /* Theme toggle */
+  .theme-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text-muted);
+    cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Step dots */
+  .step-dots {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .step-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all 0.2s; border: none;
+  }
+  .step-dot:hover { background: var(--text-muted); transform: scale(1.2); }
+  .step-dot.active { background: var(--accent); transform: scale(1.3); }
+  .step-dot.done { background: var(--green); }
+  @media (max-width: 560px) { .step-dot { width: 8px; height: 8px; } }
+
+  /* ─── Main Container ─── */
+  .container {
+    max-width: 720px; margin: 0 auto;
+    padding: 76px 20px 120px;
+    min-height: 100vh;
+  }
+
+  /* ─── Pages ─── */
+  .page { display: none; animation: pageIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 24px;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .card.completed { border-color: var(--green-border); }
+
+  /* ─── Typography ─── */
+  h1 { font-size: 30px; font-weight: 700; color: var(--text-heading); letter-spacing: -0.5px; margin-bottom: 8px; }
+  h2 { font-size: 22px; font-weight: 700; color: var(--text-heading); letter-spacing: -0.3px; margin-bottom: 6px; }
+  h3 { font-size: 16px; font-weight: 600; color: var(--text-heading); margin: 18px 0 8px; }
+  .subtitle { color: var(--text-muted); font-size: 17px; line-height: 1.6; }
+  p { margin-bottom: 12px; }
+  strong { font-weight: 600; color: var(--text-heading); }
+
+  /* ─── Hero ─── */
+  .hero { text-align: center; padding: 32px 0 24px; }
+  .hero-icon { font-size: 52px; margin-bottom: 12px; }
+  .hero .subtitle { max-width: 440px; margin: 0 auto; }
+  .welcome-back {
+    display: none; background: var(--green-bg); border: 1px solid var(--green-border);
+    border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 20px;
+    font-size: 14px; color: var(--green);
+  }
+
+  /* ─── Step Header ─── */
+  .step-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+  .step-num {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent-bg); color: var(--accent); font-weight: 700; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--accent-light);
+  }
+  .card.completed .step-num { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+  .step-title { font-size: 21px; font-weight: 700; color: var(--text-heading); letter-spacing: -0.3px; }
+  .step-meta { font-size: 13px; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* Pills */
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 5px; font-size: 12px; font-weight: 600; }
+  .pill-owner { background: var(--yellow-bg); color: var(--yellow-text); }
+  .pill-bot { background: var(--blue-bg); color: var(--blue-text); }
+
+  /* ─── Path chooser ─── */
+  .path-chooser { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  @media (max-width: 560px) { .path-chooser { grid-template-columns: 1fr; } }
+  .path-btn {
+    padding: 18px; border: 2px solid var(--border); border-radius: var(--radius);
+    background: var(--bg-card); cursor: pointer; text-align: left; transition: all 0.2s; color: var(--text);
+  }
+  .path-btn:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+  .path-btn.active { border-color: var(--accent); background: var(--accent-bg); }
+  .path-btn .path-icon { font-size: 26px; margin-bottom: 6px; }
+  .path-btn .path-label { font-weight: 600; font-size: 15px; color: var(--text-heading); }
+  .path-btn .path-desc { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+
+  /* ─── Checkboxes ─── */
+  .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+  .check-item input[type="checkbox"] {
+    width: 20px; height: 20px; margin-top: 2px; accent-color: var(--green);
+    flex-shrink: 0; cursor: pointer;
+  }
+  .check-item label { cursor: pointer; font-size: 15px; color: var(--text); }
+  .check-item.done label { color: var(--text-light); text-decoration: line-through; }
+
+  /* ─── Code blocks ─── */
+  .code-wrapper { position: relative; margin: 12px 0; }
+  .code-block {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 14px 18px; border-radius: var(--radius-sm);
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 13.5px; line-height: 1.6; overflow-x: auto;
+    white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px; padding: 4px 10px; font-size: 12px;
+    background: rgba(255,255,255,0.1); color: #a8a29e;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+  .copy-btn.copied { background: #16a34a; color: #fff; border-color: #16a34a; }
+
+  /* ─── Callouts ─── */
+  .callout {
+    padding: 14px 16px; border-radius: var(--radius-sm); margin: 14px 0;
+    font-size: 14px; display: flex; gap: 10px; align-items: flex-start; line-height: 1.6;
+  }
+  .callout-icon { flex-shrink: 0; font-size: 18px; }
+  .callout.info { background: var(--blue-bg); border-left: 3px solid var(--blue); color: var(--blue-text); }
+  .callout.warn { background: var(--yellow-bg); border-left: 3px solid var(--yellow); color: var(--yellow-text); }
+  .callout.danger { background: var(--red-bg); border-left: 3px solid var(--red); color: var(--red-text); }
+  .callout.success { background: var(--green-bg); border-left: 3px solid var(--green); color: var(--green); }
+
+  /* ─── Collapsible ─── */
+  details { margin: 12px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  details summary {
+    padding: 12px 16px; cursor: pointer; font-weight: 500; font-size: 14px;
+    background: var(--border-light); user-select: none; color: var(--text);
+  }
+  details summary:hover { background: var(--border); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .detail-body { padding: 16px; font-size: 14px; color: var(--text); }
+  details .detail-body p { margin-bottom: 10px; }
+
+  /* ─── Tables ─── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); color: var(--text); }
+  th { font-weight: 600; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ─── Links ─── */
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ─── Inputs ─── */
+  .input-group { margin: 14px 0; }
+  .input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+  .input-group input {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 15px; background: var(--bg);
+    color: var(--text); font-family: inherit;
+  }
+  .input-group input::placeholder { color: var(--text-light); }
+  .input-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+
+  /* ─── Navigation ─── */
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: var(--bg-nav); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-light); padding: 12px 20px;
+  }
+  .nav-inner {
+    max-width: 720px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .nav-btn {
+    padding: 10px 24px; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg-card); color: var(--text);
+    transition: all 0.15s; font-family: inherit;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn.primary {
+    background: var(--accent); color: var(--accent-text);
+    border-color: var(--accent);
+  }
+  .nav-btn.primary:hover { background: var(--accent-hover); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); color: var(--text); }
+  .nav-label { font-size: 13px; color: var(--text-muted); text-align: center; }
+
+  /* ─── Celebration ─── */
+  .celebration { text-align: center; padding: 40px 16px; animation: pageIn 0.5s ease; }
+  .celebration .big-icon { font-size: 64px; margin-bottom: 16px; }
+  .celebration h2 { font-size: 26px; color: var(--text-heading); margin-bottom: 8px; }
+  .celebration p { color: var(--text-muted); max-width: 400px; margin: 0 auto 12px; }
+
+  /* ─── AI Tabs ─── */
+  .ai-tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 2px solid var(--border); }
+  .ai-tab {
+    padding: 10px 16px; font-size: 14px; font-weight: 500; cursor: pointer;
+    border: none; background: none; color: var(--text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-family: inherit;
+  }
+  .ai-tab:hover { color: var(--text); }
+  .ai-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .ai-panel { display: none; }
+  .ai-panel.active { display: block; }
+
+  /* ─── Misc ─── */
+  code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 13px; background: var(--border-light); padding: 2px 6px; border-radius: 4px; color: var(--text); }
+  .bot-username-code { color: var(--accent); font-weight: 600; }
+  .owner-username-code { color: var(--blue); font-weight: 600; }
+  ol, ul { padding-left: 20px; margin: 8px 0 12px; }
+  li { margin-bottom: 4px; }
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+  .footer { text-align: center; padding: 32px 0 8px; color: var(--text-light); font-size: 13px; }
+
+  /* ─── Configurator: Toggle & Radio Cards ─── */
+  .config-section { margin-bottom: 24px; }
+  .config-section h3 { margin-bottom: 12px; }
+  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 560px) { .config-grid { grid-template-columns: 1fr; } }
+  .config-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 560px) { .config-grid.cols-3 { grid-template-columns: 1fr; } }
+
+  .config-card {
+    position: relative; padding: 14px 16px; border: 2px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--bg-card); cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .config-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .config-card.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .config-card .card-label { font-weight: 600; font-size: 14px; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
+  .config-card .card-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+  .config-card .card-cost { position: absolute; top: 10px; right: 12px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--yellow-bg); color: var(--yellow-text); }
+
+  /* Toggle switch */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--bg-card); }
+  .toggle-row .toggle-info { display: flex; flex-direction: column; }
+  .toggle-row .toggle-label { font-weight: 600; font-size: 14px; color: var(--text-heading); }
+  .toggle-row .toggle-desc { font-size: 12px; color: var(--text-muted); }
+  .toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--border); border-radius: 24px; transition: all 0.2s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px;
+    background: white; border-radius: 50%; transition: all 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* Collapsible Advanced section */
+  .advanced-toggle {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    padding: 8px 0; user-select: none; border: none; background: none; font-family: inherit;
+  }
+  .advanced-toggle:hover { color: var(--accent); }
+  .advanced-toggle .arrow { transition: transform 0.2s; font-size: 10px; }
+  .advanced-toggle.open .arrow { transform: rotate(90deg); }
+  .advanced-body { display: none; padding-top: 8px; }
+  .advanced-body.open { display: block; }
+
+  /* Cost summary bar */
+  .cost-bar {
+    background: var(--accent-bg); border: 1px solid var(--accent-light);
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px;
+  }
+  .cost-bar .cost-label { font-size: 14px; font-weight: 500; color: var(--text); }
+  .cost-bar .cost-value { font-size: 20px; font-weight: 700; color: var(--accent); }
+
+  /* ─── Summary Boxes ─── */
+  .summary-box {
+    background: var(--bg-nav); border-left: 3px solid var(--accent);
+    padding: 14px 18px; margin-top: 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 14px; line-height: 1.6; color: var(--text);
+  }
+  .summary-box strong { color: var(--accent); }
+
+  /* ─── Validation Message ─── */
+  #validation-msg {
+    display: none; background: var(--yellow-bg); border: 1px solid var(--yellow);
+    border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 8px;
+    font-size: 14px; color: var(--yellow-text); text-align: center;
+  }
+  #validation-msg.visible { display: block; }
+
+  /* ─── Tier Cards ─── */
+  .tier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
+  @media (max-width: 560px) { .tier-grid { grid-template-columns: 1fr; } }
+  .tier-card {
+    position: relative; padding: 14px 16px; border: 2px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--bg-card); cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .tier-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .tier-card.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .tier-card .tier-label { font-weight: 600; font-size: 14px; color: var(--text-heading); }
+  .tier-card .tier-model { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'SF Mono', Menlo, monospace; }
+  .tier-card .tier-cost { font-size: 12px; color: var(--yellow-text); font-weight: 600; margin-top: 4px; }
+  .tier-card .tier-badge {
+    position: absolute; top: 8px; right: 10px; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
+  }
+  .tier-card .tier-badge.recommended { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <span class="topbar-logo">&#129438;</span>
+      <span class="topbar-title">OpenClaw Setup</span>
+    </div>
+    <div class="step-dots" id="stepDots"></div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="cycleTheme()" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">&#9788;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="container">
+
+<!-- ═══════ PAGE 0: Welcome ═══════ -->
+<div class="page active" data-page="0">
+  <div class="hero">
+    <div class="hero-icon">&#129438;</div>
+    <h1>Set Up Your AI Agent</h1>
+    <p class="subtitle">A friendly, step-by-step guide to getting OpenClaw running on your Mac. No experience needed.</p>
+    <div class="welcome-back" id="welcomeBack"></div>
+  </div>
+
+  <div class="card">
+    <h2>Who are you?</h2>
+    <p style="color: var(--text-muted);">Pick whichever feels right. This adjusts the level of detail.</p>
+    <div class="path-chooser">
+      <button class="path-btn" onclick="setPath('curious')" id="path-curious">
+        <div class="path-icon">&#129300;</div>
+        <div class="path-label">Curious Explorer</div>
+        <div class="path-desc">New to Terminal and AI agents. I want it explained as we go.</div>
+      </button>
+      <button class="path-btn" onclick="setPath('builder')" id="path-builder">
+        <div class="path-icon">&#128736;&#65039;</div>
+        <div class="path-label">Ready to Build</div>
+        <div class="path-desc">I have a use case in mind. Show me the efficient path.</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Your Setup</h2>
+    <p style="color: var(--text-muted);">Saved automatically. Used in the instructions ahead.</p>
+    <div class="input-group">
+      <label>What will you name your bot?</label>
+      <input type="text" id="botName" placeholder="e.g., Atlas, Maverick, Friday" oninput="saveInput(this)">
+    </div>
+    <div class="input-group">
+      <label>Your macOS admin username</label>
+      <input type="text" id="ownerUser" placeholder="e.g., matt (check with: whoami in Terminal)" oninput="saveInput(this)">
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 1: Configurator ═══════ -->
+<div class="page" data-page="1">
+  <div class="card">
+    <h2>Configure Your Setup</h2>
+    <p style="color: var(--text-muted);">Pick the services you want. The guide adapts to your choices. You can change anything later.</p>
+
+    <!-- ─── Essentials ─── -->
+    <div class="config-section">
+      <h3>AI Provider <span style="color:var(--red);font-size:12px;">required</span></h3>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">Don't have an account yet? No problem &#8212; we'll walk you through it in Step 4.</p>
+      <div class="config-grid">
+        <div class="config-card selected" onclick="setConfig('provider','openrouter')" data-config="provider:openrouter">
+          <span class="card-cost">$5-50/mo</span>
+          <div class="card-label">OpenRouter</div>
+          <div class="card-desc">100+ models from one key. Default: Kimi K2.5 &#8212; budget-friendly.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('provider','anthropic')" data-config="provider:anthropic">
+          <span class="card-cost">$5-100/mo</span>
+          <div class="card-label">Anthropic (Claude)</div>
+          <div class="card-desc">Premium quality. Best for complex agent tasks.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('provider','openai')" data-config="provider:openai">
+          <span class="card-cost">$5-100/mo</span>
+          <div class="card-label">OpenAI</div>
+          <div class="card-desc">GPT-4o, o1, o3. Familiar ecosystem.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Embedding Provider</h3>
+      <div class="config-grid">
+        <div class="config-card selected" onclick="setConfig('embedding','voyage')" data-config="embedding:voyage">
+          <span class="card-cost">~$0.06/M tok</span>
+          <div class="card-label">Voyage AI</div>
+          <div class="card-desc">Best value for memory search. Recommended.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('embedding','openai-embed')" data-config="embedding:openai-embed">
+          <span class="card-cost">~$0.02/M tok</span>
+          <div class="card-label">OpenAI</div>
+          <div class="card-desc">Cheapest per token. text-embedding-3-small.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('embedding','ollama')" data-config="embedding:ollama">
+          <span class="card-cost">Free</span>
+          <div class="card-label">Ollama (local)</div>
+          <div class="card-desc">Runs on your Mac. No API costs.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('embedding','none')" data-config="embedding:none">
+          <span class="card-cost">$0</span>
+          <div class="card-label">None (skip)</div>
+          <div class="card-desc">Add later in the Foundation Playbook.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Communication Channels</h3>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">Discord</span>
+          <span class="toggle-desc">Rich formatting, topic channels, mobile app. Recommended primary.</span>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" id="cfg-discord" checked onchange="setConfigToggle('discord',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">iMessage</span>
+          <span class="toggle-desc">Alerts and quick messages from your iPhone.</span>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" id="cfg-imessage" onchange="setConfigToggle('imessage',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">Telegram</span>
+          <span class="toggle-desc">Secondary mobile channel for notifications.</span>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" id="cfg-telegram" onchange="setConfigToggle('telegram',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">Email</span>
+          <span class="toggle-desc">Inbox monitoring, triage, and drafting.</span>
+        </div>
+        <label class="toggle-switch"><input type="checkbox" id="cfg-email" onchange="setConfigToggle('email',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>How do you want to set up?</h3>
+      <div class="config-grid cols-3">
+        <div class="config-card selected" onclick="setConfig('autonomy','manual')" data-config="autonomy:manual">
+          <div class="card-label">I'll do it myself</div>
+          <div class="card-desc">Copy-paste each command. Learn as you go.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('autonomy','assisted')" data-config="autonomy:assisted">
+          <div class="card-label">Claude helps me</div>
+          <div class="card-desc">An AI walks you through it conversationally.</div>
+        </div>
+        <div class="config-card" onclick="setConfig('autonomy','script')" data-config="autonomy:script">
+          <div class="card-label">Give me a script</div>
+          <div class="card-desc">Run one command. ~80% automated.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Advanced (collapsible) ─── -->
+    <button class="advanced-toggle" onclick="toggleAdvanced(this)" aria-expanded="false">
+      <span class="arrow">&#9654;</span> Advanced Options
+    </button>
+    <div class="advanced-body" id="advancedBody">
+      <div class="config-section">
+        <h3>Access Profile</h3>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">Controls what your bot <em>can</em> do. Start restrictive, loosen over time.</p>
+        <div class="config-grid cols-3">
+          <div class="config-card selected" onclick="setConfig('accessProfile','explorer')" data-config="accessProfile:explorer">
+            <div class="card-label">Explorer</div>
+            <div class="card-desc">All tools enabled. You monitor via logs. Best for learning.</div>
+          </div>
+          <div class="config-card" onclick="setConfig('accessProfile','guarded')" data-config="accessProfile:guarded">
+            <div class="card-label">Guarded</div>
+            <div class="card-desc">Shell commands require approval. Good for untrusted content.</div>
+          </div>
+          <div class="config-card" onclick="setConfig('accessProfile','restricted')" data-config="accessProfile:restricted">
+            <div class="card-label">Restricted</div>
+            <div class="card-desc">Messaging and memory only. No web, no shell.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <h3>Approval Tier</h3>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">Controls how much the bot asks before acting.</p>
+        <div class="config-grid cols-3">
+          <div class="config-card selected" onclick="setConfig('approvalTier','1')" data-config="approvalTier:1">
+            <div class="card-label">Tier 1</div>
+            <div class="card-desc">Everything needs your approval. Safest start.</div>
+          </div>
+          <div class="config-card" onclick="setConfig('approvalTier','2')" data-config="approvalTier:2">
+            <div class="card-label">Tier 2</div>
+            <div class="card-desc">Routine actions autonomous, big decisions need approval.</div>
+          </div>
+          <div class="config-card" onclick="setConfig('approvalTier','3')" data-config="approvalTier:3">
+            <div class="card-label">Tier 3</div>
+            <div class="card-desc">Full autonomy within defined boundaries.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Cost Summary ─── -->
+    <div class="cost-bar">
+      <span class="cost-label">Estimated monthly cost</span>
+      <span class="cost-value" id="costEstimate">$5-15/mo</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 2: Create Mac User ═══════ -->
+<div class="page" data-page="2">
+  <div class="card" id="step-1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Prepare Your Mac</div>
+        <div class="step-meta"><span class="pill pill-owner">Owner does this</span> ~15 min</div>
+      </div>
+    </div>
+    <p>All the admin-level tasks happen here. After this step, you switch to the bot user and stay there.</p>
+
+    <h3>Create a bot user</h3>
+    <p>A separate Mac user means the bot literally <em>cannot</em> access your personal files, Keychain, or browser history.</p>
+    <ol>
+      <li>Open <strong>System Settings</strong> &#8594; <strong>Users &amp; Groups</strong></li>
+      <li>Click <strong>+</strong> to add a new user</li>
+      <li>Name: <strong id="botNameDisplay1">your bot's name</strong> &middot; Account type: <strong>Standard</strong> (not Admin)</li>
+      <li>Set a strong password. Save it in your password manager.</li>
+      <li><strong>Log into the new account once</strong> (to initialize it), then switch back.</li>
+    </ol>
+
+    <details>
+      <summary>How do I open Terminal?</summary>
+      <div class="detail-body">
+        <p>Press <strong>Cmd + Space</strong>, type <strong>Terminal</strong>, hit Enter. When the guide says "run this command," paste the text into Terminal and press Enter.</p>
+      </div>
+    </details>
+    <details>
+      <summary>What does "sudo" mean?</summary>
+      <div class="detail-body">
+        <p><strong>sudo</strong> = "superuser do." Runs a command with admin privileges. macOS will ask for your password. This is normal and safe.</p>
+      </div>
+    </details>
+
+    <h3>Lock down home directories</h3>
+    <div class="code-wrapper">
+      <div class="code-block" id="code-chmod"># Prevent the bot from reading YOUR files
+sudo chmod 700 /Users/<span class="owner-username-code">$(whoami)</span>
+
+# Prevent anyone from reading the bot's files
+chmod 700 /Users/<span class="bot-username-code">YOUR_BOT_USERNAME</span></div>
+      <button class="copy-btn" onclick="copyCode('code-chmod')">Copy</button>
+    </div>
+    <details>
+      <summary>What does chmod 700 mean?</summary>
+      <div class="detail-body">
+        <p>"Only the owner of this folder can access it." By default, macOS lets any user browse your home directory. These commands close that gap.</p>
+      </div>
+    </details>
+
+    <h3>Keep your Mac awake</h3>
+    <p>If your Mac sleeps, the bot stops. This is the #1 reason agents "randomly stop working."</p>
+    <div class="code-wrapper"><div class="code-block" id="code-sleep">sudo pmset -a sleep 0 standby 0 hibernatemode 0 powernap 0 displaysleep 15 disksleep 0</div><button class="copy-btn" onclick="copyCode('code-sleep')">Copy</button></div>
+    <details>
+      <summary>What does this command do?</summary>
+      <div class="detail-body">
+        <p>Tells your Mac: never go to sleep, but turn the screen off after 15 minutes to save energy. The bot keeps running either way.</p>
+      </div>
+    </details>
+    <p>Also prevent auto-restart for macOS updates:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-updates">sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool FALSE</div><button class="copy-btn" onclick="copyCode('code-updates')">Copy</button></div>
+
+    <details>
+      <summary>Security note: macOS TCC permissions</summary>
+      <div class="detail-body">
+        <p>macOS controls which apps can access your camera, microphone, files, and other sensitive areas through a system called <strong>TCC</strong> (Transparency, Consent, and Control). Your bot user should have <strong>zero</strong> special permissions &#8212; it only needs outbound internet access.</p>
+        <p>To verify: log into the bot user &#8594; System Settings &#8594; Privacy &amp; Security. Every category (Camera, Microphone, Screen Recording, Full Disk Access, etc.) should be empty or have no apps listed. If anything is there, remove it.</p>
+      </div>
+    </details>
+
+    <h3>Copy setup files to the bot user</h3>
+    <p>These setup files are on <em>your</em> account. The bot user needs them too (especially the autosetup script). Copy them over before switching:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-copyfiles">sudo cp -R ~/Downloads/openclaw-setup /Users/<span class="bot-username-code">YOUR_BOT_USERNAME</span>/Downloads/
+sudo chown -R <span class="bot-username-code">YOUR_BOT_USERNAME</span> /Users/<span class="bot-username-code">YOUR_BOT_USERNAME</span>/Downloads/openclaw-setup</div><button class="copy-btn" onclick="copyCode('code-copyfiles')">Copy</button></div>
+    <details>
+      <summary>What do these commands do?</summary>
+      <div class="detail-body"><p>The first copies this entire folder to the bot user's Downloads. The second makes the bot user the owner of the copy (otherwise the files would be owned by your admin account and the bot user couldn't use them).</p></div>
+    </details>
+
+    <h3>Switch to the bot user</h3>
+    <p>You're done with admin tasks. Switch accounts for the rest of the guide:</p>
+    <ul>
+      <li><strong>Fast User Switching</strong> &#8212; System Settings &#8594; Control Center &#8594; Show in Menu Bar</li>
+      <li>Or <strong>log out</strong> and log in as the bot user</li>
+    </ul>
+    <p>Then open this guide again from the bot user's copy:<br><code>/Users/<span class="bot-username-code">YOUR_BOT_USERNAME</span>/Downloads/openclaw-setup/openclaw-setup-guide.html</code></p>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c1" onchange="saveCheck(this)"><label for="c1">New Mac user created (Standard, not Admin)</label></div>
+    <div class="check-item"><input type="checkbox" id="c2" onchange="saveCheck(this)"><label for="c2">Home directories locked (<code>chmod 700</code>)</label></div>
+    <div class="check-item"><input type="checkbox" id="c17" onchange="saveCheck(this)"><label for="c17">Mac sleep prevention configured</label></div>
+    <div class="check-item"><input type="checkbox" id="c-tcc" onchange="saveCheck(this)"><label for="c-tcc">I've checked TCC permissions for the bot user (zero special access)</label></div>
+    <div class="check-item"><input type="checkbox" id="c3" onchange="saveCheck(this)"><label for="c3">Switched to the bot user account</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You created a dedicated Mac user for your bot with no admin privileges, locked down both home directories so neither account can snoop on the other, and prevented your Mac from sleeping. This is the security foundation &#8212; your bot runs in its own sandbox, separate from your personal files.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 3: Node.js ═══════ -->
+<div class="page" data-page="3">
+  <div class="card" id="step-2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Install Node.js</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~5 min</div>
+      </div>
+    </div>
+    <p>OpenClaw runs on Node.js. You need version 22+.</p>
+    <p><strong>Check if installed:</strong></p>
+    <div class="code-wrapper"><div class="code-block" id="code-node">node --version</div><button class="copy-btn" onclick="copyCode('code-node')">Copy</button></div>
+    <p>Shows <code>v22.x.x</code> or higher? You can skip ahead.</p>
+    <p><strong>Install via Homebrew:</strong></p>
+    <div class="code-wrapper"><div class="code-block" id="code-brew">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div><button class="copy-btn" onclick="copyCode('code-brew')">Copy</button></div>
+    <p>Then:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-brewnode">brew install node@22</div><button class="copy-btn" onclick="copyCode('code-brewnode')">Copy</button></div>
+    <details>
+      <summary>What is Homebrew?</summary>
+      <div class="detail-body"><p>An "app store for Terminal." Type <code>brew install thing</code> and it handles the rest. Used by millions, safe to install.</p></div>
+    </details>
+    <details>
+      <summary>Alternative: download from nodejs.org</summary>
+      <div class="detail-body"><p>Go to <a href="https://nodejs.org" target="_blank">nodejs.org</a>, download the LTS (22.x) macOS installer. Double-click and follow prompts.</p></div>
+    </details>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c4" onchange="saveCheck(this)"><label for="c4"><code>node --version</code> shows v22.x.x or higher</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You installed Node.js, the engine that powers OpenClaw. Think of it as the "electricity" your bot needs to run. Homebrew makes it easy to update later.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 4: OpenClaw ═══════ -->
+<div class="page" data-page="4">
+  <div class="card" id="step-3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Install OpenClaw</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~5 min</div>
+      </div>
+    </div>
+    <div class="code-wrapper"><div class="code-block" id="code-install">curl -fsSL https://openclaw.ai/install.sh | bash</div><button class="copy-btn" onclick="copyCode('code-install')">Copy</button></div>
+    <p>Verify:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-version">openclaw --version</div><button class="copy-btn" onclick="copyCode('code-version')">Copy</button></div>
+    <div class="callout danger">
+      <span class="callout-icon">&#128680;</span>
+      <div><strong>Must be 2026.1.29+ (recommended: 2026.2.9+).</strong> Older versions had a serious security bug that's been fixed. If yours is older, run <code>openclaw update</code> before continuing.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c5" onchange="saveCheck(this)"><label for="c5">OpenClaw installed, version 2026.1.29+ &#10003;</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You installed the OpenClaw framework itself &#8212; the brain and nervous system of your AI agent. The version check ensures you have the latest security patches.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 5: API Keys ═══════ -->
+<div class="page" data-page="5">
+  <div class="card" id="step-4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Get Your API Keys</div>
+        <div class="step-meta"><span class="pill pill-owner">Owner does this</span> ~10 min</div>
+      </div>
+    </div>
+    <p>You'll paste these into the wizard in the next step.</p>
+
+    <div data-requires="provider:openrouter">
+      <h3>OpenRouter</h3>
+      <ol>
+        <li>Go to <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> &#8594; Sign up &#8594; Add $5-10</li>
+        <li><strong>API Keys</strong> &#8594; <strong>Create Key</strong> (starts with <code>sk-or-v1-...</code>)</li>
+        <li><strong>Set a spending limit</strong> in Settings &#8594; e.g., $10-25/month</li>
+      </ol>
+      <p style="color:var(--text-muted);font-size:14px;">Pick your model tier below after creating your key.</p>
+    </div>
+
+    <div data-requires="provider:anthropic">
+      <h3>Anthropic (Claude)</h3>
+      <ol>
+        <li>Go to <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></li>
+        <li>Sign up or log in</li>
+        <li><strong>Billing</strong> &#8594; Add at least $5 in credits</li>
+        <li><strong>API Keys</strong> &#8594; <strong>Create Key</strong> &#8594; Copy it (starts with <code>sk-ant-...</code>)</li>
+        <li><strong>Set a spending limit</strong>: Billing &#8594; Limits &#8594; e.g., $25/month</li>
+      </ol>
+    </div>
+
+    <div data-requires="provider:openai">
+      <h3>OpenAI</h3>
+      <ol>
+        <li>Go to <a href="https://platform.openai.com" target="_blank">platform.openai.com</a></li>
+        <li>Sign up or log in &#8594; Add $5-10 in credits</li>
+        <li><strong>API Keys</strong> &#8594; <strong>Create new secret key</strong> (starts with <code>sk-...</code>)</li>
+        <li><strong>Set a spending limit</strong> in Billing &#8594; Usage limits</li>
+      </ol>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">&#128274;</span>
+      <div><strong>Store keys in a password manager.</strong> You'll only see each key once when creating it. Never share keys in Slack, email, or docs.</div>
+    </div>
+
+    <h3>Choose Your Model Tier</h3>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">This controls the AI model your bot uses. You can change tiers anytime.</p>
+    <div class="tier-grid" id="tierGrid">
+      <div class="tier-card" onclick="setTier('budget')" data-tier="budget">
+        <div class="tier-label">Budget</div>
+        <div class="tier-model" id="tier-model-budget"></div>
+        <div class="tier-cost" id="tier-cost-budget"></div>
+      </div>
+      <div class="tier-card selected" onclick="setTier('balanced')" data-tier="balanced">
+        <span class="tier-badge recommended">Recommended</span>
+        <div class="tier-label">Balanced</div>
+        <div class="tier-model" id="tier-model-balanced"></div>
+        <div class="tier-cost" id="tier-cost-balanced"></div>
+      </div>
+      <div class="tier-card" onclick="setTier('premium')" data-tier="premium">
+        <div class="tier-label">Premium</div>
+        <div class="tier-model" id="tier-model-premium"></div>
+        <div class="tier-cost" id="tier-cost-premium"></div>
+      </div>
+    </div>
+
+    <div class="card" style="background: var(--blue-bg); border-color: var(--blue); margin-top: 16px; padding: 16px;">
+      <h3 style="margin-top:0;">Credential Security</h3>
+      <p style="font-size:14px;">After setup, protect your config file. These commands ensure only your bot user can read the API keys.</p>
+      <div class="code-wrapper"><div class="code-block" id="code-chmod-cfg">chmod 600 ~/.openclaw/openclaw.json</div><button class="copy-btn" onclick="copyCode('code-chmod-cfg')">Copy</button></div>
+      <div class="code-wrapper"><div class="code-block" id="code-chmod-dir">chmod 700 ~/.openclaw/</div><button class="copy-btn" onclick="copyCode('code-chmod-dir')">Copy</button></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="callout danger" id="spending-gate" style="margin-bottom: 14px;">
+      <span class="callout-icon">&#128680;</span>
+      <div><strong>Required safety step.</strong> AI agents can run up costs fast. You must set a spending limit on your provider account before continuing.</div>
+    </div>
+    <div class="check-item"><input type="checkbox" id="c6" onchange="saveCheck(this)"><label for="c6">API key created and saved securely</label></div>
+    <div class="check-item"><input type="checkbox" id="c-spending" onchange="saveCheck(this); updateSpendingGate()"><label for="c-spending"><strong>I've set a spending limit on my provider account</strong></label></div>
+    <div class="check-item"><input type="checkbox" id="c7" onchange="saveCheck(this)"><label for="c7">Keys stored in a password manager</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You created an API key, which is like a password that lets your bot talk to an AI model. The spending limit is your financial safety net &#8212; it ensures the bot can never run up a surprise bill.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 6: Setup Wizard ═══════ -->
+<div class="page" data-page="6">
+  <div class="card" id="step-5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Run the Setup Wizard</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~15 min</div>
+      </div>
+    </div>
+    <p>This is the big one. OpenClaw walks you through everything interactively.</p>
+    <div class="code-wrapper"><div class="code-block" id="code-wizard">openclaw onboard --install-daemon</div><button class="copy-btn" onclick="copyCode('code-wizard')">Copy</button></div>
+    <div class="callout success">
+      <span class="callout-icon">&#128161;</span>
+      <div>The wizard asks questions and you answer them. Not sure? The default (shown in brackets) is usually fine. You can re-run the wizard anytime.</div>
+    </div>
+    <table>
+      <tr><td><strong>Model/Auth</strong></td><td>Paste your API key, pick your model</td></tr>
+      <tr><td><strong>Workspace</strong></td><td>Where bot files live (default is fine)</td></tr>
+      <tr><td><strong>Gateway</strong></td><td>Background service (defaults are fine)</td></tr>
+      <tr><td><strong>Channels</strong></td><td>Chat apps (do Discord in Step 7)</td></tr>
+      <tr><td><strong>Daemon</strong></td><td>Auto-start on reboot &#8212; <strong>say yes</strong></td></tr>
+    </table>
+    <details>
+      <summary>What model should I choose?</summary>
+      <div class="detail-body">
+        <p>You already picked a model tier on the API Keys page. The wizard will ask which model to use &#8212; enter the one shown in your setup summary.</p>
+        <p>You can change models anytime via <code>openclaw onboard</code>.</p>
+      </div>
+    </details>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c8" onchange="saveCheck(this)"><label for="c8">Wizard completed successfully</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> The wizard wrote your configuration file and started the background service (daemon) that keeps your bot alive. Your bot now has an identity, an AI brain, and a workspace to store its files.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 7: Verify ═══════ -->
+<div class="page" data-page="7">
+  <div class="card" id="step-6">
+    <div class="step-header">
+      <div class="step-num">6</div>
+      <div>
+        <div class="step-title">Verify It's Running</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~2 min</div>
+      </div>
+    </div>
+    <div class="code-wrapper"><div class="code-block" id="code-status">openclaw gateway status</div><button class="copy-btn" onclick="copyCode('code-status')">Copy</button></div>
+    <p>Look for: <code>Runtime: running</code> and <code>RPC probe: ok</code></p>
+    <p><strong>Open the dashboard:</strong></p>
+    <div class="code-wrapper"><div class="code-block" id="code-dashboard">openclaw dashboard</div><button class="copy-btn" onclick="copyCode('code-dashboard')">Copy</button></div>
+    <p>A browser window opens. Type a message. If the bot responds &#8212; <strong>you did it.</strong></p>
+    <div class="callout success">
+      <span class="callout-icon">&#127881;</span>
+      <div><strong>Milestone!</strong> Your AI agent is alive. It has a brain (AI model), a home (workspace), and a body (gateway). Everything from here is making it smarter.</div>
+    </div>
+    <details>
+      <summary>Stuck? Gateway not running?</summary>
+      <div class="detail-body">
+        <p>Restart: <code>openclaw gateway restart</code></p>
+        <p>Check config: <code>openclaw doctor</code></p>
+        <p>Check logs: <code>tail -20 /tmp/openclaw/openclaw-$(date +%Y-%m-%d).log</code></p>
+        <p>Config issue? Re-run wizard: <code>openclaw onboard</code></p>
+      </div>
+    </details>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c9" onchange="saveCheck(this)"><label for="c9">Gateway shows "running" and "RPC probe: ok"</label></div>
+    <div class="check-item"><input type="checkbox" id="c10" onchange="saveCheck(this)"><label for="c10">Dashboard opens and bot responds</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You confirmed your bot is alive and responding. The gateway is the background service that keeps it running 24/7. The dashboard is your direct line of communication &#8212; everything from here is about making it smarter and more connected.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 8: Discord ═══════ -->
+<div class="page" data-page="8">
+  <div class="card" id="step-7" data-requires="discord">
+    <div class="step-header">
+      <div class="step-num">7</div>
+      <div>
+        <div class="step-title">Connect Discord</div>
+        <div class="step-meta"><span class="pill pill-owner">Owner does this</span> ~15 min <span style="color:var(--text-light);">&middot; optional but recommended</span></div>
+      </div>
+    </div>
+    <p>Discord gives your bot topic channels, rich formatting, file sharing, and mobile access. Using dashboard only? Skip ahead.</p>
+    <h3>Create a server &amp; bot</h3>
+    <ol>
+      <li><strong>Server:</strong> Discord &#8594; <strong>+</strong> &#8594; Create My Own &#8594; name it</li>
+      <li>Create channels: <code>#general</code>, <code>#bot-logs</code></li>
+      <li><strong>Bot:</strong> Go to <a href="https://discord.com/developers/applications" target="_blank">Developer Portal</a> &#8594; New Application</li>
+      <li><strong>Bot</strong> tab &#8594; Reset Token &#8594; copy &amp; save it</li>
+      <li>Enable: &#9989; Message Content Intent &middot; &#9989; Server Members &middot; &#9989; Presence</li>
+      <li><strong>OAuth2</strong> &#8594; URL Generator &#8594; scopes: <code>bot</code> + <code>applications.commands</code> &#8594; permissions: Send Messages, Read Message History, Embed Links, Attach Files, Add Reactions, Use Slash Commands</li>
+      <li>Copy invite URL &#8594; paste in browser &#8594; add to your server</li>
+    </ol>
+    <div class="callout danger">
+      <span class="callout-icon">&#128680;</span>
+      <div><strong>Message Content Intent is critical.</strong> Without it, your bot can't read messages. Error 4014 = this isn't enabled.</div>
+    </div>
+    <h3>Get IDs (Developer Mode)</h3>
+    <p>Discord Settings &#8594; Advanced &#8594; <strong>Developer Mode</strong> on. Then right-click to copy:</p>
+    <ul>
+      <li>Server name &#8594; <strong>Copy Server ID</strong></li>
+      <li>Your name &#8594; <strong>Copy User ID</strong></li>
+      <li>Each channel &#8594; <strong>Copy Channel ID</strong></li>
+    </ul>
+    <h3>Add to config</h3>
+    <p>This is the trickiest part &#8212; you'll edit a JSON config file. Take it slow.</p>
+    <div class="code-wrapper"><div class="code-block" id="code-backup">cp ~/.openclaw/openclaw.json ~/.openclaw/openclaw.json.backup</div><button class="copy-btn" onclick="copyCode('code-backup')">Copy</button></div>
+    <p>Open <code>~/.openclaw/openclaw.json</code> in a text editor and add this under the <code>"channels"</code> section. <strong>Replace each placeholder</strong> with the IDs you copied above:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-discord">"discord": {
+  "enabled": true,
+  "token": "YOUR_BOT_TOKEN",
+  "groupPolicy": "allowlist",
+  "dm": { "policy": "pairing", "allowFrom": ["YOUR_USER_ID"] },
+  "guilds": {
+    "YOUR_SERVER_ID": {
+      "slug": "my-server",
+      "channels": {
+        "CHANNEL_ID": { "allow": true, "requireMention": false }
+      }
+    }
+  }
+}</div><button class="copy-btn" onclick="copyCode('code-discord')">Copy</button></div>
+    <div class="callout info">
+      <span class="callout-icon">&#128161;</span>
+      <div><strong>JSON is picky.</strong> Every quote must be a straight double-quote (<code>"</code>), every item needs a comma after it (except the last one), and every <code>{</code> needs a matching <code>}</code>. If <code>openclaw doctor</code> fails after your edit, restore the backup and try again.</div>
+    </div>
+    <p>Validate and restart:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-doctor">openclaw doctor && openclaw gateway restart</div><button class="copy-btn" onclick="copyCode('code-doctor')">Copy</button></div>
+    <details>
+      <summary>Stuck? Common issues</summary>
+      <div class="detail-body">
+        <p><strong>Config error after editing:</strong> Restore your backup: <code>cp ~/.openclaw/openclaw.json.backup ~/.openclaw/openclaw.json</code> &#8212; then try again carefully.</p>
+        <p><strong>Bot offline:</strong> Check the token is correct and all three intents are enabled.</p>
+        <p><strong>Error 4014:</strong> Message Content Intent is not enabled in the Developer Portal.</p>
+        <p><strong>Tip:</strong> If JSON editing feels too hard, use the Claude AI prompt (from the Complete page) &#8212; Claude can help you edit the config interactively.</p>
+      </div>
+    </details>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c11" onchange="saveCheck(this)"><label for="c11">Discord server + channels created</label></div>
+    <div class="check-item"><input type="checkbox" id="c12" onchange="saveCheck(this)"><label for="c12">Bot created with all three intents</label></div>
+    <div class="check-item"><input type="checkbox" id="c13" onchange="saveCheck(this)"><label for="c13">Bot invited to server</label></div>
+    <div class="check-item"><input type="checkbox" id="c14" onchange="saveCheck(this)"><label for="c14">Config updated with IDs</label></div>
+    <div class="check-item"><input type="checkbox" id="c15" onchange="saveCheck(this)"><label for="c15"><code>openclaw doctor</code> passes</label></div>
+    <div class="check-item"><input type="checkbox" id="c16" onchange="saveCheck(this)"><label for="c16">Bot responds in Discord</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You gave your bot a real communication channel. Discord gives you topic-based conversations, rich formatting, file sharing, and mobile access &#8212; all in one place. You can now talk to your bot from your phone.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 9: Final Check ═══════ -->
+<div class="page" data-page="9">
+  <div class="card" id="step-8">
+    <div class="step-header">
+      <div class="step-num">8</div>
+      <div>
+        <div class="step-title">Final Check</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~2 min</div>
+      </div>
+    </div>
+    <p>Lock down your config file (it contains API keys) and run the diagnostic:</p>
+    <div class="code-wrapper"><div class="code-block" id="code-final">chmod 600 ~/.openclaw/openclaw.json
+chmod 700 ~/.openclaw/
+openclaw doctor</div><button class="copy-btn" onclick="copyCode('code-final')">Copy</button></div>
+    <details>
+      <summary>What do these chmod commands do?</summary>
+      <div class="detail-body">
+        <p><code>chmod 600</code> = only you can read this file. <code>chmod 700</code> = only you can enter this folder. This protects your API keys from other users on the Mac.</p>
+      </div>
+    </details>
+    <div class="code-wrapper"><div class="code-block" id="code-health">openclaw health</div><button class="copy-btn" onclick="copyCode('code-health')">Copy</button></div>
+    <div class="callout info" data-requires="autonomy:script">
+      <span class="callout-icon">&#128161;</span>
+      <div><strong>Script mode:</strong> The autosetup script (<code>bash openclaw-autosetup.sh</code>) handles most of these steps automatically, including running the verification script at the end.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="c18" onchange="saveCheck(this)"><label for="c18"><code>openclaw doctor</code> &#8212; no critical issues</label></div>
+    <div class="check-item"><input type="checkbox" id="c19" onchange="saveCheck(this)"><label for="c19"><code>openclaw health</code> &#8212; channels connected</label></div>
+    <div class="check-item"><input type="checkbox" id="c20" onchange="saveCheck(this)"><label for="c20">Bot responds via at least one channel</label></div>
+    <div class="check-item"><input type="checkbox" id="c21" onchange="saveCheck(this)"><label for="c21">I'm excited about what I just built</label></div>
+    <div class="summary-box"><strong>What just happened:</strong> You locked down your config file (which contains API keys) so only the bot user can read it, and ran a full diagnostic to confirm everything is healthy. Your agent is set up, secure, and ready to grow.</div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 10: Script Setup (for "Give me a script" mode) ═══════ -->
+<div class="page" data-page="10">
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">&#9889;</div>
+      <div>
+        <div class="step-title">Automated Setup</div>
+        <div class="step-meta"><span class="pill pill-bot">As bot user</span> ~20-30 min (mostly waiting)</div>
+      </div>
+    </div>
+    <p>The autosetup script handles Steps 2-8 automatically. It installs Node.js, installs OpenClaw, runs the wizard, sets permissions, and verifies everything.</p>
+    <p><strong>Run this in Terminal (as the bot user):</strong></p>
+    <div class="code-wrapper"><div class="code-block" id="code-autosetup">bash openclaw-autosetup.sh</div><button class="copy-btn" onclick="copyCode('code-autosetup')">Copy</button></div>
+    <div class="callout info">
+      <span class="callout-icon">&#128161;</span>
+      <div>The script will <strong>pause at "human checkpoints"</strong> when it needs you to do something in a browser (like creating API keys or setting up Discord). It tells you exactly what to do and waits for you to press Enter.</div>
+    </div>
+
+    <h3>What to expect</h3>
+    <ol>
+      <li><strong>Environment check</strong> &#8212; detects what's already installed (30 sec)</li>
+      <li><strong>Node.js install</strong> &#8212; installs via Homebrew if needed (2-5 min)</li>
+      <li><strong>OpenClaw install</strong> &#8212; downloads and installs OpenClaw (1-2 min)</li>
+      <li><strong>&#9208; Pause: API keys</strong> &#8212; script tells you to create accounts and get keys. You do this in your browser, then paste the keys when prompted.</li>
+      <li><strong>Onboarding wizard</strong> &#8212; configures your bot interactively (5 min)</li>
+      <li><strong>Gateway start</strong> &#8212; starts the background service (30 sec)</li>
+      <li><strong>&#9208; Pause: Discord</strong> &#8212; if you chose Discord, the script walks you through the Developer Portal setup</li>
+      <li><strong>Permissions + verification</strong> &#8212; locks down files and runs diagnostics (1 min)</li>
+    </ol>
+
+    <h3>How to tell it's working</h3>
+    <ul>
+      <li>You see green <code>[PASS]</code> messages for each step</li>
+      <li>At the end, it runs the verification script automatically</li>
+      <li>Final output says something like: <code>&#10003; Gateway running &#10003; Discord connected</code></li>
+    </ul>
+
+    <h3>If something goes wrong</h3>
+    <ul>
+      <li>Look for red <code>[FAIL]</code> messages &#8212; the script explains what happened</li>
+      <li>You can safely <strong>re-run</strong> the script: <code>bash openclaw-autosetup.sh --resume</code></li>
+      <li>Logs are saved to <code>~/.openclaw/autosetup-*.log</code> &#8212; share these if asking for help</li>
+      <li>The script never deletes data or overwrites config without backing up first</li>
+    </ul>
+
+    <div class="divider"></div>
+    <div class="check-item"><input type="checkbox" id="cs1" onchange="saveCheck(this)"><label for="cs1">Script finished with no <code>[FAIL]</code> messages</label></div>
+    <div class="check-item"><input type="checkbox" id="cs2" onchange="saveCheck(this)"><label for="cs2">Verification passed</label></div>
+    <div class="check-item"><input type="checkbox" id="cs3" onchange="saveCheck(this)"><label for="cs3">Bot responds via dashboard or Discord</label></div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 11: Complete ═══════ -->
+<div class="page" data-page="11">
+  <div class="celebration" id="celebration-done">
+    <div class="big-icon">&#127881;</div>
+    <h2 id="complete-heading">You built an AI agent!</h2>
+    <p id="complete-subtext">Your bot is alive, connected, and running 24/7. You can close this guide.</p>
+  </div>
+
+  <div class="card" id="assisted-handoff" style="display:none;margin-bottom:20px;">
+    <h2>Hand Off to Claude</h2>
+    <p>You've done the parts that need a human (Mac setup + API keys). Now paste the prompt below into Claude and it'll handle the rest &#8212; installing Node.js, OpenClaw, running the wizard, verifying the gateway, and connecting Discord.</p>
+    <div class="callout success">
+      <span class="callout-icon">&#128161;</span>
+      <div><strong>Which Claude?</strong> Use <a href="https://claude.ai" target="_blank">claude.ai</a> for a conversational walkthrough, or <a href="https://claude.ai/claude-code" target="_blank">Claude Code</a> (CLI) to have it run commands directly in Terminal.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What's Next (Optional)</h2>
+    <p style="color:var(--text-muted);">The <strong>Foundation Playbook</strong> makes your bot smarter and more secure over time. Do one phase per week at your own pace.</p>
+    <div class="callout danger" style="margin-bottom:16px;">
+      <span class="callout-icon">&#9888;&#65039;</span>
+      <div><strong>Only Phase 1 is urgent</strong> &#8212; do it this week. Everything else can wait until you're ready.</div>
+    </div>
+    <table>
+      <tr><th>Phase</th><th>What It Does</th><th>When</th></tr>
+      <tr><td><strong>1. Security</strong></td><td>Audit API keys, verify user isolation, review file permissions. Catches anything you might have missed during setup.</td><td style="color:var(--red);font-weight:600;">This week</td></tr>
+      <tr><td><strong>2. Memory</strong></td><td>Enable embeddings so your bot remembers past conversations. This is the "wow" moment where it starts feeling smart.</td><td>Week 2</td></tr>
+      <tr><td><strong>3. Channels</strong></td><td>Add iMessage, Telegram, or email. Give your bot more ways to reach you (and you to reach it).</td><td style="color:var(--text-muted);">Week 3</td></tr>
+      <tr><td><strong>4. Automation</strong></td><td>Set up cron jobs: morning briefings, email triage, scheduled reminders. Your bot starts being proactive.</td><td style="color:var(--text-muted);">Week 4</td></tr>
+      <tr><td><strong>5. Sessions</strong></td><td>Separate conversation contexts for different projects or topics. Keeps your bot organized.</td><td style="color:var(--text-muted);">Week 5</td></tr>
+      <tr><td><strong>6. Skills</strong></td><td>Add plugins for new capabilities &#8212; web search, file management, code execution.</td><td style="color:var(--text-muted);">Week 6</td></tr>
+      <tr><td><strong>7. Monitoring</strong></td><td>Dashboards and alerts so you know your bot is healthy and not overspending.</td><td style="color:var(--text-muted);">Week 7</td></tr>
+      <tr><td><strong>8. Multi-Agent</strong></td><td>Run multiple bots with different roles, coordinating as a team.</td><td style="color:var(--text-muted);">Week 8</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Your Custom Setup Prompts</h2>
+    <p style="color:var(--text-muted);">These prompts are customized based on your selections on the Configure page. Use them for AI-assisted setup and troubleshooting.</p>
+    <div class="ai-tabs">
+      <button class="ai-tab active" onclick="switchTab('free', this)">Claude.ai Prompt</button>
+      <button class="ai-tab" onclick="switchTab('code', this)">Claude Code Prompt</button>
+    </div>
+    <div class="ai-panel active" id="panel-free">
+      <p>Go to <a href="https://claude.ai" target="_blank">claude.ai</a> and paste this customized prompt:</p>
+      <div class="code-wrapper"><div class="code-block" id="code-prompt" style="font-size:12px;max-height:200px;overflow-y:auto;"></div><button class="copy-btn" onclick="copyCode('code-prompt')">Copy</button></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="nav-btn" onclick="downloadPrompt('claude-ai')" style="font-size:13px;padding:8px 14px;">Download as .txt</button>
+      </div>
+    </div>
+    <div class="ai-panel" id="panel-code">
+      <p>Save this as <code>CLAUDE.md</code> in your project folder, then start Claude Code and say <strong>"Help me set up OpenClaw."</strong></p>
+      <div class="code-wrapper"><div class="code-block" id="code-prompt-cc" style="font-size:12px;max-height:200px;overflow-y:auto;"></div><button class="copy-btn" onclick="copyCode('code-prompt-cc')">Copy</button></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="nav-btn" onclick="downloadPrompt('claude-code')" style="font-size:13px;padding:8px 14px;">Download as .md</button>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);margin-top:10px;">The full reference prompts are also included in the setup package as standalone files.</p>
+  </div>
+
+  <details style="border:none;margin:20px 0 0;">
+    <summary style="background:none;padding:0;font-size:18px;font-weight:700;color:var(--text-heading);">Glossary</summary>
+    <div class="detail-body">
+      <table>
+        <tr><td><strong>Gateway</strong></td><td>Background process that keeps your bot alive.</td></tr>
+        <tr><td><strong>LaunchAgent</strong></td><td>macOS system for auto-starting background services.</td></tr>
+        <tr><td><strong>Channel</strong></td><td>A chat platform connection (Discord, iMessage, etc.)</td></tr>
+        <tr><td><strong>Session</strong></td><td>A conversation context with its own memory.</td></tr>
+        <tr><td><strong>Workspace</strong></td><td>Bot's file storage. Default: <code>~/.openclaw/workspace/</code></td></tr>
+        <tr><td><strong>Cron job</strong></td><td>Scheduled task (e.g., "check email every 30 min").</td></tr>
+        <tr><td><strong>Skill</strong></td><td>A plugin for new capabilities. Like an app for your bot.</td></tr>
+        <tr><td><strong>API key</strong></td><td>Auth credential for AI services. Keep it secret.</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <div class="footer">
+    <p>Companion to the <strong>OpenClaw Foundation Playbook</strong>.</p>
+    <p>Official docs: <a href="https://docs.openclaw.ai" target="_blank">docs.openclaw.ai</a></p>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- Bottom Nav -->
+<div class="nav-bar">
+  <div id="validation-msg">Complete all checkboxes above before continuing.</div>
+  <div class="nav-inner">
+    <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">&#8592; Back</button>
+    <span class="nav-label" id="navLabel">Welcome</span>
+    <button class="nav-btn primary" id="nextBtn" onclick="navigate(1)">Continue &#8594;</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'openclaw-setup-v2';
+const PAGE_NAMES = ['Welcome', 'Configure', 'Step 1: Prepare Mac', 'Step 2: Node.js', 'Step 3: OpenClaw', 'Step 4: API Keys', 'Step 5: Wizard', 'Step 6: Verify', 'Step 7: Discord', 'Step 8: Final Check', 'Script Setup', 'Complete'];
+const TOTAL_PAGES = PAGE_NAMES.length;
+let currentPage = 0;
+
+// ─── State ───
+let _storage = localStorage;
+function getState() { try { return JSON.parse(_storage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; } }
+function setState(u) {
+  const s = { ...getState(), ...u };
+  try { _storage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+  catch(e) {
+    if (_storage === localStorage) {
+      _storage = sessionStorage;
+      try { _storage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+      catch(e2) { console.warn('Storage unavailable'); }
+    }
+  }
+  return s;
+}
+
+// ─── Pages ───
+function showPage(n) {
+  n = Math.max(0, Math.min(n, TOTAL_PAGES - 1));
+  // Enforce sequential completion: pages 0-1 always accessible,
+  // but to reach page n >= 2, all intermediate step pages must be done
+  if (n >= 2) {
+    const incomplete = firstIncompletePage(n);
+    if (incomplete !== -1) {
+      n = incomplete;
+    }
+  }
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-page="${currentPage}"]`).classList.add('active');
+  setState({ page: currentPage });
+  updateNav();
+  updateDots();
+  updateValidationMsg();
+  applyPathStyle();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigate(dir) {
+  // Going forward: check if current page is complete
+  if (dir > 0 && !canAdvance()) {
+    const msg = document.getElementById('validation-msg');
+    if (msg) msg.classList.add('visible');
+    return;
+  }
+  const skip = getSkipPages();
+  let next = currentPage + dir;
+  while (skip.has(next) && next > 0 && next < TOTAL_PAGES - 1) next += dir;
+  showPage(next);
+}
+
+function updateNav() {
+  const prev = document.getElementById('prevBtn');
+  const next = document.getElementById('nextBtn');
+  const label = document.getElementById('navLabel');
+  prev.disabled = currentPage === 0;
+  if (currentPage >= TOTAL_PAGES - 1) {
+    next.textContent = 'Done';
+    next.disabled = true;
+  } else {
+    const skip = getSkipPages();
+    let nextPage = currentPage + 1;
+    while (skip.has(nextPage) && nextPage < TOTAL_PAGES - 1) nextPage++;
+    next.textContent = PAGE_NAMES[nextPage] + ' \u2192';
+    next.disabled = false;
+  }
+  // Spending limit gate on page 5 (API Keys)
+  if (currentPage === 5) {
+    const spendingCheck = document.getElementById('c-spending');
+    if (spendingCheck && !spendingCheck.checked) {
+      next.disabled = true;
+      next.title = 'Set a spending limit on your provider account first';
+    } else {
+      next.title = '';
+    }
+  }
+  // Show position excluding skipped pages
+  const skip = getSkipPages();
+  const visiblePages = [];
+  for (let i = 0; i < TOTAL_PAGES; i++) { if (!skip.has(i)) visiblePages.push(i); }
+  const currentPos = visiblePages.indexOf(currentPage) + 1;
+  label.textContent = currentPos + ' / ' + visiblePages.length;
+}
+
+function updateSpendingGate() { updateNav(); }
+
+function updateValidationMsg() {
+  const msg = document.getElementById('validation-msg');
+  if (!msg) return;
+  if (canAdvance()) {
+    msg.classList.remove('visible');
+  }
+}
+
+// ─── Step Dots ───
+function buildDots() {
+  const container = document.getElementById('stepDots');
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'step-dot';
+    dot.setAttribute('data-dot', i);
+    dot.setAttribute('aria-label', 'Step ' + (i + 1));
+    dot.title = PAGE_NAMES[i];
+    dot.onclick = () => showPage(i);
+    container.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  const skip = getSkipPages();
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentPage);
+    dot.classList.toggle('done', isPageDone(i));
+    dot.style.display = skip.has(i) ? 'none' : '';
+  });
+}
+
+function isPageDone(pageNum) {
+  const page = document.querySelector(`[data-page="${pageNum}"]`);
+  const checks = page.querySelectorAll('.check-item input[type="checkbox"]');
+  return checks.length > 0 && Array.from(checks).every(c => c.checked);
+}
+
+function canAdvance() {
+  // Pages 0 (welcome) and 1 (configurator) don't require validation
+  if (currentPage <= 1) return true;
+  // Completion pages (10, 11) are freely accessible
+  if (currentPage >= 10) return true;
+  return isPageDone(currentPage);
+}
+
+// Check that all step pages from 2 through (n-1) are complete.
+// Returns the first incomplete page number, or -1 if all are done.
+function firstIncompletePage(targetPage) {
+  const skip = getSkipPages();
+  for (let i = 2; i < targetPage; i++) {
+    if (skip.has(i)) continue;
+    const page = document.querySelector(`[data-page="${i}"]`);
+    if (!page) continue;
+    const checks = page.querySelectorAll('.check-item input[type="checkbox"]');
+    if (checks.length > 0 && !Array.from(checks).every(c => c.checked)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// ─── Checkboxes ───
+function saveCheck(el) {
+  const s = getState(); if (!s.checks) s.checks = {};
+  s.checks[el.id] = el.checked;
+  setState({ checks: s.checks });
+  el.closest('.check-item').classList.toggle('done', el.checked);
+  updateCardStates(); updateDots(); updateValidationMsg();
+}
+
+function restoreChecks() {
+  const s = getState(); if (!s.checks) return;
+  Object.entries(s.checks).forEach(([id, v]) => {
+    const el = document.getElementById(id);
+    if (el) { el.checked = v; if (v) el.closest('.check-item').classList.add('done'); }
+  });
+}
+
+function updateCardStates() {
+  document.querySelectorAll('.card[id^="step-"]').forEach(card => {
+    const checks = card.querySelectorAll('.check-item input[type="checkbox"]');
+    if (checks.length && Array.from(checks).every(c => c.checked)) card.classList.add('completed');
+    else card.classList.remove('completed');
+  });
+}
+
+// ─── Inputs ───
+function saveInput(el) {
+  const s = getState(); if (!s.inputs) s.inputs = {};
+  s.inputs[el.id] = el.value; setState({ inputs: s.inputs });
+  updateBotName();
+  updateOwnerName();
+}
+function restoreInputs() {
+  const s = getState(); if (!s.inputs) return;
+  Object.entries(s.inputs).forEach(([id, v]) => { const el = document.getElementById(id); if (el) el.value = v; });
+  updateBotName();
+  updateOwnerName();
+}
+function updateBotName() {
+  const n = document.getElementById('botName').value || 'your bot';
+  document.querySelectorAll('.bot-name-inline').forEach(el => el.textContent = n);
+  const d = document.getElementById('botNameDisplay1'); if (d) d.textContent = n;
+  // Update code block placeholders with lowercase bot name (macOS usernames are lowercase)
+  const username = document.getElementById('botName').value ? document.getElementById('botName').value.toLowerCase().replace(/[^a-z0-9_-]/g, '') : '';
+  document.querySelectorAll('.bot-username-code').forEach(el => el.textContent = username || 'YOUR_BOT_USERNAME');
+}
+function updateOwnerName() {
+  const ownerEl = document.getElementById('ownerUser');
+  const owner = ownerEl && ownerEl.value ? ownerEl.value.trim() : '';
+  document.querySelectorAll('.owner-username-code').forEach(el => el.textContent = owner || '$(whoami)');
+}
+
+// ─── Paths ───
+function setPath(p) {
+  setState({ path: p });
+  document.querySelectorAll('.path-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('path-' + p).classList.add('active');
+  applyPathStyle();
+}
+function restorePath() {
+  const s = getState();
+  if (s.path) { const b = document.getElementById('path-' + s.path); if (b) b.classList.add('active'); }
+  applyPathStyle();
+}
+function applyPathStyle() {
+  const s = getState();
+  const isExplorer = s.path === 'curious';
+  // Explorer: auto-open all explainer dropdowns on the current page. Builder: collapse them.
+  const page = document.querySelector(`[data-page="${currentPage}"]`);
+  if (!page) return;
+  page.querySelectorAll('details').forEach(d => {
+    if (isExplorer) d.setAttribute('open', '');
+    else d.removeAttribute('open');
+  });
+  // Show/hide explorer-only context paragraphs
+  document.querySelectorAll('.explorer-only').forEach(el => el.style.display = isExplorer ? '' : 'none');
+}
+
+// ─── Copy ───
+function copyCode(id) {
+  const el = document.getElementById(id);
+  const text = el.textContent;
+  const btn = el.parentElement.querySelector('.copy-btn');
+  function showCopied() {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }
+  try {
+    navigator.clipboard.writeText(text).then(showCopied);
+  } catch(e) {
+    // Fallback for file:// protocol
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopied();
+  }
+}
+
+// ─── AI Tabs ───
+function switchTab(t, btn) {
+  document.querySelectorAll('.ai-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.ai-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + t).classList.add('active');
+}
+
+// ─── Theme ───
+const THEMES = ['system', 'light', 'dark'];
+const THEME_ICONS = { system: '\u2699', light: '\u2600', dark: '\u263E' };
+function cycleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = THEME_ICONS[next];
+  setState({ theme: next });
+}
+function restoreTheme() {
+  const s = getState();
+  if (s.theme) {
+    document.documentElement.setAttribute('data-theme', s.theme);
+    document.getElementById('themeBtn').textContent = THEME_ICONS[s.theme];
+  }
+}
+
+// ─── Welcome Back ───
+function checkWelcomeBack() {
+  const s = getState();
+  if (s.checks && Object.values(s.checks).some(v => v)) {
+    const n = Object.values(s.checks).filter(v => v).length;
+    const wb = document.getElementById('welcomeBack');
+    wb.innerHTML = 'Welcome back! ' + n + ' tasks done. Pick up where you left off. <button onclick="startFresh()" style="margin-left:8px;padding:4px 12px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);cursor:pointer;font-size:13px;">Start Fresh</button>';
+    wb.style.display = 'block';
+  }
+}
+function startFresh() {
+  try { _storage.removeItem(STORAGE_KEY); } catch(e) {}
+  location.reload();
+}
+
+// ─── Configurator ───
+function getConfig() {
+  const s = getState();
+  return s.config || {
+    provider: 'openrouter', embedding: 'voyage', tier: 'balanced',
+    discord: true, imessage: false, telegram: false, email: false,
+    accessProfile: 'explorer', approvalTier: '1', autonomy: 'manual'
+  };
+}
+
+function saveConfig(cfg) {
+  setState({ config: cfg });
+  updateCost();
+  updateVisibility();
+  renderPrompts();
+}
+
+function setConfig(key, value) {
+  const cfg = getConfig();
+  cfg[key] = value;
+  // Update card selection UI
+  document.querySelectorAll(`[data-config^="${key}:"]`).forEach(c => c.classList.remove('selected'));
+  const target = document.querySelector(`[data-config="${key}:${value}"]`);
+  if (target) target.classList.add('selected');
+  saveConfig(cfg);
+  if (key === 'provider') updateTierDisplay();
+}
+
+function setConfigToggle(key, checked) {
+  const cfg = getConfig();
+  cfg[key] = checked;
+  saveConfig(cfg);
+}
+
+function restoreConfig() {
+  const cfg = getConfig();
+  // Restore radio cards
+  ['provider','embedding','accessProfile','approvalTier','autonomy'].forEach(key => {
+    document.querySelectorAll(`[data-config^="${key}:"]`).forEach(c => c.classList.remove('selected'));
+    const target = document.querySelector(`[data-config="${key}:${cfg[key]}"]`);
+    if (target) target.classList.add('selected');
+  });
+  // Restore toggles
+  ['discord','imessage','telegram','email'].forEach(key => {
+    const el = document.getElementById('cfg-' + key);
+    if (el) el.checked = !!cfg[key];
+  });
+  // Restore tier selection
+  const tier = cfg.tier || 'balanced';
+  document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+  const tierTarget = document.querySelector(`[data-tier="${tier}"]`);
+  if (tierTarget) tierTarget.classList.add('selected');
+  updateTierDisplay();
+  updateCost();
+}
+
+function toggleAdvanced(btn) {
+  const body = document.getElementById('advancedBody');
+  const isOpen = body.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.setAttribute('aria-expanded', isOpen);
+}
+
+const COST_MAP = {
+  provider: { openrouter: [5, 50], anthropic: [5, 100], openai: [5, 100] },
+  embedding: { voyage: [0, 5], 'openai-embed': [0, 3], ollama: [0, 0], none: [0, 0] },
+  discord: [0, 0], imessage: [0, 0], telegram: [0, 0], email: [0, 0]
+};
+
+const MODEL_TIER_MAP = {
+  openrouter: {
+    budget:   { model: 'openrouter/moonshotai/kimi-k2.5', label: 'Kimi K2.5', cost: '~$0.50/day light use' },
+    balanced: { model: 'openrouter/anthropic/claude-sonnet-4-5', label: 'Claude Sonnet 4.5', cost: '~$2-5/day moderate use' },
+    premium:  { model: 'openrouter/anthropic/claude-opus-4-6', label: 'Claude Opus 4.6', cost: '~$10-25/day heavy use' }
+  },
+  anthropic: {
+    budget:   { model: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5', cost: '~$0.50/day' },
+    balanced: { model: 'claude-sonnet-4-5-20250929', label: 'Claude Sonnet 4.5', cost: '~$2-5/day moderate use' },
+    premium:  { model: 'claude-opus-4-6', label: 'Claude Opus 4.6', cost: '~$10-25/day heavy use' }
+  },
+  openai: {
+    budget:   { model: 'gpt-4o-mini', label: 'GPT-4o Mini', cost: '~$0.50/day light use' },
+    balanced: { model: 'gpt-4o', label: 'GPT-4o', cost: '~$2-5/day moderate use' },
+    premium:  { model: 'o3', label: 'o3', cost: '~$10-25/day heavy use' }
+  }
+};
+
+const TIER_COST_RANGES = {
+  budget: [1, 15], balanced: [5, 50], premium: [20, 100]
+};
+
+function setTier(tier) {
+  const cfg = getConfig();
+  cfg.tier = tier;
+  document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+  const target = document.querySelector(`[data-tier="${tier}"]`);
+  if (target) target.classList.add('selected');
+  saveConfig(cfg);
+  updateTierDisplay();
+}
+
+function updateTierDisplay() {
+  const cfg = getConfig();
+  const provider = cfg.provider || 'openrouter';
+  const tiers = MODEL_TIER_MAP[provider] || MODEL_TIER_MAP.openrouter;
+  ['budget', 'balanced', 'premium'].forEach(t => {
+    const info = tiers[t];
+    const modelEl = document.getElementById('tier-model-' + t);
+    const costEl = document.getElementById('tier-cost-' + t);
+    if (modelEl) modelEl.textContent = info.label;
+    if (costEl) costEl.textContent = info.cost;
+  });
+}
+
+function getSelectedModel() {
+  const cfg = getConfig();
+  const provider = cfg.provider || 'openrouter';
+  const tier = cfg.tier || 'balanced';
+  const tiers = MODEL_TIER_MAP[provider] || MODEL_TIER_MAP.openrouter;
+  return tiers[tier] || tiers.balanced;
+}
+
+function updateCost() {
+  const cfg = getConfig();
+  let lo = 0, hi = 0;
+  const tier = cfg.tier || 'balanced';
+  const tierRange = TIER_COST_RANGES[tier] || TIER_COST_RANGES.balanced;
+  lo += tierRange[0]; hi += tierRange[1];
+  const e = COST_MAP.embedding[cfg.embedding] || [0, 0];
+  lo += e[0]; hi += e[1];
+  const el = document.getElementById('costEstimate');
+  if (el) el.textContent = `$${lo}-${hi}/mo`;
+}
+
+// ─── Prompt Generation ───
+function generateClaudeAiPrompt(cfg) {
+  const providerNames = { openrouter: 'OpenRouter', anthropic: 'Anthropic (Claude)', openai: 'OpenAI' };
+  const provider = providerNames[cfg.provider] || 'OpenRouter';
+  const tierInfo = getSelectedModel();
+  const model = tierInfo.model;
+  const channels = [];
+  if (cfg.discord) channels.push('Discord');
+  if (cfg.imessage) channels.push('iMessage');
+  if (cfg.telegram) channels.push('Telegram');
+  if (cfg.email) channels.push('Email');
+  const channelStr = channels.length ? channels.join(', ') : 'Dashboard only';
+
+  let phases = '(1) Prepare Mac — create bot user, lock dirs, prevent sleep, copy files, switch user';
+  phases += ', (2) Install Node.js 22+, (3) Install OpenClaw, (4) Get ' + provider + ' API key';
+  phases += ', (5) Run openclaw onboard --install-daemon, (6) Verify the gateway';
+  if (cfg.discord) phases += ', (7) Discord bot setup';
+  phases += ', (8) Final check — lock config, run diagnostics';
+
+  let prompt = 'I want you to be my OpenClaw setup guide. I\'m setting up an AI agent on my Mac using OpenClaw (openclaw.ai). Please be patient and explain things as we go.\n\n';
+  prompt += 'Help me with: ' + phases + '.\n\n';
+  prompt += 'My setup choices:\n';
+  prompt += '- AI Provider: ' + provider + ' (default model: ' + model + ')\n';
+  if (cfg.embedding !== 'none') prompt += '- Embedding: ' + (cfg.embedding === 'voyage' ? 'Voyage AI' : cfg.embedding === 'openai-embed' ? 'OpenAI' : 'Ollama (local)') + '\n';
+  prompt += '- Channels: ' + channelStr + '\n';
+  prompt += '- Access Profile: ' + (cfg.accessProfile || 'Explorer') + '\n';
+  prompt += '- Approval Tier: ' + (cfg.approvalTier || '1') + '\n\n';
+  prompt += 'Key facts: Version must be 2026.1.29+. Config is ~/.openclaw/openclaw.json (Zod-validated). Always backup before editing.';
+  if (cfg.discord) prompt += ' Discord needs Message Content Intent.';
+  prompt += ' After setup I\'ll use the Foundation Playbook.\n\n';
+  prompt += 'Start by asking my comfort level with Terminal, then guide me step by step.';
+  return prompt;
+}
+
+function generateClaudeCodePrompt(cfg) {
+  const providerNames = { openrouter: 'OpenRouter', anthropic: 'Anthropic (Claude)', openai: 'OpenAI' };
+  const provider = providerNames[cfg.provider] || 'OpenRouter';
+  const tierInfo = getSelectedModel();
+  const model = tierInfo.model;
+
+  let prompt = '# OpenClaw Setup Assistant — Claude Code Edition\n\n';
+  prompt += '## Configuration (from Setup Guide)\n\n';
+  prompt += '- **AI Provider:** ' + provider + ' (model: `' + model + '`)\n';
+  if (cfg.embedding !== 'none') {
+    const embedName = cfg.embedding === 'voyage' ? 'Voyage AI (voyage-3)' : cfg.embedding === 'openai-embed' ? 'OpenAI (text-embedding-3-small)' : 'Ollama (nomic-embed-text)';
+    prompt += '- **Embedding:** ' + embedName + '\n';
+  }
+  const channels = [];
+  if (cfg.discord) channels.push('Discord');
+  if (cfg.imessage) channels.push('iMessage');
+  if (cfg.telegram) channels.push('Telegram');
+  if (cfg.email) channels.push('Email');
+  prompt += '- **Channels:** ' + (channels.length ? channels.join(', ') : 'Dashboard only') + '\n';
+  prompt += '- **Access Profile:** ' + (cfg.accessProfile || 'Explorer') + '\n';
+  prompt += '- **Approval Tier:** ' + (cfg.approvalTier || '1') + '\n\n';
+  prompt += '## Role\n\n';
+  prompt += 'You are an OpenClaw Setup Assistant. Walk through installation step by step, executing commands directly when possible.\n\n';
+  prompt += '## Steps\n\n';
+  prompt += '1. Detect current state (Node.js, OpenClaw, existing config)\n';
+  prompt += '2. Install Node.js 22+ if needed\n';
+  prompt += '3. Install/update OpenClaw (min 2026.1.29, recommended 2026.2.9+)\n';
+  prompt += '4. Gather ' + provider + ' API key' + (cfg.embedding !== 'none' ? ' + embedding key' : '') + '\n';
+  prompt += '5. Run `openclaw onboard --install-daemon` (model: `' + model + '`)\n';
+  prompt += '6. Verify gateway\n';
+  if (cfg.discord) prompt += '7. Set up Discord bot (Message Content Intent required)\n';
+  prompt += '8. Final check — lock config (`chmod 600 ~/.openclaw/openclaw.json`, `chmod 700 ~/.openclaw/`), run `openclaw doctor`\n\n';
+  prompt += 'Note: Mac sleep prevention and file permissions happen in Step 1 (Prepare Mac), not here.\n\n';
+  prompt += '## Safety Rules\n\n';
+  prompt += '- Always backup `openclaw.json` before editing\n';
+  prompt += '- Never install skills from ClawHub\n';
+  prompt += '- Run `openclaw doctor` after every config change\n';
+  prompt += '- Verify spending limits are set on all API provider accounts\n';
+  return prompt;
+}
+
+function renderPrompts() {
+  const cfg = getConfig();
+  const aiPrompt = document.getElementById('code-prompt');
+  const ccPrompt = document.getElementById('code-prompt-cc');
+  if (aiPrompt) aiPrompt.textContent = generateClaudeAiPrompt(cfg);
+  if (ccPrompt) ccPrompt.textContent = generateClaudeCodePrompt(cfg);
+}
+
+function downloadPrompt(type) {
+  const cfg = getConfig();
+  let content, filename, mimeType;
+  if (type === 'claude-ai') {
+    content = generateClaudeAiPrompt(cfg);
+    filename = 'openclaw-setup-prompt.txt';
+    mimeType = 'text/plain';
+  } else {
+    content = generateClaudeCodePrompt(cfg);
+    filename = 'OPENCLAW-CLAUDE-CODE-SETUP.md';
+    mimeType = 'text/markdown';
+  }
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─── Conditional Visibility ───
+function updateVisibility() {
+  const cfg = getConfig();
+  document.querySelectorAll('[data-requires]').forEach(el => {
+    const req = el.getAttribute('data-requires');
+    let show = true;
+    req.split(',').forEach(cond => {
+      cond = cond.trim();
+      if (cond.includes(':')) {
+        const [k, v] = cond.split(':');
+        if (cfg[k] !== v) show = false;
+      } else if (cond.startsWith('!')) {
+        if (cfg[cond.slice(1)]) show = false;
+      } else {
+        if (!cfg[cond]) show = false;
+      }
+    });
+    el.style.display = show ? '' : 'none';
+  });
+  // Update Complete page based on autonomy mode
+  const handoff = document.getElementById('assisted-handoff');
+  const heading = document.getElementById('complete-heading');
+  const subtext = document.getElementById('complete-subtext');
+  if (handoff && heading && subtext) {
+    if (cfg.autonomy === 'assisted') {
+      handoff.style.display = '';
+      heading.textContent = 'Time to bring in Claude';
+      subtext.textContent = 'You handled the admin tasks and API keys. Claude takes it from here.';
+    } else {
+      handoff.style.display = 'none';
+      heading.textContent = 'You built an AI agent!';
+      subtext.textContent = 'Your bot is alive, connected, and running 24/7. You can close this guide.';
+    }
+  }
+  updateNavSkip();
+  updateDots();
+}
+
+function updateNavSkip() {
+  const cfg = getConfig();
+  const skipPages = new Set();
+  if (cfg.autonomy === 'script') {
+    // Script mode: skip manual steps 2-8, go Configure → Prepare Mac → Script Setup → Complete
+    [3, 4, 5, 6, 7, 8, 9].forEach(p => skipPages.add(p));
+  } else if (cfg.autonomy === 'assisted') {
+    // Assisted mode: Prepare Mac → API Keys → Complete (Claude handles the rest)
+    // Skip: Node.js, OpenClaw install, Wizard, Verify, Discord, Final Check, Script
+    [3, 4, 6, 7, 8, 9, 10].forEach(p => skipPages.add(p));
+  } else {
+    // Manual mode: all steps, skip the script page
+    skipPages.add(10);
+    // Skip Discord page if discord is off
+    if (!cfg.discord) skipPages.add(8);
+  }
+  setState({ skipPages: Array.from(skipPages) });
+}
+
+function getSkipPages() {
+  const s = getState();
+  return new Set(s.skipPages || []);
+}
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', () => {
+  buildDots();
+  restoreTheme();
+  restoreChecks();
+  restoreInputs();
+  restorePath();
+  restoreConfig();
+  updateCardStates();
+  const s = getState();
+  // Don't auto-navigate to the last page (Complete) — always start at Welcome
+  // unless the user was mid-flow on a real step page
+  const savedPage = s.page || 0;
+  const lastPage = TOTAL_PAGES - 1;
+  showPage(savedPage >= lastPage ? 0 : savedPage);
+  checkWelcomeBack();
+  updateVisibility();
+  renderPrompts();
+});
+</script>
+</body>
+</html>

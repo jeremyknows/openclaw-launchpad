@@ -1,0 +1,8 @@
+OpenClaw Setup Guide
+====================
+
+Open "openclaw-setup-guide.html" in your browser.
+
+That's it. Double-click the file and follow the steps.
+
+For a full overview of every file and how they fit together, see README.md.
