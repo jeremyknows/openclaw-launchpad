@@ -1,0 +1,29 @@
+{
+  "name": "app-builder",
+  "version": "1.0.0",
+  "displayName": "App Builder",
+  "description": "Coding, APIs, GitHub automation, development workflows",
+  "emoji": "🛠️",
+  "author": "OpenClaw Team",
+  "skills": [
+    "github",
+    "coding-agent",
+    "generate-jsdoc",
+    "update-docs",
+    "summarize",
+    "web-fetch"
+  ],
+  "optionalSkills": [
+    "mcporter",
+    "peekaboo",
+    "tmux"
+  ],
+  "crons": [
+    "ci-monitor",
+    "pr-review-reminder",
+    "dependency-check"
+  ],
+  "tags": ["development", "coding", "github", "api", "devops"],
+  "difficulty": "intermediate",
+  "timeToValue": "10 minutes"
+}

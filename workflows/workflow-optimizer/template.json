@@ -1,0 +1,32 @@
+{
+  "name": "workflow-optimizer",
+  "version": "1.0.0",
+  "displayName": "Workflow Optimizer",
+  "description": "Personal assistant for email, calendar, tasks, notes, and daily routines",
+  "emoji": "📅",
+  "author": "OpenClaw Team",
+  "skills": [
+    "gog",
+    "apple-notes",
+    "apple-reminders",
+    "himalaya",
+    "weather",
+    "summarize",
+    "1password"
+  ],
+  "optionalSkills": [
+    "imsg",
+    "wacli",
+    "peekaboo"
+  ],
+  "crons": [
+    "morning-briefing",
+    "email-digest",
+    "calendar-reminder",
+    "daily-review",
+    "weekly-planning"
+  ],
+  "tags": ["productivity", "email", "calendar", "tasks", "personal"],
+  "difficulty": "beginner",
+  "timeToValue": "5 minutes"
+}

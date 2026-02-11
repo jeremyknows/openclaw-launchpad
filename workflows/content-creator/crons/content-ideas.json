@@ -1,0 +1,18 @@
+{
+  "name": "content-ideas",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 8 * * *",
+    "tz": "America/New_York"
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Research trending topics in my niche. Check X for viral content, note 3-5 potential content ideas with angles. Save to content/ideas/YYYY-MM-DD.md. Be brief but actionable.",
+    "timeoutSeconds": 300
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": true
+}

@@ -696,13 +696,139 @@ step3_start_gateway() {
         echo ""
     fi
     
+    # Offer workflow template installation
+    echo ""
+    echo -e "${BOLD}📦 Install Workflow Template?${NC}"
+    echo -e "${DIM}Templates include pre-configured skills, agent instructions, and automations.${NC}"
+    echo ""
+    
+    local install_template=false
+    if confirm "Install a workflow template for your use case?"; then
+        install_template=true
+    fi
+    
+    if $install_template; then
+        install_workflow_template
+    fi
+    
     # Offer to open dashboard
+    echo ""
     if confirm "Open dashboard now?"; then
         if command -v open &>/dev/null; then
             open "http://127.0.0.1:${DEFAULT_GATEWAY_PORT}/"
         else
             info "Open this URL in your browser: http://127.0.0.1:${DEFAULT_GATEWAY_PORT}/"
         fi
+    fi
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# Workflow Template Installation
+# ═══════════════════════════════════════════════════════════════════
+
+install_workflow_template() {
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local workflows_dir="${script_dir}/workflows"
+    
+    if [ ! -d "$workflows_dir" ]; then
+        warn "Workflows directory not found at: $workflows_dir"
+        info "Download templates from: https://github.com/openclaw/clawstarter"
+        return 1
+    fi
+    
+    echo ""
+    echo -e "${BOLD}Select a workflow template:${NC}"
+    echo ""
+    echo "  1. 📱 Content Creator"
+    echo "     → Social media, podcasts, video workflows"
+    echo ""
+    echo "  2. 📅 Workflow Optimizer"
+    echo "     → Email, calendar, tasks, daily routines"
+    echo ""
+    echo "  3. 🛠️  App Builder"
+    echo "     → Coding, GitHub, APIs, development"
+    echo ""
+    echo "  4. Skip template installation"
+    echo ""
+    
+    local template_choice
+    template_choice=$(prompt "Choose a template [1-4]" "4")
+    
+    local template_name=""
+    case "$template_choice" in
+        1) template_name="content-creator" ;;
+        2) template_name="workflow-optimizer" ;;
+        3) template_name="app-builder" ;;
+        4|*) 
+            info "Skipping template installation"
+            return 0
+            ;;
+    esac
+    
+    local template_dir="${workflows_dir}/${template_name}"
+    local workspace_dir="$HOME/.openclaw/workspace"
+    
+    if [ ! -d "$template_dir" ]; then
+        warn "Template not found: $template_name"
+        return 1
+    fi
+    
+    info "Installing ${template_name} template..."
+    echo ""
+    
+    # Copy AGENTS.md
+    if [ -f "${template_dir}/AGENTS.md" ]; then
+        if [ -f "${workspace_dir}/AGENTS.md" ]; then
+            cp "${workspace_dir}/AGENTS.md" "${workspace_dir}/AGENTS.md.backup"
+            info "Backed up existing AGENTS.md"
+        fi
+        cp "${template_dir}/AGENTS.md" "${workspace_dir}/"
+        pass "Installed agent instructions"
+    fi
+    
+    # Run skills installer
+    if [ -f "${template_dir}/skills.sh" ]; then
+        echo ""
+        if confirm "Install recommended skills for ${template_name}?"; then
+            echo ""
+            bash "${template_dir}/skills.sh"
+        else
+            info "Skipped skill installation"
+            info "You can install later: bash ${template_dir}/skills.sh"
+        fi
+    fi
+    
+    # Offer cron job installation
+    if [ -d "${template_dir}/crons" ]; then
+        echo ""
+        echo -e "${DIM}This template includes automation jobs (crons).${NC}"
+        if confirm "View available automations?"; then
+            echo ""
+            for cron_file in "${template_dir}/crons"/*.json; do
+                if [ -f "$cron_file" ]; then
+                    local cron_name
+                    cron_name=$(basename "$cron_file" .json)
+                    local enabled
+                    enabled=$(python3 -c "import json; print(json.load(open('$cron_file')).get('enabled', False))")
+                    local status="disabled"
+                    [ "$enabled" = "True" ] && status="enabled"
+                    echo -e "  • ${cron_name} (${status})"
+                fi
+            done
+            echo ""
+            info "Enable crons in the OpenClaw dashboard or via CLI"
+        fi
+    fi
+    
+    # Show getting started
+    if [ -f "${template_dir}/GETTING-STARTED.md" ]; then
+        echo ""
+        pass "Template installed!"
+        echo ""
+        echo -e "${BOLD}📚 Next steps:${NC}"
+        echo -e "  Read the getting started guide:"
+        echo -e "  ${CYAN}${template_dir}/GETTING-STARTED.md${NC}"
     fi
 }
 

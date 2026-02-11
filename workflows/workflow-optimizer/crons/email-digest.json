@@ -1,0 +1,17 @@
+{
+  "name": "email-digest",
+  "schedule": {
+    "kind": "every",
+    "everyMs": 14400000
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Check for urgent emails in the last 4 hours. Only alert if there's something that needs attention. VIPs always get flagged. If nothing urgent, reply 'No urgent emails'. Brief is better.",
+    "timeoutSeconds": 180
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": false
+}

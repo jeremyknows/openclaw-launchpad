@@ -1,0 +1,18 @@
+{
+  "name": "daily-review",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 18 * * 1-5",
+    "tz": "America/New_York"
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Quick end-of-day review:\n1. What meetings happened today\n2. Any tasks completed\n3. What slipped or needs follow-up tomorrow\n\nSave to daily/YYYY-MM-DD.md. Keep summary under 100 words.",
+    "timeoutSeconds": 180
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": false
+}

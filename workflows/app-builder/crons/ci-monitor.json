@@ -1,0 +1,17 @@
+{
+  "name": "ci-monitor",
+  "schedule": {
+    "kind": "every",
+    "everyMs": 1800000
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Check CI status for my main repos. Only alert on failures. If all green, reply 'CI healthy'. Include failing job name and brief error if there's a failure.",
+    "timeoutSeconds": 120
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": false
+}

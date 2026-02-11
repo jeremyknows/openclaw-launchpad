@@ -1,0 +1,31 @@
+{
+  "name": "content-creator",
+  "version": "1.0.0",
+  "displayName": "Content Creator",
+  "description": "Social media, podcasts, video workflows, automated posting",
+  "emoji": "📱",
+  "author": "OpenClaw Team",
+  "skills": [
+    "summarize",
+    "video-frames",
+    "gifgrep",
+    "openai-whisper-api",
+    "nano-banana-pro",
+    "weather",
+    "x-research-skill",
+    "tts"
+  ],
+  "optionalSkills": [
+    "peekaboo",
+    "wacli"
+  ],
+  "crons": [
+    "content-ideas",
+    "trend-monitor",
+    "engagement-check",
+    "weekly-analytics"
+  ],
+  "tags": ["social", "video", "podcast", "creative"],
+  "difficulty": "beginner",
+  "timeToValue": "5 minutes"
+}

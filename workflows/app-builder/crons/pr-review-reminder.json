@@ -1,0 +1,18 @@
+{
+  "name": "pr-review-reminder",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 9 * * 1-5",
+    "tz": "America/New_York"
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "List PRs awaiting my review. For each: repo, title, author, age. If none, reply 'No PRs awaiting review'. Keep it brief.",
+    "timeoutSeconds": 120
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": false
+}

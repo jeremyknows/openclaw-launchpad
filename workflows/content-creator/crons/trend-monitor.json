@@ -1,0 +1,17 @@
+{
+  "name": "trend-monitor",
+  "schedule": {
+    "kind": "every",
+    "everyMs": 14400000
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Quick scan for viral content opportunities. Only alert if something is genuinely trending and relevant. If nothing notable, reply with just 'No notable trends'. Keep it brief.",
+    "timeoutSeconds": 180
+  },
+  "delivery": {
+    "mode": "announce"
+  },
+  "enabled": false
+}
