@@ -11,7 +11,7 @@
 set -euo pipefail
 
 # ─── Constants ───
-readonly SCRIPT_VERSION="2.1.0"
+readonly SCRIPT_VERSION="2.2.0"
 readonly MIN_NODE_VERSION="22"
 readonly DEFAULT_GATEWAY_PORT=18789
 
@@ -149,7 +149,70 @@ step1_install() {
 }
 
 # ═══════════════════════════════════════════════════════════════════
-# STEP 2: Two Questions Only
+# Guided API Key Signup
+# ═══════════════════════════════════════════════════════════════════
+
+guided_api_signup() {
+    echo ""
+    echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BOLD}  Let's get you an API key (free, ~60 seconds)${NC}"
+    echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  I'll open ${CYAN}OpenRouter${NC} in your browser."
+    echo ""
+    echo -e "  ${BOLD}Follow these steps:${NC}"
+    echo -e "  1. Sign up (Google/GitHub = fastest)"
+    echo -e "  2. Click ${CYAN}\"Create Key\"${NC}"
+    echo -e "  3. Name it ${CYAN}\"OpenClaw\"${NC}"
+    echo -e "  4. Copy the key (starts with ${DIM}sk-or-${NC})"
+    echo -e "  5. Come back here and paste it"
+    echo ""
+    
+    if confirm "Open OpenRouter now?"; then
+        # Open browser
+        if command -v open &>/dev/null; then
+            open "https://openrouter.ai/keys" 2>/dev/null
+        elif command -v xdg-open &>/dev/null; then
+            xdg-open "https://openrouter.ai/keys" 2>/dev/null
+        else
+            echo -e "  ${INFO} Open this URL: ${CYAN}https://openrouter.ai/keys${NC}"
+        fi
+        
+        echo ""
+        echo -e "  ${DIM}Browser opened. Complete signup, then paste your key below.${NC}"
+        echo -e "  ${DIM}(No payment required — free tier available)${NC}"
+        echo ""
+    else
+        echo ""
+        echo -e "  ${INFO} When ready, go to: ${CYAN}https://openrouter.ai/keys${NC}"
+        echo ""
+    fi
+    
+    # Wait for key
+    local key=""
+    while [ -z "$key" ]; do
+        key=$(prompt "Paste your OpenRouter key")
+        
+        if [ -z "$key" ]; then
+            if confirm "Skip for now? (You can add a key later)"; then
+                warn "No API key — bot will have limited functionality"
+                echo ""
+                return ""
+            fi
+        elif [[ ! "$key" == sk-or-* ]]; then
+            warn "That doesn't look like an OpenRouter key (should start with sk-or-)"
+            if ! confirm "Use it anyway?"; then
+                key=""
+            fi
+        fi
+    done
+    
+    pass "Got it!"
+    echo "$key"
+}
+
+# ═══════════════════════════════════════════════════════════════════
+# STEP 2: Configuration (3 Questions)
 # ═══════════════════════════════════════════════════════════════════
 
 step2_configure() {
@@ -158,23 +221,27 @@ step2_configure() {
     echo -e "  ${STEP} ${BOLD}Step 2: Configure (2 questions)${NC}"
     echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
     
-    # ─── Question 1: API Key ───
+    # ─── Question 1: API Key (with guided signup) ───
     echo ""
-    echo -e "${BOLD}Question 1: Paste your API key${NC}"
+    echo -e "${BOLD}Question 1: API Key${NC}"
     echo ""
-    echo -e "  ${DIM}Get one from:${NC}"
-    echo -e "  • OpenRouter (recommended): ${CYAN}https://openrouter.ai/keys${NC}"
-    echo -e "  • Anthropic: ${CYAN}https://console.anthropic.com${NC}"
+    echo -e "  ${DIM}Have a key? Paste it below.${NC}"
+    echo -e "  ${DIM}Need one? Press Enter — I'll help you get one (free, 60 seconds).${NC}"
     echo ""
     
     local api_key
-    api_key=$(prompt "Paste API key")
+    api_key=$(prompt "Paste API key (or Enter for guided signup)")
     
     # Auto-detect provider from key format
     local provider=""
     local openrouter_key=""
     local anthropic_key=""
     local default_model=""
+    
+    # Guided signup if empty
+    if [ -z "$api_key" ]; then
+        api_key=$(guided_api_signup)
+    fi
     
     if [[ "$api_key" == sk-or-* ]]; then
         provider="openrouter"
@@ -191,7 +258,9 @@ step2_configure() {
         provider="openrouter"
         openrouter_key="$api_key"
         default_model="openrouter/moonshotai/kimi-k2.5"
-        warn "Unknown key format — assuming OpenRouter"
+        if [ -n "$api_key" ]; then
+            warn "Unknown key format — assuming OpenRouter"
+        fi
     fi
     
     # ─── Question 2: Use Case (Multi-Select) ───
@@ -264,6 +333,47 @@ step2_configure() {
         templates=""
     fi
     
+    # ─── Question 3: Setup Type ───
+    echo ""
+    echo -e "${BOLD}Question 3: How will you run OpenClaw?${NC}"
+    echo ""
+    echo -e "  ${GREEN}1. 👤 New Mac User (Recommended)${NC}"
+    echo "     → Create a separate user account on your Mac"
+    echo "     → Best isolation without extra hardware"
+    echo ""
+    echo "  2. 💻 Your Mac User / VM"
+    echo "     → Run under your current account (or in a VM)"
+    echo "     → Simpler setup, less isolation"
+    echo ""
+    echo "  3. 🖥️  Dedicated Device"
+    echo "     → A Mac just for OpenClaw (Mac Mini, always-on)"
+    echo "     → Maximum isolation, relaxed permissions"
+    echo ""
+    
+    local setup_choice
+    setup_choice=$(prompt "Choose 1-3" "2")
+    
+    local setup_type="personal"
+    local security_level="medium"
+    
+    case "$setup_choice" in
+        1)
+            setup_type="new-user"
+            security_level="high"
+            info "New Mac User → high security, workspace-only sandbox"
+            ;;
+        2)
+            setup_type="current-user"
+            security_level="medium"
+            info "Your Mac User → standard security"
+            ;;
+        3)
+            setup_type="dedicated"
+            security_level="low"
+            info "Dedicated Device → relaxed permissions, full access"
+            ;;
+    esac
+    
     # ─── Optional: Customize name ───
     echo ""
     echo -e "${DIM}Your bot will be called \"${bot_name}\". Press Enter to keep, or type a new name.${NC}"
@@ -279,6 +389,8 @@ step2_configure() {
     export QUICKSTART_PERSONALITY="$personality"
     export QUICKSTART_TEMPLATES="$templates"  # Comma-separated
     export QUICKSTART_SPENDING_TIER="$spending_tier"
+    export QUICKSTART_SETUP_TYPE="$setup_type"
+    export QUICKSTART_SECURITY_LEVEL="$security_level"
 }
 
 # ═══════════════════════════════════════════════════════════════════
@@ -493,7 +605,7 @@ step3_start() {
     fi
     
     # Generate config via Python
-    python3 - "$QUICKSTART_DEFAULT_MODEL" "$QUICKSTART_OPENROUTER_KEY" "$QUICKSTART_ANTHROPIC_KEY" "$config_file" "$QUICKSTART_BOT_NAME" << 'PYEOF'
+    python3 - "$QUICKSTART_DEFAULT_MODEL" "$QUICKSTART_OPENROUTER_KEY" "$QUICKSTART_ANTHROPIC_KEY" "$config_file" "$QUICKSTART_BOT_NAME" "$QUICKSTART_SECURITY_LEVEL" << 'PYEOF'
 import json, sys, os, secrets
 
 model = sys.argv[1]
@@ -501,8 +613,22 @@ openrouter_key = sys.argv[2]
 anthropic_key = sys.argv[3]
 config_path = sys.argv[4]
 bot_name = sys.argv[5] if len(sys.argv) > 5 else "Atlas"
+security_level = sys.argv[6] if len(sys.argv) > 6 else "medium"
 
 gateway_token = secrets.token_hex(32)
+
+# Security settings based on setup type
+tools_deny = ["browser"]
+sandbox_mode = "off"
+
+if security_level == "high":
+    # New Mac User — most restrictive
+    sandbox_mode = "workspace"
+    tools_deny = ["browser"]
+elif security_level == "low":
+    # Dedicated device — relaxed
+    sandbox_mode = "off"
+    tools_deny = []
 
 config = {
     "version": "2026.2.9",
@@ -515,9 +641,14 @@ config = {
     "workspace": {"path": os.path.expanduser("~/.openclaw/workspace")},
     "agents": {
         "defaults": {
-            "tools": {"deny": ["browser"]},
+            "sandbox": {"mode": sandbox_mode},
+            "tools": {"deny": tools_deny} if tools_deny else {},
             "subagents": {"maxConcurrent": 8, "maxDepth": 1}
         }
+    },
+    "meta": {
+        "security_level": security_level,
+        "created_by": "clawstarter-v2"
     }
 }
 
@@ -673,12 +804,12 @@ main() {
     echo ""
     echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
     echo -e "${BOLD}  OpenClaw Quickstart v${SCRIPT_VERSION}${NC}"
-    echo -e "${BOLD}  2 Questions → Running Bot${NC}"
+    echo -e "${BOLD}  3 Questions → Running Bot${NC}"
     echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "  This takes ~5 minutes:"
     echo -e "  ${INFO} Install dependencies (Node.js, OpenClaw)"
-    echo -e "  ${INFO} Ask 2 questions"
+    echo -e "  ${INFO} Ask 3 questions + optional skill packs"
     echo -e "  ${INFO} Start your bot"
     echo ""
     
