@@ -1005,7 +1005,7 @@
           <span id="copyBtnText">📋 Copy to Clipboard</span>
         </button>
       </div>
-      <pre>curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.6-SECURE.sh | bash</pre>
+      <pre>curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash</pre>
       
       <h3 style="margin-top: var(--sp-6);">2. Open Terminal</h3>
       <p style="margin-bottom: var(--sp-4);">Hold <kbd>Command (⌘)</kbd> and press <kbd>Space</kbd>, type "Terminal", press Enter</p>
@@ -1215,7 +1215,7 @@
 <script>
 /* ── Copy Install Command ── */
 function copyInstallCommand() {
-  const command = 'curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.6-SECURE.sh | bash';
+  const command = 'curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash';
   navigator.clipboard.writeText(command).then(function() {
     const btn = document.getElementById('copyBtn');
     const btnText = document.getElementById('copyBtnText');
