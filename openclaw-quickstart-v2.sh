@@ -11,7 +11,7 @@
 set -euo pipefail
 
 # ─── Constants ───
-readonly SCRIPT_VERSION="2.2.0"
+readonly SCRIPT_VERSION="2.3.0"
 readonly MIN_NODE_VERSION="22"
 readonly DEFAULT_GATEWAY_PORT=18789
 
@@ -155,10 +155,35 @@ step1_install() {
 guided_api_signup() {
     echo ""
     echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${BOLD}  Let's get you an API key (free, ~60 seconds)${NC}"
+    echo -e "${BOLD}  Let's get you an API key (or use free tier)${NC}"
     echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
-    echo -e "  I'll open ${CYAN}OpenRouter${NC} in your browser."
+    echo -e "  ${BOLD}Option 1: OpenCode Free Tier${NC} (no signup)"
+    echo -e "  • Kimi K2.5 Free — strong reasoning, long context"
+    echo -e "  • No rate limits (for now)"
+    echo -e "  • Just press Enter to use this"
+    echo ""
+    echo -e "  ${BOLD}Option 2: OpenRouter${NC} (requires signup, ~60 sec)"
+    echo -e "  • Many models including paid Claude/GPT"
+    echo -e "  • Free tier available"
+    echo ""
+    
+    if confirm "Use OpenCode Free Tier? (no signup needed)"; then
+        pass "Using OpenCode free tier (Kimi K2.5)"
+        return "OPENCODE_FREE"
+    fi
+    
+    echo ""
+    info "Opening OpenRouter..."
+    
+    if command -v open &>/dev/null; then
+        open "https://openrouter.ai/keys" 2>/dev/null
+    elif command -v xdg-open &>/dev/null; then
+        xdg-open "https://openrouter.ai/keys" 2>/dev/null
+    else
+        echo -e "  ${INFO} Open this URL: ${CYAN}https://openrouter.ai/keys${NC}"
+    fi
+    
     echo ""
     echo -e "  ${BOLD}Follow these steps:${NC}"
     echo -e "  1. Sign up (Google/GitHub = fastest)"
@@ -167,26 +192,8 @@ guided_api_signup() {
     echo -e "  4. Copy the key (starts with ${DIM}sk-or-${NC})"
     echo -e "  5. Come back here and paste it"
     echo ""
-    
-    if confirm "Open OpenRouter now?"; then
-        # Open browser
-        if command -v open &>/dev/null; then
-            open "https://openrouter.ai/keys" 2>/dev/null
-        elif command -v xdg-open &>/dev/null; then
-            xdg-open "https://openrouter.ai/keys" 2>/dev/null
-        else
-            echo -e "  ${INFO} Open this URL: ${CYAN}https://openrouter.ai/keys${NC}"
-        fi
-        
-        echo ""
-        echo -e "  ${DIM}Browser opened. Complete signup, then paste your key below.${NC}"
-        echo -e "  ${DIM}(No payment required — free tier available)${NC}"
-        echo ""
-    else
-        echo ""
-        echo -e "  ${INFO} When ready, go to: ${CYAN}https://openrouter.ai/keys${NC}"
-        echo ""
-    fi
+    echo -e "  ${DIM}(No payment required — free tier available)${NC}"
+    echo ""
     
     # Wait for key
     local key=""
@@ -194,10 +201,9 @@ guided_api_signup() {
         key=$(prompt "Paste your OpenRouter key")
         
         if [ -z "$key" ]; then
-            if confirm "Skip for now? (You can add a key later)"; then
-                warn "No API key — bot will have limited functionality"
-                echo ""
-                return ""
+            if confirm "Skip for now? (Will use OpenCode free tier)"; then
+                pass "Using OpenCode free tier as fallback"
+                return "OPENCODE_FREE"
             fi
         elif [[ ! "$key" == sk-or-* ]]; then
             warn "That doesn't look like an OpenRouter key (should start with sk-or-)"
@@ -243,7 +249,13 @@ step2_configure() {
         api_key=$(guided_api_signup)
     fi
     
-    if [[ "$api_key" == sk-or-* ]]; then
+    if [[ "$api_key" == "OPENCODE_FREE" ]]; then
+        provider="opencode"
+        openrouter_key=""
+        anthropic_key=""
+        default_model="opencode/kimi-k2.5-free"
+        pass "OpenCode free tier selected"
+    elif [[ "$api_key" == sk-or-* ]]; then
         provider="openrouter"
         openrouter_key="$api_key"
         default_model="openrouter/moonshotai/kimi-k2.5"
@@ -656,6 +668,24 @@ if openrouter_key:
     config["auth"]["openrouter"] = {"apiKey": openrouter_key}
 if anthropic_key:
     config["auth"]["anthropic"] = {"apiKey": anthropic_key}
+
+# Add OpenCode provider if using free tier
+if model.startswith("opencode/"):
+    config["provider"] = {
+        "opencode": {
+            "baseURL": "https://opencode.ai/zen/v1",
+            "models": {
+                "kimi-k2.5-free": {
+                    "enabled": True,
+                    "displayName": "Kimi K2.5 Free"
+                },
+                "glm-4.7-free": {
+                    "enabled": True,
+                    "displayName": "GLM 4.7 Free"
+                }
+            }
+        }
+    }
 
 os.makedirs(os.path.dirname(config_path), exist_ok=True)
 with open(config_path, 'w') as f:
