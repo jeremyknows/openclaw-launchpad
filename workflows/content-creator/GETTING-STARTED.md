@@ -102,9 +102,15 @@ These automations run in the background:
 | engagement-check | Daily 6 PM | Summarize today's engagement metrics |
 | weekly-analytics | Sunday 9 AM | Weekly performance report |
 
-Enable them:
+**To enable them**, ask your agent:
+> "Set up the content-ideas cron job from ~/Downloads/openclaw-setup/workflows/content-creator/crons/content-ideas.json"
+
+Or add manually via CLI:
 ```bash
-openclaw cron import ~/Downloads/openclaw-setup/workflows/content-creator/crons/
+openclaw cron add --name "content-ideas" \
+  --cron "0 8 * * *" --tz "America/New_York" \
+  --session isolated --announce \
+  --message "Research trending topics in my niche. Note 3-5 content ideas. Save to content/ideas/$(date +%Y-%m-%d).md"
 ```
 
 ## Folder Structure
@@ -137,6 +143,105 @@ Use your agent for first drafts, then add your voice:
 
 ### Review, Don't Automate Posting
 Always review before posting. Your agent drafts, you publish.
+
+## Troubleshooting
+
+### ❌ "No API key - summarize won't work"
+
+**Problem:** Missing API keys for video/article summarization
+
+**Fix:**
+```bash
+# Get a Gemini API key (recommended, free tier available)
+# Visit: https://aistudio.google.com/app/apikey
+
+# Or use OpenAI
+# Visit: https://platform.openai.com/api-keys
+
+# Add to environment
+export GEMINI_API_KEY="your-key-here"
+
+# Make it permanent
+echo 'export GEMINI_API_KEY="your-key-here"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+---
+
+### ❌ "Permission denied" accessing photos/media
+
+**Problem:** macOS hasn't granted Terminal access to Photos or Files
+
+**Fix:**
+1. Open **System Settings** → **Privacy & Security** → **Files and Folders**
+2. Find **Terminal** in the list
+3. Enable access to Photos, Downloads, etc.
+4. Restart Terminal
+
+---
+
+### ❌ Audio transcription fails
+
+**Problem:** File format not supported or API key missing
+
+**Fix:**
+```bash
+# Supported formats: mp3, mp4, mpeg, mpga, m4a, wav, webm
+# Convert unsupported files first:
+ffmpeg -i input.aiff -ar 16000 output.mp3
+
+# Check API key is set
+echo $OPENAI_API_KEY
+
+# If empty, set it:
+export OPENAI_API_KEY="your-key"
+```
+
+---
+
+### ❌ GIF search returns nothing
+
+**Problem:** Network issue or search term too specific
+
+**Fix:**
+- Try broader terms: "happy" instead of "ecstatic joy celebration"
+- Check internet connection
+- Try GIPHY directly to verify term works: https://giphy.com/search/[your-term]
+
+---
+
+### ❌ Generated images look wrong
+
+**Problem:** Prompt unclear or model hallucinating
+
+**Fix:**
+1. **Be more specific:** "A photograph of a cozy home office with morning sunlight, wood desk, laptop, coffee cup, minimalist style"
+2. **Add negative prompts:** "..., no people, no text, no watermarks"
+3. **Try multiple variations:** Ask for 3 options, pick the best
+4. **Specify style:** "...in the style of minimalist photography"
+
+---
+
+### ❌ Trend monitoring misses obvious topics
+
+**Problem:** Search query too narrow or API rate limits
+
+**Fix:**
+- Broaden search terms: "AI" instead of "LLM fine-tuning techniques"
+- Check if X API access is rate-limited
+- Try manual search to confirm topic exists
+- Use multiple related keywords
+
+---
+
+### Need More Help?
+
+- **Template-specific issues:** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+- **Content creation tips:** Ask your agent for examples
+- **API key issues:** Check provider documentation
+- **Ask your agent:** *"Why isn't [feature] working?"*
+
+---
 
 ## Next Steps
 

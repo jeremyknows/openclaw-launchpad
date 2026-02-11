@@ -117,9 +117,15 @@ These automations run in the background:
 | daily-review | Daily 6 PM | What got done, what slipped |
 | weekly-planning | Sunday 9 AM | Week ahead preview |
 
-Enable them:
+**To enable them**, ask your agent:
+> "Set up the morning-briefing cron job from ~/Downloads/openclaw-setup/workflows/workflow-optimizer/crons/morning-briefing.json"
+
+Or add manually via CLI:
 ```bash
-openclaw cron import ~/Downloads/openclaw-setup/workflows/workflow-optimizer/crons/
+openclaw cron add --name "morning-briefing" \
+  --cron "30 7 * * 1-5" --tz "America/New_York" \
+  --session isolated --announce \
+  --message "Generate my morning briefing: calendar, priority emails, due tasks, weather."
 ```
 
 ## Folder Structure
@@ -164,17 +170,149 @@ Tell your agent what colors mean:
 
 ## Troubleshooting
 
-### "Permission denied" for Notes/Reminders
-System Settings → Privacy & Security → Automation → Allow for Terminal
+### ❌ "Permission denied" for Apple Notes or Reminders
 
-### Google auth not working
+**Problem:** macOS hasn't granted automation access
+
+**Fix:**
+1. Open **System Settings** → **Privacy & Security** → **Automation**
+2. Find **Terminal** in the list
+3. Enable checkboxes for:
+   - Notes
+   - Reminders
+   - Calendar (if using)
+4. Restart Terminal
+5. Try the command again
+
+**Still blocked?** Try running from Terminal.app (not iTerm or other terminals) first.
+
+---
+
+### ❌ Google auth fails or keeps asking for login
+
+**Problem:** OAuth credentials expired or browser blocking popup
+
+**Fix:**
 ```bash
+# Clear existing auth
 gog auth logout
+
+# Try fresh login
 gog auth login
+
+# If browser doesn't open automatically:
+# 1. Copy the URL shown in terminal
+# 2. Paste into browser manually
+# 3. Complete OAuth flow
+# 4. Copy verification code back to terminal
 ```
 
-### Email not connecting
-Check ~/.config/himalaya/config.toml has correct IMAP/SMTP settings
+**Browser blocking?** Check browser popup blocker settings.
+
+---
+
+### ❌ "Command not found: memo" or other tools
+
+**Problem:** Skills not in PATH or installation failed
+
+**Fix:**
+```bash
+# Check if Homebrew path is in your shell
+echo $PATH | grep homebrew
+
+# If missing, add to ~/.zshrc:
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+source ~/.zshrc
+
+# Re-install skills
+bash ~/Downloads/openclaw-setup/workflows/workflow-optimizer/skills.sh
+```
+
+---
+
+### ❌ Email not connecting via Himalaya
+
+**Problem:** IMAP/SMTP config incorrect or app-specific password needed
+
+**Fix:**
+```bash
+# Check config exists
+cat ~/.config/himalaya/config.toml
+
+# For Gmail, you need an app-specific password:
+# 1. Google Account → Security → 2-Step Verification
+# 2. App passwords → Generate new
+# 3. Use generated password in config, not your regular password
+
+# Test connection
+himalaya accounts sync
+```
+
+---
+
+### ❌ Calendar shows no events (but they exist)
+
+**Problem:** Wrong calendar selected or permissions issue
+
+**Fix:**
+```bash
+# List available calendars
+gog calendar list
+
+# Check permissions
+# System Settings → Privacy & Security → Calendars
+# Ensure Terminal or your app has access
+
+# Specify calendar by name
+gog calendar list --calendar "Work" 
+```
+
+---
+
+### ❌ Morning briefing cron doesn't run
+
+**Problem:** Cron not enabled or OpenClaw gateway not running
+
+**Fix:**
+```bash
+# Check gateway status
+openclaw gateway status
+
+# If not running:
+openclaw gateway start
+
+# List cron jobs
+openclaw cron list
+
+# Enable specific job
+openclaw cron update <job-id> --enabled true
+
+# Test manually
+openclaw cron run <job-id>
+```
+
+---
+
+### ❌ Weather data not showing
+
+**Problem:** Location not set or API issue
+
+**Fix:**
+- Ensure Location Services enabled: System Settings → Privacy & Security → Location Services
+- Try specifying location explicitly: *"What's the weather in San Francisco?"*
+- Check if weather API key needed (some providers require registration)
+
+---
+
+### Need More Help?
+
+- **Template-specific issues:** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+- **Google Workspace auth:** https://github.com/prasmussen/google-oauth-go
+- **Himalaya email client:** https://github.com/soywod/himalaya
+- **macOS automation permissions:** https://support.apple.com/guide/mac-help/
+- **Ask your agent:** *"Debug this error: [paste error message]"*
+
+---
 
 ## Next Steps
 

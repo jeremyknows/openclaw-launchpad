@@ -115,9 +115,14 @@ Try these to see immediate value:
 | pr-review-reminder | Daily 9 AM | List PRs awaiting review |
 | dependency-check | Weekly | Flag outdated dependencies |
 
-Enable them:
+**To enable them**, ask your agent:
+> "Set up the ci-monitor cron job from ~/Downloads/openclaw-setup/workflows/app-builder/crons/ci-monitor.json"
+
+Or add manually via CLI:
 ```bash
-openclaw cron import ~/Downloads/openclaw-setup/workflows/app-builder/crons/
+openclaw cron add --name "ci-monitor" \
+  --every "30m" --session isolated --announce \
+  --message "Check CI status for my main repos. Only alert on failures."
 ```
 
 ## Project Setup Best Practices
@@ -186,6 +191,122 @@ Your agent can read your project files directly. Just tell it what to look at.
 
 ### Linting
 > "Configure ESLint with our team's rules"
+
+## Troubleshooting
+
+### ❌ "Permission denied" when running gh command
+
+**Problem:** GitHub CLI not authenticated or permissions revoked
+
+**Fix:**
+```bash
+# Check auth status
+gh auth status
+
+# If not logged in:
+gh auth login
+
+# Follow the browser OAuth flow
+```
+
+**Still not working?** Try manual token:
+```bash
+gh auth login --with-token < your-token.txt
+```
+
+---
+
+### ❌ "command not found: gh"
+
+**Problem:** GitHub CLI not in PATH or not installed
+
+**Fix:**
+```bash
+# Check if installed
+which gh
+
+# If not installed:
+brew install gh
+
+# Verify installation
+gh --version
+```
+
+---
+
+### ❌ API rate limit exceeded
+
+**Problem:** Too many GitHub API calls
+
+**Fix:**
+- Authenticated users get 5,000 requests/hour (vs 60 for unauthenticated)
+- Check rate limit status: `gh api rate_limit`
+- Wait for reset time shown in error message
+- Use `--paginate` carefully (can consume many requests)
+
+---
+
+### ❌ Skills script fails partway through
+
+**Problem:** Homebrew formula not available or dependency conflict
+
+**Fix:**
+```bash
+# Update Homebrew first
+brew update
+
+# Try installing one tool at a time
+brew install gh
+brew install jq
+brew install ripgrep
+
+# Check for conflicting versions
+brew list | grep [tool-name]
+```
+
+---
+
+### ❌ Agent doesn't follow coding style
+
+**Problem:** CLAUDE.md missing or incomplete in project
+
+**Fix:**
+1. Create `.claude/CLAUDE.md` or `CLAUDE.md` in project root
+2. Include specific examples of your style:
+   ```markdown
+   ## Code Style
+   - Use arrow functions, not function keyword
+   - Prefer const/let, never var
+   - Max line length: 100 characters
+   - Test files: *.test.ts (not *.spec.ts)
+   ```
+3. Tell agent: *"Read CLAUDE.md and follow those standards"*
+
+---
+
+### ❌ Can't access private repositories
+
+**Problem:** GitHub CLI scopes don't include repo access
+
+**Fix:**
+```bash
+# Re-authenticate with full repo scope
+gh auth login --scopes repo
+
+# Or add scopes to existing auth:
+gh auth refresh -s repo
+```
+
+---
+
+### Need More Help?
+
+- **Template-specific issues:** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+- **General OpenClaw issues:** Check main documentation
+- **GitHub CLI docs:** https://cli.github.com/manual/
+- **Ask your agent:** *"Help me debug this error: [paste error]"*
+
+---
 
 ## Next Steps
 
