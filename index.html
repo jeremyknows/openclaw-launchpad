@@ -5,493 +5,764 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Your personal AI assistant. Runs on your Mac. No coding required. Set up in 30 minutes.">
 <title>OpenClaw - Your Personal AI, Running on Your Mac</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* ─── Theme Variables ─── */
-  [data-theme="light"] {
-    --bg: #f8f7f6;
-    --bg-card: #ffffff;
-    --bg-nav: rgba(248,247,246,0.95);
-    --text: #2c2825;
-    --text-heading: #1a1715;
-    --text-muted: #6b6560;
-    --text-light: #9c9590;
-    --accent: #e05a00;
-    --accent-hover: #c24e00;
-    --accent-text: #ffffff;
-    --accent-light: #fed7aa;
-    --accent-bg: #fff7ed;
-    --green: #15803d;
-    --green-light: #4ade80;
-    --green-bg: #f0fdf4;
-    --border: #e0ddd9;
-    --border-light: #eeebe8;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-lg: 0 4px 14px rgba(0,0,0,0.08);
-    --shadow-hero: 0 8px 32px rgba(0,0,0,0.12);
-    --radius: 14px;
-    --radius-lg: 20px;
+  /* ─────────────────────────────────────────────────────────────
+     RESET
+     ───────────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; overflow-x: hidden; }
+
+  /* ─────────────────────────────────────────────────────────────
+     DESIGN TOKENS — Glacial Depths Palette
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+
+    --font-display: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, monospace;
+
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 16px;
+    --r-xl: 24px;
+    --r-pill: 100px;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   [data-theme="dark"] {
-    --bg: #161412;
-    --bg-card: #221f1d;
-    --bg-nav: rgba(22,20,18,0.95);
-    --text: #e8e4e0;
-    --text-heading: #f5f3f0;
-    --text-muted: #a8a29e;
-    --text-light: #78716c;
-    --accent: #fb923c;
-    --accent-hover: #fdba74;
-    --accent-text: #1a1715;
-    --accent-light: #7c2d12;
-    --accent-bg: #3b1a08;
-    --green: #4ade80;
-    --green-light: #86efac;
-    --green-bg: #0a2614;
-    --border: #3d3835;
-    --border-light: #2d2926;
-    --shadow: 0 1px 3px rgba(0,0,0,0.4);
-    --shadow-lg: 0 4px 14px rgba(0,0,0,0.5);
-    --shadow-hero: 0 8px 32px rgba(0,0,0,0.7);
-    --radius: 14px;
-    --radius-lg: 20px;
+    --bg-base: hsl(172, 12%, 6%);
+    --bg-raised: hsl(172, 10%, 9%);
+    --bg-card: hsl(172, 8%, 12%);
+    --bg-card-hover: hsl(172, 8%, 14%);
+    --bg-nav: hsla(172, 12%, 6%, 0.92);
+
+    --text-primary: hsl(168, 15%, 92%);
+    --text-heading: hsl(165, 20%, 96%);
+    --text-secondary: hsl(170, 8%, 62%);
+    --text-tertiary: hsl(170, 6%, 42%);
+
+    --accent: hsl(168, 76%, 52%);
+    --accent-hover: hsl(168, 76%, 62%);
+    --accent-muted: hsl(168, 40%, 22%);
+    --accent-subtle: hsl(168, 30%, 14%);
+    --accent-text: hsl(172, 30%, 6%);
+    --accent-glow: hsla(168, 76%, 52%, 0.25);
+
+    --border: hsl(170, 6%, 18%);
+    --border-subtle: hsl(170, 6%, 14%);
+    --border-accent: hsl(168, 40%, 28%);
+
+    --shadow-sm: 0 2px 4px hsla(172, 20%, 2%, 0.3), 0 1px 2px hsla(172, 20%, 2%, 0.2);
+    --shadow-md: 0 4px 8px hsla(172, 20%, 2%, 0.3), 0 2px 4px hsla(172, 20%, 2%, 0.2);
+    --shadow-lg: 0 12px 24px hsla(172, 20%, 2%, 0.4), 0 4px 8px hsla(172, 20%, 2%, 0.2);
+    --shadow-glow: 0 0 48px hsla(168, 76%, 52%, 0.15), 0 0 16px hsla(168, 76%, 52%, 0.1);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
+  [data-theme="light"] {
+    --bg-base: hsl(168, 20%, 97%);
+    --bg-raised: hsl(168, 15%, 94%);
+    --bg-card: hsl(168, 10%, 99%);
+    --bg-card-hover: hsl(168, 12%, 96%);
+    --bg-nav: hsla(168, 20%, 97%, 0.92);
+
+    --text-primary: hsl(172, 15%, 15%);
+    --text-heading: hsl(172, 20%, 8%);
+    --text-secondary: hsl(170, 8%, 42%);
+    --text-tertiary: hsl(170, 6%, 62%);
+
+    --accent: hsl(168, 72%, 36%);
+    --accent-hover: hsl(168, 72%, 30%);
+    --accent-muted: hsl(168, 30%, 82%);
+    --accent-subtle: hsl(168, 25%, 92%);
+    --accent-text: hsl(0, 0%, 99%);
+    --accent-glow: hsla(168, 72%, 36%, 0.12);
+
+    --border: hsl(170, 8%, 86%);
+    --border-subtle: hsl(170, 8%, 90%);
+    --border-accent: hsl(168, 30%, 72%);
+
+    --shadow-sm: 0 2px 4px hsla(172, 10%, 30%, 0.08), 0 1px 2px hsla(172, 10%, 30%, 0.04);
+    --shadow-md: 0 4px 8px hsla(172, 10%, 30%, 0.1), 0 2px 4px hsla(172, 10%, 30%, 0.06);
+    --shadow-lg: 0 12px 24px hsla(172, 10%, 30%, 0.12), 0 4px 8px hsla(172, 10%, 30%, 0.06);
+    --shadow-glow: 0 0 48px hsla(168, 72%, 36%, 0.1), 0 0 16px hsla(168, 72%, 36%, 0.06);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     BASE TYPOGRAPHY
+     ───────────────────────────────────────────────────────────── */
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
+    font-family: var(--font-display);
     font-size: 16px;
-    overflow-x: hidden;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* ─── Navigation ─── */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-heading);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     ANIMATIONS
+     ───────────────────────────────────────────────────────────── */
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-16px) rotate(1deg); }
+  }
+  @keyframes float-medium {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(-0.5deg); }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.08); opacity: 0.8; }
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 24px hsla(168, 76%, 52%, 0.08); }
+    50% { box-shadow: 0 0 48px hsla(168, 76%, 52%, 0.18); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    #ripple-canvas { display: none !important; }
+  }
+
+  @media (hover: none), (max-width: 768px) {
+    .ambient-orb { display: none !important; }
+    #ripple-canvas { display: none !important; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CURSOR RIPPLE CANVAS
+     ───────────────────────────────────────────────────────────── */
+  #ripple-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     SCROLL REVEAL
+     ───────────────────────────────────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .reveal.visible {
+    animation: fade-up 0.6s var(--ease-out) forwards;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     NAVIGATION (H11 Sticky Minimal)
+     ───────────────────────────────────────────────────────────── */
   nav {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    background: var(--bg-nav);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-light);
-    padding: 0 24px;
-  }
-
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 var(--sp-6);
     height: 64px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-subtle);
   }
-
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 24px;
+    gap: var(--sp-2);
+    font-size: 20px;
     font-weight: 700;
     color: var(--text-heading);
     text-decoration: none;
   }
-
-  .logo-icon { font-size: 32px; }
-
+  .logo-icon { font-size: 28px; }
   .theme-toggle {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-md);
     border: 1px solid var(--border);
     background: var(--bg-card);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
   }
-
   .theme-toggle:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--accent-subtle);
   }
 
-  /* ─── Hero Section ─── */
+  /* ─────────────────────────────────────────────────────────────
+     HERO (D9 Centered Theater)
+     ───────────────────────────────────────────────────────────── */
   .hero {
-    padding: 140px 24px 80px;
+    position: relative;
+    padding: 128px var(--sp-6) var(--sp-16);
     text-align: center;
-    max-width: 900px;
+    overflow: hidden;
+    max-width: 1200px;
     margin: 0 auto;
   }
-
-  .hero h1 {
-    font-size: clamp(36px, 7vw, 64px);
-    font-weight: 800;
-    letter-spacing: -2px;
-    color: var(--text-heading);
-    margin-bottom: 20px;
-    line-height: 1.1;
+  .ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    will-change: transform;
   }
-
-  .hero .gradient-text {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  .ambient-orb-1 {
+    width: 400px;
+    height: 400px;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-60%);
+    background: hsla(168, 76%, 52%, 0.1);
+    animation: float-slow 12s ease-in-out infinite;
+  }
+  .ambient-orb-2 {
+    width: 280px;
+    height: 280px;
+    top: 40px;
+    right: 10%;
+    background: hsla(200, 60%, 50%, 0.06);
+    animation: float-medium 9s ease-in-out infinite 2s;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: var(--sp-6);
+    position: relative;
+  }
+  .mint-text {
+    background: linear-gradient(135deg, var(--accent), hsl(190, 65%, 55%), var(--accent));
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradient-shift 6s ease-in-out infinite;
   }
-
   .hero .subheadline {
-    font-size: clamp(20px, 3vw, 28px);
-    color: var(--text-muted);
-    margin-bottom: 40px;
-    font-weight: 500;
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: var(--sp-8);
+    position: relative;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+    position: relative;
   }
 
+  /* Primary CTA */
   .cta-primary {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 18px 40px;
-    font-size: 20px;
-    font-weight: 700;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-8);
+    font-size: 18px;
+    font-weight: 600;
+    font-family: var(--font-display);
     background: var(--accent);
     color: var(--accent-text);
     border: none;
-    border-radius: var(--radius);
+    border-radius: var(--r-pill);
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: var(--shadow-hero);
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out), background 0.25s;
+    box-shadow: var(--shadow-md), 0 0 0 0 var(--accent-glow);
+    position: relative;
+    overflow: hidden;
   }
-
+  .cta-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsla(190, 70%, 60%, 0.3), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
   .cta-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-lg), 0 0 32px var(--accent-glow);
     background: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(251, 146, 60, 0.4);
   }
-
-  .cta-secondary {
+  .cta-primary:hover::before { opacity: 1; }
+  .cta-primary:active { transform: translateY(0) scale(0.98); }
+  .cta-primary .arrow {
+    transition: transform 0.3s var(--ease-spring);
     display: inline-block;
-    margin-left: 16px;
-    padding: 18px 32px;
-    font-size: 18px;
-    color: var(--text);
-    text-decoration: none;
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    transition: all 0.2s;
   }
+  .cta-primary:hover .arrow { transform: translateX(4px); }
 
+  /* Secondary CTA */
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-6);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
   .cta-secondary:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--accent-subtle);
   }
 
+  /* Video Placeholder */
   .video-placeholder {
-    margin-top: 60px;
-    border-radius: var(--radius-lg);
+    max-width: 840px;
+    margin: var(--sp-12) auto 0;
+    border-radius: var(--r-xl);
     overflow: hidden;
-    box-shadow: var(--shadow-hero);
-    background: var(--bg-card);
     border: 1px solid var(--border);
-    aspect-ratio: 16/9;
+    background: var(--bg-card);
+    aspect-ratio: 16 / 9;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    box-shadow: var(--shadow-lg);
+    animation: pulse-glow 6s ease-in-out infinite;
+  }
+  .play-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s;
+    box-shadow: 0 0 0 0 var(--accent-glow);
+    cursor: pointer;
+  }
+  .video-placeholder:hover .play-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 32px var(--accent-glow);
   }
 
-  .video-placeholder::before {
-    content: '▶';
-    font-size: 64px;
-    color: var(--accent);
-    opacity: 0.5;
-  }
-
-  /* ─── Sections ─── */
-  section {
-    padding: 80px 24px;
+  /* ─────────────────────────────────────────────────────────────
+     STEPS (L8 Bento Grid)
+     ───────────────────────────────────────────────────────────── */
+  .steps-section {
+    padding: var(--sp-16) var(--sp-6);
     max-width: 1200px;
     margin: 0 auto;
   }
-
-  section h2 {
-    font-size: clamp(32px, 5vw, 48px);
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--text-heading);
+  .steps-section h2 {
+    font-size: clamp(28px, 4vw, 36px);
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: var(--sp-12);
+    letter-spacing: -0.015em;
   }
-
-  /* ─── Steps Section ─── */
-  .steps-grid {
+  .bento-steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
-    margin-top: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-4);
+    max-width: 960px;
+    margin: 0 auto;
   }
-
-  .step-card {
+  @media (max-width: 768px) {
+    .bento-steps { grid-template-columns: 1fr; }
+  }
+  .bento-step {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    text-align: center;
-    transition: all 0.3s;
+    border-radius: var(--r-lg);
+    padding: var(--sp-8);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease-out), border-color 0.3s, box-shadow 0.3s;
   }
-
-  .step-card:hover {
+  .bento-step::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .bento-step:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--accent);
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-md);
   }
-
+  .bento-step:hover::after { opacity: 1; }
   .step-number {
-    width: 56px;
-    height: 56px;
-    background: var(--accent-bg);
-    color: var(--accent);
-    border: 2px solid var(--accent-light);
-    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-md);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-muted);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    font-weight: 800;
-    margin: 0 auto 20px;
-  }
-
-  .step-card h3 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-heading);
-    margin-bottom: 12px;
-  }
-
-  .step-card p {
-    font-size: 16px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* ─── Features Section ─── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-    margin-top: 40px;
-  }
-
-  .feature-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px;
-    display: flex;
-    gap: 20px;
-  }
-
-  .feature-icon {
-    font-size: 36px;
-    flex-shrink: 0;
-  }
-
-  .feature-card h3 {
     font-size: 20px;
     font-weight: 700;
-    color: var(--text-heading);
-    margin-bottom: 8px;
+    color: var(--accent);
+    margin-bottom: var(--sp-6);
+    font-family: var(--font-mono);
   }
-
-  .feature-card p {
+  .bento-step h3 {
+    font-size: 20px;
+    margin-bottom: var(--sp-2);
+  }
+  .bento-step p {
     font-size: 15px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     line-height: 1.6;
   }
 
-  /* ─── Trust Section ─── */
-  .trust-section {
+  /* ─────────────────────────────────────────────────────────────
+     FEATURES (G9 Featured + Grid / Bento)
+     ───────────────────────────────────────────────────────────── */
+  .features-section {
+    padding: var(--sp-16) var(--sp-6);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .features-section h2 {
+    font-size: clamp(28px, 4vw, 36px);
+    text-align: center;
+    margin-bottom: var(--sp-12);
+    letter-spacing: -0.015em;
+  }
+  .features-bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--sp-4);
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .feature-item:nth-child(1) { grid-column: span 4; }
+  .feature-item:nth-child(2) { grid-column: span 2; }
+  .feature-item:nth-child(3) { grid-column: span 2; }
+  .feature-item:nth-child(4) { grid-column: span 2; }
+  .feature-item:nth-child(5) { grid-column: span 2; }
+  .feature-item:nth-child(6) { grid-column: span 3; }
+  .feature-item:nth-child(5) { grid-column: span 3; }
+
+  @media (max-width: 768px) {
+    .features-bento { grid-template-columns: 1fr; }
+    .feature-item:nth-child(n) { grid-column: span 1; }
+  }
+  .feature-item {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 60px 40px;
-    text-align: center;
+    border-radius: var(--r-lg);
+    padding: var(--sp-6);
+    display: flex;
+    gap: var(--sp-4);
+    align-items: flex-start;
+    transition: transform 0.35s var(--ease-out), border-color 0.3s, background 0.3s;
+  }
+  .feature-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-accent);
+    background: var(--bg-card-hover);
+  }
+  .feature-emoji {
+    font-size: 32px;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-subtle);
+    border-radius: var(--r-md);
+  }
+  .feature-item h3 {
+    font-size: 18px;
+    margin-bottom: var(--sp-1);
+  }
+  .feature-item p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.55;
   }
 
-  .trust-badges {
+  /* ─────────────────────────────────────────────────────────────
+     TRUST SECTION
+     ───────────────────────────────────────────────────────────── */
+  .trust-section {
+    padding: var(--sp-12) var(--sp-6) var(--sp-16);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .trust-panel {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: var(--sp-12) var(--sp-8);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .trust-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-subtle) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .trust-panel h2 {
+    font-size: 30px;
+    margin-bottom: var(--sp-2);
+    position: relative;
+  }
+  .trust-panel > p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 55ch;
+    margin: 0 auto var(--sp-8);
+    position: relative;
+    line-height: 1.6;
+  }
+  .trust-row {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: var(--sp-12);
     flex-wrap: wrap;
-    margin-top: 40px;
+    position: relative;
   }
-
-  .badge {
+  .trust-badge {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: var(--sp-2);
   }
-
-  .badge-icon {
-    font-size: 48px;
+  .trust-badge-icon {
+    font-size: 40px;
+    animation: float-medium 7s ease-in-out infinite;
   }
-
-  .badge-text {
+  .trust-badge:nth-child(2) .trust-badge-icon { animation-delay: -1.5s; }
+  .trust-badge:nth-child(3) .trust-badge-icon { animation-delay: -3s; }
+  .trust-badge:nth-child(4) .trust-badge-icon { animation-delay: -4.5s; }
+  .trust-badge-label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-muted);
-    text-align: center;
-    max-width: 140px;
+    color: var(--text-secondary);
   }
 
-  /* ─── FAQ Section ─── */
-  .faq-container {
-    max-width: 800px;
+  /* ─────────────────────────────────────────────────────────────
+     FAQ ACCORDION
+     ───────────────────────────────────────────────────────────── */
+  .faq-section {
+    padding: var(--sp-16) var(--sp-6);
+    max-width: 1200px;
     margin: 0 auto;
   }
-
-  details {
+  .faq-section h2 {
+    font-size: clamp(28px, 4vw, 36px);
+    text-align: center;
+    margin-bottom: var(--sp-12);
+    letter-spacing: -0.015em;
+  }
+  .faq-list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .faq-item {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 16px;
+    border-radius: var(--r-md);
     overflow: hidden;
-    transition: all 0.2s;
+    transition: border-color 0.25s;
   }
-
-  details:hover {
-    border-color: var(--accent);
-  }
-
-  summary {
-    padding: 20px 24px;
+  .faq-item:hover { border-color: var(--border-accent); }
+  .faq-item summary {
+    padding: var(--sp-4) var(--sp-6);
     cursor: pointer;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
     color: var(--text-heading);
     user-select: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    list-style: none;
+    transition: color 0.2s;
   }
-
-  summary::after {
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
     content: '+';
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: 400;
     color: var(--accent);
-    transition: transform 0.2s;
+    transition: transform 0.3s var(--ease-spring);
+    flex-shrink: 0;
+    margin-left: var(--sp-4);
   }
-
-  details[open] summary::after {
-    transform: rotate(45deg);
-  }
-
-  details[open] summary {
-    border-bottom: 1px solid var(--border);
-  }
-
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+  .faq-item[open] summary { border-bottom: 1px solid var(--border-subtle); }
   .faq-answer {
-    padding: 20px 24px;
-    color: var(--text);
-    line-height: 1.7;
+    padding: var(--sp-4) var(--sp-6);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    font-size: 15px;
   }
+  .faq-answer p + p { margin-top: var(--sp-3); }
+  .faq-answer strong { color: var(--text-primary); }
+  .faq-answer ul {
+    padding-left: var(--sp-6);
+    margin-top: var(--sp-2);
+  }
+  .faq-answer li { margin-bottom: var(--sp-1); }
 
-  /* ─── CTA Banner ─── */
+  /* ─────────────────────────────────────────────────────────────
+     CTA BANNER
+     ───────────────────────────────────────────────────────────── */
+  .cta-section {
+    padding: var(--sp-12) var(--sp-6);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
   .cta-banner {
-    background: linear-gradient(135deg, var(--accent-bg) 0%, var(--accent-light) 100%);
-    border: 2px solid var(--accent-light);
-    border-radius: var(--radius-lg);
-    padding: 60px 40px;
+    max-width: 840px;
+    margin: 0 auto;
+    border-radius: var(--r-xl);
+    padding: var(--sp-16) var(--sp-8);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-subtle) 0%, var(--bg-card) 40%, var(--accent-subtle) 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 10s ease-in-out infinite;
+    border: 1px solid var(--border-accent);
   }
-
   .cta-banner h2 {
-    font-size: clamp(28px, 5vw, 42px);
-    color: var(--text-heading);
-    margin-bottom: 16px;
+    font-size: clamp(28px, 4vw, 36px);
+    margin-bottom: var(--sp-4);
+    position: relative;
+  }
+  .cta-banner > p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-8);
+    position: relative;
+  }
+  .system-reqs {
+    margin-top: var(--sp-6);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    position: relative;
   }
 
-  .cta-banner p {
-    font-size: 18px;
-    color: var(--text-muted);
-    margin-bottom: 32px;
-  }
-
-  /* ─── Footer ─── */
+  /* ─────────────────────────────────────────────────────────────
+     FOOTER
+     ───────────────────────────────────────────────────────────── */
   footer {
-    padding: 40px 24px;
+    padding: var(--sp-8) var(--sp-6);
     text-align: center;
-    color: var(--text-light);
+    border-top: 1px solid var(--border-subtle);
     font-size: 14px;
-    border-top: 1px solid var(--border-light);
+    color: var(--text-tertiary);
   }
-
   footer a {
     color: var(--accent);
     text-decoration: none;
+    transition: color 0.2s;
   }
-
   footer a:hover {
+    color: var(--accent-hover);
     text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
   }
+  footer p + p { margin-top: var(--sp-2); }
 
-  /* ─── Responsive ─── */
+  /* ─────────────────────────────────────────────────────────────
+     RESPONSIVE
+     ───────────────────────────────────────────────────────────── */
   @media (max-width: 768px) {
-    .hero {
-      padding: 100px 20px 60px;
-    }
-
-    .cta-secondary {
-      display: block;
-      margin: 16px auto 0;
-      text-align: center;
-    }
-
-    section {
-      padding: 60px 20px;
-    }
-
-    .steps-grid,
-    .features-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .trust-badges {
-      gap: 24px;
-    }
-
-    .cta-banner {
-      padding: 40px 24px;
-    }
-  }
-
-  /* ─── Animations ─── */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .fade-in {
-    animation: fadeInUp 0.6s ease-out;
+    .hero { padding: 100px var(--sp-4) var(--sp-12); }
+    .hero-actions { flex-direction: column; }
+    .trust-row { gap: var(--sp-6); }
   }
 </style>
 </head>
 <body>
+
+<!-- Ripple Canvas -->
+<canvas id="ripple-canvas"></canvas>
 
 <!-- Navigation -->
 <nav>
@@ -504,253 +775,408 @@
   </div>
 </nav>
 
-<!-- Hero Section -->
-<section class="hero fade-in">
-  <h1>Your Personal AI.<br><span class="gradient-text">Running on Your Mac.</span></h1>
+<!-- Hero -->
+<section class="hero">
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <h1>Your Personal AI.<br><span class="mint-text">Running on Your Mac.</span></h1>
   <p class="subheadline">Set up in 30 minutes. No coding required.</p>
-  <a href="#download" class="cta-primary">
-    <span>Download Now</span>
-    <span>→</span>
-  </a>
-  <a href="#how-it-works" class="cta-secondary">See How It Works</a>
-  
+  <div class="hero-actions">
+    <a href="#download" class="cta-primary">
+      <span>Download Now</span>
+      <span class="arrow">&rarr;</span>
+    </a>
+    <a href="#how-it-works" class="cta-secondary">See How It Works</a>
+  </div>
   <div class="video-placeholder">
-    <!-- Video would go here -->
+    <div class="play-icon">&#9654;</div>
   </div>
 </section>
 
-<!-- 3 Easy Steps -->
-<section id="how-it-works">
+<!-- Steps -->
+<div class="steps-section reveal" id="how-it-works">
   <h2>Get Started in 3 Steps</h2>
-  <div class="steps-grid">
-    <div class="step-card fade-in">
+  <div class="bento-steps">
+    <div class="bento-step">
       <div class="step-number">1</div>
-      <h3>Download & Run</h3>
+      <h3>Download &amp; Run</h3>
       <p>One simple command in Terminal. We guide you through every keystroke. Takes 5 minutes.</p>
     </div>
-    <div class="step-card fade-in" style="animation-delay: 0.1s;">
+    <div class="bento-step">
       <div class="step-number">2</div>
       <h3>Pick Your Style</h3>
       <p>Choose your AI model, set spending limits, and configure channels. All point-and-click.</p>
     </div>
-    <div class="step-card fade-in" style="animation-delay: 0.2s;">
+    <div class="bento-step">
       <div class="step-number">3</div>
       <h3>Start Chatting</h3>
       <p>Talk to your AI via Discord, iMessage, or web chat. It learns your preferences as you go.</p>
     </div>
   </div>
-</section>
+</div>
 
-<!-- What You Get -->
-<section>
+<!-- Features -->
+<div class="features-section reveal">
   <h2>What You Get</h2>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🔒</div>
+  <div class="features-bento">
+    <div class="feature-item">
+      <div class="feature-emoji">🔒</div>
       <div>
         <h3>Your Data Stays Yours</h3>
         <p>Runs entirely on your Mac. No cloud middleman. Your conversations, files, and API keys never leave your machine.</p>
       </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">💬</div>
+    <div class="feature-item">
+      <div class="feature-emoji">💬</div>
       <div>
         <h3>Chat Anywhere</h3>
         <p>Works with Discord, iMessage, Telegram, or web chat. Pick your favorite or use them all.</p>
       </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🧠</div>
+    <div class="feature-item">
+      <div class="feature-emoji">🧠</div>
       <div>
         <h3>Actually Useful</h3>
         <p>Research topics, manage your calendar, draft emails, summarize documents, and learn your preferences over time.</p>
       </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
+    <div class="feature-item">
+      <div class="feature-emoji">⚡</div>
       <div>
         <h3>Always On</h3>
         <p>Your AI runs 24/7 in the background. Ask it anything, anytime. Responds in seconds.</p>
       </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">💰</div>
+    <div class="feature-item">
+      <div class="feature-emoji">💰</div>
       <div>
         <h3>You Control Costs</h3>
         <p>Pay only for what you use. Set spending limits. Budget-friendly options start at $5/month.</p>
       </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🛠️</div>
+    <div class="feature-item">
+      <div class="feature-emoji">🛠️</div>
       <div>
         <h3>Grows With You</h3>
-        <p>Start simple, add skills later. Web browsing, file management, calendar access—all optional.</p>
+        <p>Start simple, add skills later. Web browsing, file management, calendar access &mdash; all optional.</p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- Trust Section -->
-<section>
-  <div class="trust-section">
-    <h2 style="margin-bottom: 20px;">Built on Trust</h2>
-    <p style="font-size: 18px; color: var(--text-muted); max-width: 700px; margin: 0 auto;">
-      OpenClaw was built by someone who isn't a coder—with AI assistance. 
-      That means it's designed for <em>people like you</em>, not developers.
-    </p>
-    
-    <div class="trust-badges">
-      <div class="badge">
-        <div class="badge-icon">🔓</div>
-        <div class="badge-text">100% Open Source</div>
+<!-- Trust -->
+<div class="trust-section reveal">
+  <div class="trust-panel">
+    <h2>Built on Trust</h2>
+    <p>OpenClaw was built by someone who isn&rsquo;t a coder &mdash; with AI assistance. That means it&rsquo;s designed for <em>people like you</em>, not developers.</p>
+    <div class="trust-row">
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🔓</div>
+        <div class="trust-badge-label">100% Open Source</div>
       </div>
-      <div class="badge">
-        <div class="badge-icon">🛡️</div>
-        <div class="badge-text">Security-First Design</div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🛡️</div>
+        <div class="trust-badge-label">Security-First Design</div>
       </div>
-      <div class="badge">
-        <div class="badge-icon">🏠</div>
-        <div class="badge-text">Runs Locally</div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🏠</div>
+        <div class="trust-badge-label">Runs Locally</div>
       </div>
-      <div class="badge">
-        <div class="badge-icon">🤝</div>
-        <div class="badge-text">Community Supported</div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🤝</div>
+        <div class="trust-badge-label">Community Supported</div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- FAQ -->
-<section>
+<div class="faq-section reveal">
   <h2>Questions?</h2>
-  <div class="faq-container">
-    <details>
+  <div class="faq-list">
+    <details class="faq-item">
       <summary>Is this safe?</summary>
       <div class="faq-answer">
         <p><strong>Yes.</strong> OpenClaw runs in a sandboxed Mac user account with zero access to your personal files, browser history, or passwords. It can only do what you explicitly grant permission for.</p>
-        <p style="margin-top: 12px;">The setup guide walks you through security best practices: file permissions, firewall settings, and disk encryption. Your API keys are stored locally and never transmitted anywhere except to the AI provider you choose.</p>
+        <p>The setup guide walks you through security best practices: file permissions, firewall settings, and disk encryption. Your API keys are stored locally and never transmitted anywhere except to the AI provider you choose.</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>What does it cost?</summary>
       <div class="faq-answer">
         <p><strong>OpenClaw is free.</strong> The software costs nothing.</p>
-        <p style="margin-top: 12px;">You pay only for the AI model usage (like paying for electricity). Budget options start at <strong>$5-15/month</strong> for light use. You set spending limits during setup, so there are no surprise bills.</p>
-        <p style="margin-top: 12px;">Think of it like this: OpenClaw is the car (free), the AI provider is the gas station (pay-as-you-go).</p>
+        <p>You pay only for the AI model usage (like paying for electricity). Budget options start at <strong>$5&ndash;15/month</strong> for light use. You set spending limits during setup, so there are no surprise bills.</p>
+        <p>Think of it like this: OpenClaw is the car (free), the AI provider is the gas station (pay-as-you-go).</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>Do I need to know how to code?</summary>
       <div class="faq-answer">
         <p><strong>Nope.</strong> If you can copy and paste text into Terminal, you can set up OpenClaw.</p>
-        <p style="margin-top: 12px;">The setup guide is written for non-technical users. Every command is explained in plain English. If you get stuck, the FAQ and troubleshooting sections have your back.</p>
+        <p>The setup guide is written for non-technical users. Every command is explained in plain English. If you get stuck, the FAQ and troubleshooting sections have your back.</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>What can it actually do?</summary>
       <div class="faq-answer">
         <p>Out of the box, your AI can:</p>
-        <ul style="margin-top: 8px; padding-left: 24px;">
+        <ul>
           <li>Answer questions and have conversations</li>
           <li>Search the web for real-time info</li>
           <li>Remember context from past chats</li>
           <li>Work across multiple messaging apps</li>
         </ul>
-        <p style="margin-top: 12px;">You can add skills later: calendar management, email triage, file organization, camera access, and more. Each skill is optional and explained in the Foundation Playbook.</p>
+        <p>You can add skills later: calendar management, email triage, file organization, camera access, and more. Each skill is optional and explained in the Foundation Playbook.</p>
       </div>
     </details>
-
-    <details>
-      <summary>What's the catch?</summary>
+    <details class="faq-item">
+      <summary>What&rsquo;s the catch?</summary>
       <div class="faq-answer">
-        <p><strong>There isn't one.</strong> This is an open-source project built for real people who want a personal AI without vendor lock-in.</p>
-        <p style="margin-top: 12px;">You own your data. You control the costs. You decide what it can access. No subscriptions, no upsells, no tracking.</p>
+        <p><strong>There isn&rsquo;t one.</strong> This is an open-source project built for real people who want a personal AI without vendor lock-in.</p>
+        <p>You own your data. You control the costs. You decide what it can access. No subscriptions, no upsells, no tracking.</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>My Mac goes to sleep. Will this work?</summary>
       <div class="faq-answer">
         <p>The setup guide includes a command to keep your Mac awake (but turns off the screen to save power). This ensures your AI is always responsive.</p>
-        <p style="margin-top: 12px;">If you need your Mac to sleep (like a laptop you carry around), you can skip that step—just know your AI won't respond while the Mac is asleep.</p>
+        <p>If you need your Mac to sleep (like a laptop you carry around), you can skip that step &mdash; just know your AI won&rsquo;t respond while the Mac is asleep.</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>Can I use this on multiple Macs?</summary>
       <div class="faq-answer">
-        <p>Yes! Each Mac runs its own instance of OpenClaw. They don't sync automatically, but you can manually share configuration files or memory snapshots between them.</p>
+        <p>Yes! Each Mac runs its own instance of OpenClaw. They don&rsquo;t sync automatically, but you can manually share configuration files or memory snapshots between them.</p>
       </div>
     </details>
-
-    <details>
+    <details class="faq-item">
       <summary>What if I want to uninstall it?</summary>
       <div class="faq-answer">
-        <p>Delete the bot user account from System Settings → Users & Groups. That's it. Everything is contained in that one user account.</p>
+        <p>Delete the bot user account from System Settings &rarr; Users &amp; Groups. That&rsquo;s it. Everything is contained in that one user account.</p>
       </div>
     </details>
   </div>
-</section>
+</div>
 
 <!-- CTA Banner -->
-<section id="download">
-  <div class="cta-banner fade-in">
+<div class="cta-section reveal" id="download">
+  <div class="cta-banner">
     <h2>Ready to Try It?</h2>
-    <p>Download the setup package. You'll have your AI running in 30 minutes.</p>
+    <p>Download the setup package. You&rsquo;ll have your AI running in 30 minutes.</p>
     <a href="openclaw-setup.zip" class="cta-primary" download>
       <span>Download OpenClaw Setup</span>
-      <span>↓</span>
+      <span class="arrow">&darr;</span>
     </a>
-    <p style="margin-top: 24px; font-size: 14px; color: var(--text-light);">
-      macOS 13+ · Apple Silicon or Intel · Free
-    </p>
+    <p class="system-reqs">macOS 13+ &middot; Apple Silicon or Intel &middot; Free</p>
   </div>
-</section>
+</div>
 
 <!-- Footer -->
 <footer>
-  <p>Built with ❤️ and AI assistance.</p>
-  <p style="margin-top: 8px;">
-    <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a> · 
-    <a href="https://openclaw.ai/docs" target="_blank">Documentation</a> · 
+  <p>Built with &#10084;&#65039; and AI assistance.</p>
+  <p>
+    <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a> &middot;
+    <a href="https://openclaw.ai/docs" target="_blank">Documentation</a> &middot;
     <a href="https://discord.gg/openclaw" target="_blank">Community</a>
   </p>
 </footer>
 
 <script>
-// Theme toggle
+/* ── Theme Toggle ── */
 function toggleTheme() {
-  const html = document.documentElement;
-  const btn = document.getElementById('themeBtn');
-  const currentTheme = html.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  
-  html.setAttribute('data-theme', newTheme);
-  btn.textContent = newTheme === 'dark' ? '☀' : '🌙';
-  
-  localStorage.setItem('theme', newTheme);
+  var html = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  btn.textContent = next === 'dark' ? '☀' : '🌙';
+  localStorage.setItem('theme', next);
 }
-
-// Load saved theme
 (function() {
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀' : '🌙';
+  var saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀' : '🌙';
 })();
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
+/* ── Smooth Scroll ── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    var t = document.querySelector(this.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+/* ── Scroll Reveal ── */
+(function() {
+  var els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  els.forEach(function(el) { obs.observe(el); });
+})();
+
+/* ── Ethereal Glacial Ripple System ──
+   Three layered effects on a single canvas:
+   1. RIPPLE RINGS — concentric waves from cursor
+   2. AMBIENT GLOW — radial light follows cursor
+   3. ICE PARTICLES — motes scatter from movement */
+(function() {
+  var canvas = document.getElementById('ripple-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W, H, dpr;
+  var mouseX = -9999, mouseY = -9999;
+  var prevX = -9999, prevY = -9999;
+  var ripples = [];
+  var particles = [];
+  var mouseActive = false;
+
+  var MINT      = [168, 76, 52];
+  var MINT_PALE = [168, 50, 66];
+  var TEAL_DEEP = [172, 40, 22];
+  var ICE       = [165, 20, 96];
+
+  function hsl(c, a) {
+    return 'hsla(' + c[0] + ',' + c[1] + '%,' + c[2] + '%,' + a + ')';
+  }
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  document.addEventListener('mousemove', function(e) {
+    prevX = mouseX; prevY = mouseY;
+    mouseX = e.clientX; mouseY = e.clientY;
+    mouseActive = true;
+
+    var dx = mouseX - prevX, dy = mouseY - prevY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 30 || prevX === -9999) spawnRipple(mouseX, mouseY);
+
+    var speed = Math.min(dist, 80);
+    var count = Math.floor(speed / 8) + 1;
+    for (var i = 0; i < count; i++) spawnParticle(mouseX, mouseY, speed);
+  });
+
+  document.addEventListener('mouseleave', function() { mouseActive = false; });
+
+  document.addEventListener('click', function(e) {
+    for (var i = 0; i < 3; i++) spawnRipple(e.clientX, e.clientY, 0.4 - i * 0.08);
+    for (var j = 0; j < 20; j++) spawnParticle(e.clientX, e.clientY, 60);
+  });
+
+  function spawnRipple(x, y, alpha) {
+    ripples.push({
+      x: x, y: y, radius: 4,
+      maxRadius: 250 + Math.random() * 200,
+      alpha: alpha || (0.18 + Math.random() * 0.12),
+      decay: 0.003 + Math.random() * 0.002,
+      lineWidth: 1.5 + Math.random() * 1.5,
+      speed: 2.5 + Math.random() * 2
+    });
+    if (ripples.length > 40) ripples.splice(0, ripples.length - 40);
+  }
+
+  function spawnParticle(x, y, speed) {
+    var angle = Math.random() * Math.PI * 2;
+    var v = (0.3 + Math.random() * 1.8) * (speed / 30);
+    particles.push({
+      x: x + (Math.random() - 0.5) * 10,
+      y: y + (Math.random() - 0.5) * 10,
+      vx: Math.cos(angle) * v,
+      vy: Math.sin(angle) * v - 0.3,
+      life: 1,
+      decay: 0.008 + Math.random() * 0.015,
+      size: 1 + Math.random() * 2.5,
+      bright: Math.random() > 0.7
+    });
+    if (particles.length > 200) particles.splice(0, particles.length - 200);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    if (mouseActive) {
+      var glowSize = 350;
+      var grd = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowSize);
+      grd.addColorStop(0,    hsl(MINT, 0.08));
+      grd.addColorStop(0.3,  hsl(TEAL_DEEP, 0.05));
+      grd.addColorStop(0.7,  hsl(TEAL_DEEP, 0.02));
+      grd.addColorStop(1,    hsl(TEAL_DEEP, 0));
+      ctx.fillStyle = grd;
+      ctx.fillRect(mouseX - glowSize, mouseY - glowSize, glowSize * 2, glowSize * 2);
+    }
+
+    for (var i = ripples.length - 1; i >= 0; i--) {
+      var r = ripples[i];
+      r.radius += r.speed;
+      r.alpha -= r.decay;
+      if (r.alpha <= 0 || r.radius > r.maxRadius) { ripples.splice(i, 1); continue; }
+
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = hsl(MINT, r.alpha * 0.7);
+      ctx.lineWidth = r.lineWidth;
+      ctx.stroke();
+
+      if (r.radius > 20) {
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
+        ctx.strokeStyle = hsl(MINT_PALE, r.alpha * 0.3);
+        ctx.lineWidth = r.lineWidth * 0.5;
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+      ctx.fillStyle = hsl(MINT, r.alpha * 0.03);
+      ctx.fill();
+    }
+
+    for (var j = particles.length - 1; j >= 0; j--) {
+      var p = particles[j];
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.01; p.vx *= 0.995;
+      p.life -= p.decay;
+      if (p.life <= 0) { particles.splice(j, 1); continue; }
+
+      var pa = p.life * (p.bright ? 0.9 : 0.5);
+      var col = p.bright ? ICE : MINT_PALE;
+
+      if (p.bright && p.life > 0.3) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = hsl(MINT, pa * 0.12);
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fillStyle = hsl(col, pa);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
 </script>
 
 </body>
