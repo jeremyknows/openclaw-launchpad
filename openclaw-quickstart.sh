@@ -30,6 +30,7 @@ readonly DEFAULT_GATEWAY_PORT=18789
 
 # ─── Colors ───
 GREEN='\033[0;32m'
+DIM='\033[2m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
@@ -213,19 +214,21 @@ step2_configure() {
     # Question 1: AI Provider
     echo -e "${BOLD}Which AI provider do you want to use?${NC}"
     echo ""
-    echo "  1. OpenRouter (recommended for beginners)"
-    echo "     → One key, 100+ models, budget-friendly"
+    echo -e "  ${GREEN}1. OpenRouter ⭐ RECOMMENDED${NC}"
+    echo "     → Best for beginners — one key, 100+ models, budget-friendly"
     echo "     → Sign up: https://openrouter.ai"
     echo ""
     echo "  2. Anthropic (premium quality)"
-    echo "     → Claude models directly"
+    echo "     → Claude models directly, slightly higher quality"
     echo "     → Sign up: https://console.anthropic.com"
     echo ""
-    echo "  3. Both (use OpenRouter for most, Anthropic for complex tasks)"
+    echo "  3. Both (advanced — use OpenRouter for most, Anthropic for complex tasks)"
+    echo ""
+    echo -e "${DIM}Not sure? Pick 1 — you can always change it later.${NC}"
     echo ""
     
     local provider_choice
-    provider_choice=$(prompt "Choose [1/2/3]" "1")
+    provider_choice=$(prompt "Type 1, 2, or 3 and press Enter" "1")
     
     local openrouter_key=""
     local anthropic_key=""
