@@ -725,37 +725,32 @@ AGENTSEOF
     
     # Install templates if selected (supports multiple, comma-separated)
     if [ -n "$QUICKSTART_TEMPLATES" ]; then
-        local script_dir
-        script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        local base_url="https://raw.githubusercontent.com/jeremyknows/clawstarter/main"
         
         # Split by comma and install each
         IFS=',' read -ra TEMPLATE_ARRAY <<< "$QUICKSTART_TEMPLATES"
         local first_template=true
         
         for template_name in "${TEMPLATE_ARRAY[@]}"; do
-            local template_dir="${script_dir}/workflows/${template_name}"
+            info "Installing ${template_name}..."
             
-            if [ -d "$template_dir" ]; then
-                info "Installing ${template_name}..."
-                
-                # First template's AGENTS.md becomes primary
-                if $first_template && [ -f "${template_dir}/AGENTS.md" ]; then
-                    cp "${template_dir}/AGENTS.md" "$workspace_dir/"
+            # First template's AGENTS.md becomes primary
+            if $first_template; then
+                local agents_url="${base_url}/workflows/${template_name}/AGENTS.md"
+                if curl -fsSL "$agents_url" -o "$workspace_dir/AGENTS.md" 2>/dev/null; then
+                    pass "Downloaded AGENTS.md from ${template_name}"
                     first_template=false
+                else
+                    warn "Could not download ${template_name} template (continuing anyway)"
                 fi
-                
-                # Run skills installer for all templates
-                if [ -f "${template_dir}/skills.sh" ]; then
-                    bash "${template_dir}/skills.sh" 2>/dev/null || true
-                fi
-                
-                pass "Installed: ${template_name}"
             fi
+            
+            pass "Configured: ${template_name}"
         done
         
-        # If multiple templates, note that skills are combined
+        # If multiple templates, note that first one wins
         if [ "${#TEMPLATE_ARRAY[@]}" -gt 1 ]; then
-            info "All template skills installed. AGENTS.md uses ${TEMPLATE_ARRAY[0]} as base."
+            info "Multiple templates selected. AGENTS.md from ${TEMPLATE_ARRAY[0]}."
         fi
     fi
     
