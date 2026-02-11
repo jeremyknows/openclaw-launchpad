@@ -53,6 +53,8 @@
     --text-heading: hsl(165, 20%, 96%);
     --text-secondary: hsl(170, 8%, 62%);
     --text-tertiary: hsl(170, 6%, 42%);
+    --text-emphasis: hsl(168, 20%, 98%);
+    --text-code: hsl(168, 76%, 62%);
 
     --accent: hsl(168, 76%, 52%);
     --accent-hover: hsl(168, 76%, 62%);
@@ -479,13 +481,191 @@
     font-family: var(--font-mono);
   }
   .bento-step h3 {
-    font-size: 20px;
-    margin-bottom: var(--sp-2);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-emphasis);
+    margin-bottom: var(--sp-3);
   }
   .bento-step p {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.7;
+  }
+  
+  /* Installation section enhancements */
+  #get-started {
+    padding: var(--sp-16) var(--sp-6) calc(var(--sp-16) * 1.5);
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      var(--accent-subtle) 30%,
+      var(--accent-subtle) 70%,
+      transparent 100%
+    );
+    position: relative;
+  }
+  
+  #get-started::before,
+  #get-started::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--accent);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+  
+  #get-started::before {
+    top: var(--sp-12);
+    left: var(--sp-6);
+    border-right: none;
+    border-bottom: none;
+    border-radius: var(--r-xl) 0 0 0;
+  }
+  
+  #get-started::after {
+    bottom: var(--sp-12);
+    right: var(--sp-6);
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 var(--r-xl) 0;
+  }
+  
+  /* Installation box hero styling */
+  .installation-hero {
+    background: linear-gradient(135deg, 
+      var(--accent-subtle) 0%, 
+      var(--bg-raised) 20%, 
+      var(--bg-raised) 80%, 
+      var(--accent-subtle) 100%
+    );
+    border: 2px solid var(--accent-muted);
+    box-shadow: 
+      0 4px 24px hsla(168, 76%, 52%, 0.15),
+      0 0 0 1px hsla(168, 76%, 52%, 0.1) inset,
+      var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    padding: var(--sp-8);
+  }
+  
+  .installation-hero::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -50%;
+    width: 200%;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent) 50%,
+      transparent
+    );
+    animation: scan 4s ease-in-out infinite;
+  }
+  
+  @keyframes scan {
+    0%, 100% { transform: translateX(0); opacity: 0.3; }
+    50% { transform: translateX(25%); opacity: 0.8; }
+  }
+  
+  /* Enhanced pre/code styling */
+  pre {
+    background: hsl(172, 12%, 8%) !important;
+    color: var(--text-code) !important;
+    border: 1px solid hsl(168, 30%, 18%) !important;
+    box-shadow: 
+      inset 0 1px 3px hsla(0, 0%, 0%, 0.4),
+      0 2px 8px hsla(168, 76%, 52%, 0.08) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    padding: var(--sp-4) var(--sp-6) !important;
+    border-radius: var(--r-md) !important;
+    overflow-x: auto !important;
+    cursor: pointer;
+    user-select: all;
+    transition: all 0.25s var(--ease-out);
+  }
+  
+  pre:hover {
+    background: hsl(172, 12%, 10%) !important;
+    border-color: var(--accent) !important;
+    transform: scale(1.01);
+    box-shadow: 
+      inset 0 1px 3px hsla(0, 0%, 0%, 0.4),
+      0 4px 16px var(--accent-glow) !important;
+  }
+  
+  pre::selection {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  
+  /* Keyboard key styling */
+  kbd {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-heading);
+    background: linear-gradient(180deg, var(--bg-card), var(--bg-base));
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    box-shadow: 
+      0 1px 0 var(--border-subtle),
+      0 2px 0 hsla(0, 0%, 0%, 0.2),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.05);
+    text-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.3);
+    letter-spacing: 0.5px;
+  }
+  
+  /* Copy button styling */
+  .btn-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-6);
+    font-size: 15px;
+    font-weight: 600;
+    background: var(--bg-card);
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  
+  .btn-copy:hover {
+    background: var(--accent);
+    color: var(--accent-text);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--accent-glow);
+  }
+  
+  .btn-copy.copied {
+    background: hsl(130, 60%, 45%);
+    border-color: hsl(130, 60%, 45%);
+    color: white;
+  }
+  
+  /* Focus states for accessibility */
+  .bento-step:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  
+  .bento-step:hover p {
+    color: var(--text-primary);
+    transition: color 0.25s;
   }
 
   /* ─────────────────────────────────────────────────────────────
@@ -803,19 +983,18 @@
 <div class="steps-section reveal" id="get-started">
   <h2>Installation</h2>
   <div style="max-width: 720px; margin: 0 auto;">
-    <div class="bento-step" style="background: var(--bg-raised); border: 2px solid var(--accent-muted); margin-bottom: var(--sp-4);">
-      <h3 style="margin-bottom: var(--sp-2); color: var(--text-heading);">1. Open Terminal</h3>
-      <p style="margin-bottom: var(--sp-4); font-size: 15px; color: var(--text-secondary);">Press <kbd style="background: var(--bg-card); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--accent-muted); font-family: var(--font-mono); color: var(--accent);">⌘ Space</kbd>, type "Terminal", press Enter</p>
+    <div class="installation-hero">
+      <h3>1. Open Terminal</h3>
+      <p style="margin-bottom: var(--sp-4);">Hold <kbd>Command (⌘)</kbd> and press <kbd>Space</kbd>, type "Terminal", press Enter</p>
       
-      <h3 style="margin-bottom: var(--sp-2); color: var(--text-heading);">2. Run this command:</h3>
-      <pre style="background: var(--bg-base); padding: var(--sp-4); border-radius: var(--r-md); overflow-x: auto; font-family: var(--font-mono); font-size: 13px; color: var(--accent); border: 1px solid var(--border);">curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash</pre>
+      <h3>2. Run this command:</h3>
+      <pre>curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash</pre>
     </div>
     <div style="text-align: center; margin-top: var(--sp-4);">
-      <button onclick="copyInstallCommand()" class="cta-primary" style="border: none;">
-        <span id="copyBtnText">Copy Command</span>
-        <span class="arrow">→</span>
+      <button onclick="copyInstallCommand()" class="btn-copy" id="copyBtn">
+        <span id="copyBtnText">📋 Copy to Clipboard</span>
       </button>
-      <p style="margin-top: var(--sp-3); font-size: 14px; color: var(--text-secondary);">Click to copy, then paste into Terminal (<kbd style="background: var(--bg-card); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--accent-muted); font-family: var(--font-mono); font-size: 12px; color: var(--accent);">⌘V</kbd>)</p>
+      <p style="margin-top: var(--sp-3); font-size: 14px; color: var(--text-secondary);">Click to copy, then paste into Terminal (hold <kbd>Command (⌘)</kbd> and press <kbd>V</kbd>)</p>
     </div>
   </div>
 </div>
@@ -917,6 +1096,20 @@
   </div>
 </div>
 
+<!-- Community CTA -->
+<div class="trust-section reveal">
+  <div class="trust-panel" style="max-width: 640px;">
+    <h2>Join the Community</h2>
+    <p>Get 1:1 help from Watson, share feedback, and connect with other beta testers.</p>
+    <div style="margin-top: var(--sp-6);">
+      <a href="https://discord.gg/UCjDDjNcZq" class="cta-primary" target="_blank" style="text-decoration: none;">
+        <span>Join Discord (Beta Tester Role)</span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- FAQ -->
 <div class="faq-section reveal">
   <h2>Questions?</h2>
@@ -1005,20 +1198,6 @@
   </div>
 </div>
 
-<!-- Community CTA -->
-<div class="trust-section reveal">
-  <div class="trust-panel" style="max-width: 640px;">
-    <h2>Join the Community</h2>
-    <p>Get 1:1 help from Watson, share feedback, and connect with other beta testers.</p>
-    <div style="margin-top: var(--sp-6);">
-      <a href="https://discord.gg/UCjDDjNcZq" class="cta-primary" target="_blank" style="text-decoration: none;">
-        <span>Join Discord (Beta Tester Role)</span>
-        <span class="arrow">→</span>
-      </a>
-    </div>
-  </div>
-</div>
-
 <!-- Footer -->
 <footer>
   <p>Built by <a href="https://x.com/jeremyknows" target="_blank">@jeremyknows</a> with <a href="https://x.com/askwatson" target="_blank">@askwatson</a> (AI)</p>
@@ -1033,16 +1212,35 @@
 function copyInstallCommand() {
   const command = 'curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash';
   navigator.clipboard.writeText(command).then(function() {
-    const btn = document.getElementById('copyBtnText');
-    const originalText = btn.textContent;
-    btn.textContent = 'Copied!';
+    const btn = document.getElementById('copyBtn');
+    const btnText = document.getElementById('copyBtnText');
+    const originalText = btnText.textContent;
+    
+    btn.classList.add('copied');
+    btnText.textContent = '✅ Copied!';
+    
     setTimeout(function() {
-      btn.textContent = originalText;
+      btn.classList.remove('copied');
+      btnText.textContent = originalText;
     }, 2000);
   }).catch(function(err) {
     alert('Failed to copy. Please copy manually from the box above.');
   });
 }
+
+/* ── Click-to-copy on pre block ── */
+document.addEventListener('DOMContentLoaded', function() {
+  const preBlock = document.querySelector('pre');
+  if (preBlock) {
+    preBlock.addEventListener('click', function() {
+      copyInstallCommand();
+      this.style.background = 'hsl(130, 60%, 15%)';
+      setTimeout(function() {
+        preBlock.style.background = '';
+      }, 500);
+    });
+  }
+});
 
 /* ── Play Video ── */
 function playVideo() {
