@@ -262,13 +262,23 @@ step2_configure() {
     echo ""
     echo -e "${BOLD}What's your monthly AI spending budget?${NC}"
     echo ""
-    echo "  1. Budget (~$5-15/mo)   → Fast, cheap models"
-    echo "  2. Balanced (~$15-50/mo) → Good quality, reasonable cost"
-    echo "  3. Premium (~$50+/mo)    → Best models, no limits"
+    echo "  1. Budget (~\$5-15/mo)"
+    echo "     → Good for simple tasks, summaries, quick lookups"
+    echo "     → Models: Kimi K2.5, GPT-5 Nano"
+    echo ""
+    echo -e "  ${GREEN}2. Balanced (~\$15-50/mo) ⭐ RECOMMENDED${NC}"
+    echo "     → Best value — handles most tasks well"
+    echo "     → Models: Claude Sonnet, Kimi K2.5"
+    echo ""
+    echo "  3. Premium (~\$50+/mo)"
+    echo "     → For complex research, coding, strategic work"
+    echo "     → Models: Claude Opus, Claude Sonnet"
+    echo ""
+    echo -e "${DIM}Most people are happy with Balanced. You can upgrade anytime.${NC}"
     echo ""
     
     local spend_choice
-    spend_choice=$(prompt "Choose [1/2/3]" "2")
+    spend_choice=$(prompt "Type 1, 2, or 3 and press Enter" "2")
     
     case "$spend_choice" in
         1)
@@ -297,14 +307,16 @@ step2_configure() {
     echo ""
     echo -e "${BOLD}What personality style do you prefer?${NC}"
     echo ""
-    echo "  1. Professional (formal, structured responses)"
-    echo "  2. Casual (friendly, conversational tone)"
-    echo "  3. Direct (concise, no fluff)"
-    echo "  4. Custom (you'll configure later)"
+    echo "  1. Professional — Formal, structured responses"
+    echo -e "  ${GREEN}2. Casual ⭐ RECOMMENDED${NC} — Friendly, conversational"
+    echo "  3. Direct — Concise, no fluff"
+    echo "  4. Custom — Configure later in SOUL.md"
+    echo ""
+    echo -e "${DIM}You can change this anytime by editing SOUL.md in your workspace.${NC}"
     echo ""
     
     local personality_choice
-    personality_choice=$(prompt "Choose [1/2/3/4]" "2")
+    personality_choice=$(prompt "Type 1, 2, 3, or 4 and press Enter" "2")
     
     local bot_personality
     case "$personality_choice" in
@@ -547,6 +559,11 @@ step3_start_gateway() {
     echo -e "  ${INFO} Add Discord/Telegram: See full setup guide"
     echo -e "  ${INFO} Advanced security: See Foundation Playbook Phase 1"
     echo -e "  ${INFO} Sleep prevention: Run ${CYAN}sudo pmset -a sleep 0${NC}"
+    echo ""
+    echo -e "${BOLD}💡 Model tips:${NC}"
+    echo -e "  ${INFO} For complex tasks: Use Claude Sonnet or Opus"
+    echo -e "  ${INFO} For simple lookups: GPT-5 Nano is fast and cheap"
+    echo -e "  ${INFO} Change models anytime: ${CYAN}/model sonnet${NC} in chat"
     echo ""
     
     # Offer to open dashboard
