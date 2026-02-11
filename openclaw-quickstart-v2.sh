@@ -282,6 +282,197 @@ step2_configure() {
 }
 
 # ═══════════════════════════════════════════════════════════════════
+# Skill Packs (Optional Add-ons)
+# ═══════════════════════════════════════════════════════════════════
+
+offer_skill_packs() {
+    echo ""
+    echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+    echo -e "  ${STEP} ${BOLD}Bonus: Skill Packs${NC}"
+    echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "${DIM}Your bot works great now! These optional packs add superpowers.${NC}"
+    echo ""
+    
+    if ! confirm "Browse skill packs?"; then
+        info "Skipped. Add later with: openclaw skills add <name>"
+        return 0
+    fi
+    
+    echo ""
+    echo -e "${BOLD}Available Skill Packs:${NC}"
+    echo ""
+    echo "  1. 🔬 ${BOLD}Quality Pack${NC} — Better debugging & code review"
+    echo "     ${DIM}systematic-debugging, TDD, verification, code-review${NC}"
+    echo ""
+    echo "  2. 🔍 ${BOLD}Research Pack${NC} — Deep research capabilities"
+    echo "     ${DIM}x-research (Twitter), summarize, web scraping${NC}"
+    echo ""
+    echo "  3. 🎨 ${BOLD}Media Pack${NC} — Image & audio creation"
+    echo "     ${DIM}image generation, whisper transcription, TTS${NC}"
+    echo ""
+    echo "  4. 🏠 ${BOLD}Home Pack${NC} — Personal automation"
+    echo "     ${DIM}weather, iMessage, WhatsApp${NC}"
+    echo ""
+    echo "  5. ⏭️  ${BOLD}Skip${NC} — I'm good for now"
+    echo ""
+    
+    local packs_input
+    packs_input=$(prompt "Add packs (e.g., 1,2 or Enter to skip)" "5")
+    
+    # Skip logic: 5 or empty means skip ALL
+    if [[ "$packs_input" == "5" ]] || [[ -z "$packs_input" ]]; then
+        info "No additional packs. Add later with: openclaw skills add"
+        return 0
+    fi
+    
+    local workspace_dir="$HOME/.openclaw/workspace"
+    
+    # Safety check: Ensure AGENTS.md exists
+    if [ ! -f "$workspace_dir/AGENTS.md" ]; then
+        warn "AGENTS.md not found, creating minimal file"
+        echo "# Agent Instructions" > "$workspace_dir/AGENTS.md"
+    fi
+    
+    # Quality Pack
+    if [[ "$packs_input" == *"1"* ]]; then
+        echo ""
+        info "Installing Quality Pack..."
+        
+        # Check for duplicate
+        if grep -q "QUALITY_PACK_INSTALLED" "$workspace_dir/AGENTS.md" 2>/dev/null; then
+            warn "Quality Pack already installed, skipping"
+        else
+            cat >> "$workspace_dir/AGENTS.md" << 'QUALITYEOF'
+
+<!-- QUALITY_PACK_INSTALLED -->
+## Quality Methodology (from Quality Pack)
+
+These are thinking frameworks, not commands. Apply them when working:
+
+| Methodology | When to Apply |
+|-------------|---------------|
+| systematic-debugging | Before proposing fixes — diagnose root cause first |
+| verification-before-completion | Before claiming done — run tests, show proof |
+| test-driven-development | Before implementation — write tests first |
+| complete-code-review | When reviewing code — multiple passes |
+| receiving-feedback | When getting review — verify suggestions before applying |
+
+*These skills are auto-loaded. Just follow the approach.*
+QUALITYEOF
+            pass "Quality Pack added"
+        fi
+    fi
+    
+    # Research Pack
+    if [[ "$packs_input" == *"2"* ]]; then
+        echo ""
+        info "Installing Research Pack..."
+        
+        # Add tap first!
+        brew tap steipete/tap 2>/dev/null || true
+        
+        # Install summarize with feedback
+        if brew install steipete/tap/summarize 2>/dev/null; then
+            pass "summarize installed"
+        else
+            command -v summarize >/dev/null && pass "summarize already installed" || warn "summarize install failed"
+        fi
+        
+        # Check for duplicate
+        if grep -q "RESEARCH_PACK_INSTALLED" "$workspace_dir/AGENTS.md" 2>/dev/null; then
+            warn "Research Pack already in AGENTS.md, skipping"
+        else
+            cat >> "$workspace_dir/AGENTS.md" << 'RESEARCHEOF'
+
+<!-- RESEARCH_PACK_INSTALLED -->
+## Research Skills (from Research Pack)
+
+| Skill | What It Does |
+|-------|--------------|
+| x-research-skill | Search X/Twitter for trends, takes, discourse |
+| summarize | Summarize articles, YouTube videos, podcasts |
+| web_fetch | Extract readable content from URLs (built-in) |
+
+*For X research, just ask: "Research what people are saying about [topic] on X"*
+RESEARCHEOF
+            pass "Research Pack configured"
+        fi
+    fi
+    
+    # Media Pack
+    if [[ "$packs_input" == *"3"* ]]; then
+        echo ""
+        info "Installing Media Pack..."
+        
+        # Install ffmpeg with feedback
+        if brew install ffmpeg 2>/dev/null; then
+            pass "ffmpeg installed"
+        else
+            command -v ffmpeg >/dev/null && pass "ffmpeg already installed" || warn "ffmpeg install failed"
+        fi
+        
+        # Check for duplicate
+        if grep -q "MEDIA_PACK_INSTALLED" "$workspace_dir/AGENTS.md" 2>/dev/null; then
+            warn "Media Pack already in AGENTS.md, skipping"
+        else
+            cat >> "$workspace_dir/AGENTS.md" << 'MEDIAEOF'
+
+<!-- MEDIA_PACK_INSTALLED -->
+## Media Skills (from Media Pack)
+
+| Skill | What It Does | Needs |
+|-------|--------------|-------|
+| image | Generate images | Your AI provider |
+| tts | Text-to-speech | Built-in |
+| video-frames | Extract frames from video | ffmpeg (installed) |
+| openai-whisper-api | Transcribe audio | OPENAI_API_KEY |
+
+*Try: "Generate an image of..." or "Transcribe this audio file"*
+MEDIAEOF
+            pass "Media Pack configured"
+        fi
+        echo -e "  ${DIM}Whisper transcription requires OPENAI_API_KEY in your environment.${NC}"
+    fi
+    
+    # Home Pack
+    if [[ "$packs_input" == *"4"* ]]; then
+        echo ""
+        info "Installing Home Pack..."
+        
+        # Add tap for home tools
+        brew tap steipete/tap 2>/dev/null || true
+        
+        # Check for duplicate
+        if grep -q "HOME_PACK_INSTALLED" "$workspace_dir/AGENTS.md" 2>/dev/null; then
+            warn "Home Pack already in AGENTS.md, skipping"
+        else
+            cat >> "$workspace_dir/AGENTS.md" << 'HOMEEOF'
+
+<!-- HOME_PACK_INSTALLED -->
+## Home Automation Skills (from Home Pack)
+
+| Skill | What It Does | Setup |
+|-------|--------------|-------|
+| weather | Weather lookups | None — just ask |
+| imsg | iMessage automation | Needs permissions |
+| wacli | WhatsApp messaging | Needs QR auth |
+
+*Try: "What's the weather in NYC?" (works immediately)*
+
+To enable iMessage: `brew install steipete/tap/imsg`
+To enable WhatsApp: `brew install steipete/tap/wacli`
+HOMEEOF
+            pass "Home Pack configured"
+        fi
+        echo -e "  ${DIM}Weather works now. iMessage/WhatsApp need separate install.${NC}"
+    fi
+    
+    echo ""
+    pass "Skill packs configured!"
+}
+
+# ═══════════════════════════════════════════════════════════════════
 # STEP 3: Start Bot
 # ═══════════════════════════════════════════════════════════════════
 
@@ -446,6 +637,9 @@ PLISTEOF
     else
         die "Gateway failed. Check: tail /tmp/openclaw/gateway.log"
     fi
+    
+    # ─── Skill Packs (Optional) ───
+    offer_skill_packs
     
     # ─── Success! ───
     echo ""
