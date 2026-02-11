@@ -803,10 +803,10 @@
       <p style="margin-top: var(--sp-4); font-size: 14px; color: var(--text-tertiary);">Copy and paste into Terminal, press Enter. The script will guide you through setup.</p>
     </div>
     <div style="text-align: center;">
-      <a href="x-apple.terminal" class="cta-primary" style="text-decoration: none;">
-        <span>Open Terminal</span>
+      <button onclick="copyInstallCommand()" class="cta-primary" style="border: none;">
+        <span id="copyBtnText">Copy Command</span>
         <span class="arrow">→</span>
-      </a>
+      </button>
     </div>
   </div>
 </div>
@@ -1020,6 +1020,21 @@
 </footer>
 
 <script>
+/* ── Copy Install Command ── */
+function copyInstallCommand() {
+  const command = 'curl -fsSL https://raw.githubusercontent.com/jeremyknows/clawstarter/main/openclaw-quickstart-v2.sh | bash';
+  navigator.clipboard.writeText(command).then(function() {
+    const btn = document.getElementById('copyBtnText');
+    const originalText = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(function() {
+      btn.textContent = originalText;
+    }, 2000);
+  }).catch(function(err) {
+    alert('Failed to copy. Please copy manually from the box above.');
+  });
+}
+
 /* ── Theme Toggle ── */
 function toggleTheme() {
   var html = document.documentElement;
