@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Your personal AI assistant. Runs on your Mac. No coding required. Set up in 30 minutes.">
-<title>OpenClaw - Your Personal AI, Running on Your Mac</title>
+<meta name="description" content="Your personal AI assistant. Runs on your Mac. No coding required. Set up in 2 minutes.">
+<title>ClawStarter - Your Personal AI, Running on Your Mac</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -221,7 +222,11 @@
     color: var(--text-heading);
     text-decoration: none;
   }
-  .logo-icon { font-size: 28px; }
+  .logo-icon { 
+    width: 28px; 
+    height: 28px; 
+    object-fit: contain;
+  }
   .theme-toggle {
     width: 36px;
     height: 36px;
@@ -760,7 +765,7 @@
 <nav>
   <div class="nav-inner">
     <a href="#" class="logo">
-      <span class="logo-icon">🦞</span>
+      <img src="favicon.png" alt="ClawStarter" class="logo-icon">
       <span>ClawStarter</span>
     </a>
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">☀</button>
