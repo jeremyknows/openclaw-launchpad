@@ -36,6 +36,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# ═══════════════════════════════════════════════════════════════════
+# ERROR TRAPPING (v2.7 - Debug failing at Question 1→2 transition)
+# ═══════════════════════════════════════════════════════════════════
+trap 'echo -e "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"; echo -e "❌ SCRIPT FAILED AT LINE $LINENO"; echo -e "Last command: $BASH_COMMAND"; echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"; echo ""; echo "Please screenshot and send to Watson." >&2' ERR
+
 # ─── Constants ───
 readonly SCRIPT_VERSION="2.6.0-secure"
 readonly MIN_NODE_VERSION="22"
@@ -1080,6 +1085,12 @@ step2_configure() {
     if [ "$model_validation" != "OK" ]; then
         die "Internal error: default model not in allowlist"
     fi
+    
+    # DEBUG: Confirm Question 1 complete
+    echo ""
+    echo -e "${GREEN}✓ Question 1 complete${NC} — API key configured"
+    echo ""
+    sleep 1
     
     # ─── Question 2: Use Case (Multi-Select with validation) ───
     echo ""
