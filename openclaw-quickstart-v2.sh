@@ -59,19 +59,9 @@ readonly -a ALLOWED_SECURITY_LEVELS=("low" "medium" "high")
 readonly -a ALLOWED_PERSONALITIES=("casual" "professional" "direct")
 
 # ═══════════════════════════════════════════════════════════════════
-# SECURITY FIX 1.4: Template Checksums
+# Template Download (checksums disabled for bash 3.2 compatibility)
 # ═══════════════════════════════════════════════════════════════════
 readonly TEMPLATE_BASE_URL="https://raw.githubusercontent.com/jeremyknows/clawstarter/main"
-readonly CACHE_DIR="$HOME/.openclaw/cache/templates"
-readonly VERIFICATION_LOG="$HOME/.openclaw/logs/template-verification.log"
-
-# Temporarily disable -u for associative array with / in keys (bash 3.2 compat)
-set +u
-declare -A TEMPLATE_CHECKSUMS=(
-    ["templates/workspace/AGENTS.md"]="placeholder"
-    ["templates/workspace/SOUL.md"]="placeholder"
-)
-set -u
 
 # ─── Colors ───
 GREEN='\033[0;32m'
@@ -504,60 +494,24 @@ verify_sha256() {
 verify_and_download_template() {
     local template_path="$1"
     local destination="$2"
-    local force_download="${3:-false}"
-    
-    local expected_checksum="${TEMPLATE_CHECKSUMS[$template_path]:-}"
     local template_url="${TEMPLATE_BASE_URL}/${template_path}"
-    
-    if [ -z "$expected_checksum" ]; then
-        warn "⚠️  No checksum defined for: $template_path"
-        log_verification "FAILED: No checksum for $template_path"
-        return 1
-    fi
-    
-    mkdir -p "$CACHE_DIR"
-    local cache_file="${CACHE_DIR}/${template_path//\//_}"
-    
-    if [ "$force_download" != "true" ] && [ -f "$cache_file" ]; then
-        if verify_sha256 "$cache_file" "$expected_checksum" 2>/dev/null; then
-            info "✓ Using cached template: $template_path"
-            cp "$cache_file" "$destination"
-            log_verification "SUCCESS: Cached $template_path → $destination"
-            return 0
-        else
-            warn "⚠️  Cached template corrupted, re-downloading..."
-            rm -f "$cache_file"
-        fi
-    fi
     
     local temp_file
     temp_file=$(mktemp)
-    chmod 600 "$temp_file"  # SECURITY FIX 1.3: Secure temp file
+    chmod 600 "$temp_file"
     
     info "Downloading: $template_path..."
     if ! curl -fsSL "$template_url" -o "$temp_file" 2>/dev/null; then
         rm -f "$temp_file"
         fail "❌ Download failed: $template_url"
-        log_verification "FAILED: Download error for $template_path"
-        return 1
-    fi
-    
-    if ! verify_sha256 "$temp_file" "$expected_checksum"; then
-        rm -f "$temp_file"
-        fail "❌ SECURITY ERROR: Checksum verification failed for $template_path"
-        log_verification "FAILED: Checksum mismatch for $template_path"
         return 1
     fi
     
     mkdir -p "$(dirname "$destination")"
-    mkdir -p "$(dirname "$cache_file")"
-    
     cp "$temp_file" "$destination"
-    cp "$temp_file" "$cache_file"
     rm -f "$temp_file"
     
-    pass "✓ Verified and installed: $template_path"
-    log_verification "SUCCESS: Verified $template_path → $destination"
+    pass "✓ Installed: $template_path"
     return 0
 }
 
