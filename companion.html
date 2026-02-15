@@ -1315,12 +1315,35 @@
     </div>
     <div class="step-content">
       <div style="text-align: center; margin: var(--sp-8) 0;">
-        <a href="openclaw-autosetup.sh" download="install.sh" class="btn btn-primary btn-large">
+        <button class="btn btn-primary btn-large" onclick="showDownloadDisclaimer()" id="download-trigger-btn">
           <span>📥 Download Install Script</span>
-        </a>
+        </button>
         <p style="margin-top: var(--sp-3); color: var(--text-tertiary); font-size: 14px;">
           File will download to your Downloads folder
         </p>
+      </div>
+      
+      <!-- Download Disclaimer Modal -->
+      <div id="download-disclaimer-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="max-width: 500px; background: var(--surface); border-radius: 16px; padding: var(--sp-8); text-align: center; margin: var(--sp-4);">
+          <h3 style="font-size: 24px; margin-bottom: var(--sp-4);">🦞 Ready to Dive In?</h3>
+          <p style="margin-bottom: var(--sp-4); line-height: 1.6;">
+            You're about to embark on a wonderful journey designing your personal AI agent!
+          </p>
+          <p style="margin-bottom: var(--sp-6); color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+            Just so you know: AI agent technology is still experimental and comes with various associated risks. Your bot will have access to tools on your computer — that's what makes it powerful, but also why we recommend the security practices in this guide.
+          </p>
+          <label style="display: flex; align-items: center; justify-content: center; gap: var(--sp-3); margin-bottom: var(--sp-6); cursor: pointer;">
+            <input type="checkbox" id="disclaimer-checkbox" onchange="updateDownloadButton()" style="width: 20px; height: 20px; cursor: pointer;">
+            <span style="font-weight: 600;">Yes, I'm ready to dive in! 🦞</span>
+          </label>
+          <div style="display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="hideDownloadDisclaimer()">Cancel</button>
+            <a href="openclaw-autosetup.sh" download="install.sh" class="btn btn-primary" id="modal-download-btn" style="opacity: 0.5; pointer-events: none;" onclick="hideDownloadDisclaimer()">
+              Download
+            </a>
+          </div>
+        </div>
       </div>
 
       <details class="collapsible">
@@ -1649,6 +1672,15 @@
         </details>
       </div>
 
+      <!-- Discord Community Call-Out -->
+      <div class="instruction info" style="margin-top: var(--sp-6); background: linear-gradient(135deg, rgba(88, 101, 242, 0.15), rgba(88, 101, 242, 0.05)); border-left-color: #5865F2;">
+        <div class="instruction-title" style="color: #5865F2;">💬 Join the OpenClaw Community</div>
+        <p style="margin-bottom: var(--sp-4);">Get help, share tips, and connect with other OpenClaw users!</p>
+        <a href="https://discord.gg/UCjDDjNcZq" target="_blank" class="btn btn-primary" style="background: #5865F2; border-color: #5865F2;">
+          Join Discord Server →
+        </a>
+      </div>
+
       <h3 style="font-size: 20px; margin-bottom: var(--sp-4); margin-top: var(--sp-8);">Try your first prompt:</h3>
       <div class="command-block">
         <button class="btn-copy" onclick="copyCommand(this, 'Read BOOTSTRAP.md and run through the setup questions with me.')" aria-label="Copy first prompt">Copy</button>
@@ -1659,7 +1691,7 @@
       <div class="expandable">
         <div class="expandable-item">
           <div class="expandable-header" onclick="toggleExpandable(this)">
-            <div class="expandable-title">💬 Add Discord (recommended)</div>
+            <div class="expandable-title">💬 Add Discord channel (recommended)</div>
             <span class="expandable-icon">▸</span>
           </div>
           <div class="expandable-content">
@@ -1676,14 +1708,47 @@
 
         <div class="expandable-item">
           <div class="expandable-header" onclick="toggleExpandable(this)">
-            <div class="expandable-title">📱 Add other channels</div>
+            <div class="expandable-title">📱 Add Telegram (fastest mobile setup)</div>
+            <span class="expandable-icon">▸</span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-body">
+              <p>Chat with your bot from your phone via Telegram. Copy this message and paste it into your bot's chat:</p>
+              <div class="command-block">
+                <button class="btn-copy" onclick="copyCommand(this, 'Help me set up Telegram. I want to chat with you from my phone.')" aria-label="Copy Telegram setup request">Copy</button>
+                <code>Help me set up Telegram. I want to chat with you from my phone.</code>
+              </div>
+              <p style="margin-top: var(--sp-3);">Just needs a BotFather token — takes about 5 minutes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="expandable-item">
+          <div class="expandable-header" onclick="toggleExpandable(this)">
+            <div class="expandable-title">🍎 Add iMessage (Apple users)</div>
+            <span class="expandable-icon">▸</span>
+          </div>
+          <div class="expandable-content">
+            <div class="expandable-body">
+              <p>Chat with your bot via iMessage on your Mac, iPhone, or iPad. Copy this message and paste it into your bot's chat:</p>
+              <div class="command-block">
+                <button class="btn-copy" onclick="copyCommand(this, 'Help me set up iMessage. I want to chat with you from my iPhone.')" aria-label="Copy iMessage setup request">Copy</button>
+                <code>Help me set up iMessage. I want to chat with you from my iPhone.</code>
+              </div>
+              <p style="margin-top: var(--sp-3);">Requires macOS permissions setup — takes about 15 minutes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="expandable-item">
+          <div class="expandable-header" onclick="toggleExpandable(this)">
+            <div class="expandable-title">📱 More channels</div>
             <span class="expandable-icon">▸</span>
           </div>
           <div class="expandable-content">
             <div class="expandable-body">
               <ul style="margin-left: var(--sp-6); line-height: 1.8;">
-                <li><strong>Telegram</strong> — Fast mobile access (5 min setup)</li>
-                <li><strong>iMessage</strong> — Apple ecosystem users (15 min setup)</li>
+                <li><strong>WhatsApp</strong> — Ask your bot: "How do I set up WhatsApp?"</li>
                 <li><strong>Slack</strong> — <span style="color: var(--text-tertiary);">Coming soon</span></li>
               </ul>
               <p style="margin-top: var(--sp-3);">Ask your bot: "How do I set up [channel name]?"</p>
@@ -2192,6 +2257,33 @@ function copyCommand(btn, text) {
   }).catch(() => {
     alert('Failed to copy. Please copy manually.');
   });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DOWNLOAD DISCLAIMER MODAL
+   ══════════════════════════════════════════════════════════ */
+function showDownloadDisclaimer() {
+  const modal = document.getElementById('download-disclaimer-modal');
+  modal.style.display = 'flex';
+  document.getElementById('disclaimer-checkbox').checked = false;
+  updateDownloadButton();
+}
+
+function hideDownloadDisclaimer() {
+  const modal = document.getElementById('download-disclaimer-modal');
+  modal.style.display = 'none';
+}
+
+function updateDownloadButton() {
+  const checkbox = document.getElementById('disclaimer-checkbox');
+  const btn = document.getElementById('modal-download-btn');
+  if (checkbox.checked) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
