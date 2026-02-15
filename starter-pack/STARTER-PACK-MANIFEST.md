@@ -31,6 +31,13 @@ The starter pack gives you a **battle-tested OpenClaw setup** based on our produ
 - **Privacy guidelines** — What to share, what to protect
 - **Safe defaults** — Pre-configured for shared computer safety
 
+### Skills (5 Essential)
+- **PRISM** — Multi-perspective review protocol (catch blind spots before they become bugs)
+- **systematic-debugging** — Methodical troubleshooting (don't guess, investigate)
+- **verification-before-completion** — Test your work before claiming it's done
+- **receiving-feedback** — Anti-sycophancy framework (evaluate feedback critically)
+- **markdown-fetch** — 80% token savings on web content (via markdown.new)
+
 ---
 
 ## 🎯 Value Proposition
@@ -62,6 +69,13 @@ The starter pack gives you a **battle-tested OpenClaw setup** based on our produ
 │   └── treasurer          ← Cost tracking CLI
 └── cron/
     └── [5 pre-configured jobs]
+
+~/.openclaw/skills/
+├── prism/                 ← Multi-perspective review (5+ agents audit your work)
+├── systematic-debugging/  ← Methodical troubleshooting protocol
+├── verification-before-completion/ ← Test before claiming done
+├── receiving-feedback/    ← Anti-sycophancy (evaluate, don't just accept)
+└── markdown-fetch/        ← 80% token savings on web fetches
 
 ~/.openclaw/workspace-librarian/
 ├── AGENTS.md              ← Librarian's operating manual
