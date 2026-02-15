@@ -31,11 +31,23 @@ The starter pack gives you a **battle-tested OpenClaw setup** based on our produ
 - **Privacy guidelines** — What to share, what to protect
 - **Safe defaults** — Pre-configured for shared computer safety
 
-### Skills (5 Essential)
-- **PRISM** — Multi-perspective review protocol (catch blind spots before they become bugs)
+### Skills (10 Core — PRISM-Curated)
+*"The 10 skills we wish we'd had on day one."*
+
+**Quality & Discipline:**
+- **prism** — Multi-perspective review (5+ agents audit your work, catch blind spots)
 - **systematic-debugging** — Methodical troubleshooting (don't guess, investigate)
 - **verification-before-completion** — Test your work before claiming it's done
 - **receiving-feedback** — Anti-sycophancy framework (evaluate feedback critically)
+- **test-driven-development** — Write tests first, then implement
+
+**Workflow & Memory:**
+- **brainstorming** — Structured exploration before building (understand intent first)
+- **commit-commands** — Git workflow automation (/commit, /commit-push-pr)
+- **update-docs** — Keep documentation in sync with code
+- **librarian** — Memory curation (synthesize daily logs into long-term context)
+
+**Efficiency:**
 - **markdown-fetch** — 80% token savings on web content (via markdown.new)
 
 ---
@@ -71,11 +83,16 @@ The starter pack gives you a **battle-tested OpenClaw setup** based on our produ
     └── [5 pre-configured jobs]
 
 ~/.openclaw/skills/
-├── prism/                 ← Multi-perspective review (5+ agents audit your work)
+├── brainstorming/         ← Structured exploration before building
+├── commit-commands/       ← Git workflow automation
+├── librarian/             ← Memory curation and synthesis
+├── markdown-fetch/        ← 80% token savings on web fetches
+├── prism/                 ← Multi-perspective review (5+ agents)
+├── receiving-feedback/    ← Anti-sycophancy framework
 ├── systematic-debugging/  ← Methodical troubleshooting protocol
-├── verification-before-completion/ ← Test before claiming done
-├── receiving-feedback/    ← Anti-sycophancy (evaluate, don't just accept)
-└── markdown-fetch/        ← 80% token savings on web fetches
+├── test-driven-development/ ← Write tests first
+├── update-docs/           ← Keep docs in sync with code
+└── verification-before-completion/ ← Test before claiming done
 
 ~/.openclaw/workspace-librarian/
 ├── AGENTS.md              ← Librarian's operating manual
