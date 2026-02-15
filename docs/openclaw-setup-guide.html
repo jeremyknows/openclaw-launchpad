@@ -601,6 +601,32 @@
     </div>
 
     <div class="config-section">
+      <h3>Account Setup (Optional but Recommended)</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">If you're enabling Email or iMessage/Notes, consider creating dedicated accounts for cleaner separation.</p>
+      
+      <div class="callout info">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Gmail for Google Services:</strong> Create a dedicated Gmail account for your bot to use with <code>gog</code> skills (Gmail, Calendar, Drive). OAuth setup is required. Using a separate account keeps bot activity isolated from your personal email.
+        </div>
+      </div>
+      
+      <div class="callout info" data-requires="imessage">
+        <span class="callout-icon">🍎</span>
+        <div>
+          <strong>Apple ID (macOS only):</strong> For iMessage, Apple Notes, and Reminders, consider creating a separate Apple ID for your bot user. This keeps bot messages and notes separate from your personal iCloud data.
+        </div>
+      </div>
+      
+      <details>
+        <summary>Can I use my personal accounts instead?</summary>
+        <div class="detail-body">
+          <p>Yes, but dedicated accounts provide better isolation. Your bot's messages, calendar events, and notes won't mix with your personal data. You can always start with personal accounts and migrate later.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="config-section">
       <h3>How do you want to set up?</h3>
       <div class="config-grid cols-3">
         <div class="config-card selected" onclick="setConfig('autonomy','manual')" data-config="autonomy:manual">
