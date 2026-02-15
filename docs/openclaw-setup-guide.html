@@ -1292,6 +1292,76 @@ openclaw doctor</div><button class="copy-btn" onclick="copyCode('code-final')">C
   </div>
 </div>
 
+<!-- ═══════ PAGE 12: First Connection ═══════ -->
+<div class="page" data-page="12">
+  <div class="card">
+    <h2>Connect to Your Bot</h2>
+    <p>The script is done! Now let's connect to your bot's dashboard.</p>
+
+    <h3>1. Open the dashboard</h3>
+    <p>The terminal showed you a URL that looks like this:</p>
+    <div class="code-wrapper"><div class="code-block">http://127.0.0.1:18789</div></div>
+    <p>Click it or paste it into your browser. You should see the OpenClaw dashboard.</p>
+
+    <h3>2. Paste your gateway token</h3>
+    <p>The terminal also showed you a gateway token (a long random string).</p>
+    <ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px;">
+      <li>Click <strong>Control UI</strong> in the top-right corner of the dashboard</li>
+      <li>Paste your token into the <strong>Gateway Token</strong> field</li>
+      <li>Click <strong>Connect</strong></li>
+    </ul>
+    
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Don't see the token?</strong> Run this command to find it:<br><code style="font-size:12px;">jq -r '.gateway.token' ~/.openclaw/openclaw.json</code></div>
+    </div>
+
+    <h3>3. Send your first message</h3>
+    <p>Click <strong>Chat</strong> in the sidebar and say hello!</p>
+    
+    <div class="callout success">
+      <span class="callout-icon">✅</span>
+      <div><strong>Success!</strong> If your bot responds, you're all set. Welcome to OpenClaw!</div>
+    </div>
+
+    <h3>Troubleshooting</h3>
+    <details>
+      <summary>Dashboard shows "disconnected (1008): unauthorized"</summary>
+      <div class="detail-body">
+        <p>This means the gateway token is missing or incorrect.</p>
+        <ol>
+          <li>Find your token: <div class="code-wrapper" style="margin-top:8px;"><div class="code-block" style="font-size:12px;">jq -r '.gateway.token' ~/.openclaw/openclaw.json</div></div></li>
+          <li>Open <strong>Control UI</strong> (top-right corner of dashboard)</li>
+          <li>Paste the token and click <strong>Connect</strong></li>
+        </ol>
+      </div>
+    </details>
+
+    <details>
+      <summary>Dashboard won't load at all</summary>
+      <div class="detail-body">
+        <p>The gateway might not be running. Check its status:</p>
+        <div class="code-wrapper"><div class="code-block">openclaw gateway status</div></div>
+        <p style="margin-top:8px;">If it's not running, start it:</p>
+        <div class="code-wrapper" style="margin-top:8px;"><div class="code-block">openclaw gateway start</div></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Gateway is running but port not listening</summary>
+      <div class="detail-body">
+        <p>The gateway may need a moment to start. Wait 10-15 seconds and refresh the dashboard.</p>
+        <p style="margin-top:8px;">If it still doesn't work, restart the gateway:</p>
+        <div class="code-wrapper" style="margin-top:8px;"><div class="code-block">openclaw gateway restart</div></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="footer">
+    <p>Need more help? Visit <a href="https://docs.openclaw.ai" target="_blank">docs.openclaw.ai</a> or join the Discord community.</p>
+  </div>
+</div>
+
 </div><!-- /container -->
 
 <!-- Bottom Nav -->
@@ -1306,7 +1376,7 @@ openclaw doctor</div><button class="copy-btn" onclick="copyCode('code-final')">C
 
 <script>
 const STORAGE_KEY = 'openclaw-setup-v2';
-const PAGE_NAMES = ['Welcome', 'Configure', 'Step 1: Prepare Mac', 'Step 2: Node.js', 'Step 3: OpenClaw', 'Step 4: API Keys', 'Step 5: Wizard', 'Step 6: Verify', 'Step 7: Discord', 'Step 8: Final Check', 'Script Setup', 'Complete'];
+const PAGE_NAMES = ['Welcome', 'Configure', 'Step 1: Prepare Mac', 'Step 2: Node.js', 'Step 3: OpenClaw', 'Step 4: API Keys', 'Step 5: Wizard', 'Step 6: Verify', 'Step 7: Discord', 'Step 8: Final Check', 'Script Setup', 'Complete', 'First Connection'];
 const TOTAL_PAGES = PAGE_NAMES.length;
 let currentPage = 0;
 

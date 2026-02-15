@@ -1295,14 +1295,41 @@ step_run_onboard() {
     if ! pause_for_human "Run the onboarding wizard in this terminal:\n\n  ${CYAN}openclaw onboard --install-daemon${NC}\n\n  Follow the prompts. Save the gateway auth token.\n  You can re-run 'openclaw onboard' safely if needed."; then
         warn "Skipped onboarding wizard"
         info "Run later: openclaw onboard --install-daemon"
+        mark_step "$step_name"
+        return 0
     fi
 
     # Verify onboarding completed
     if [ -f "$CONFIG_FILE" ]; then
         pass "Config file created: ${CONFIG_FILE}"
     else
-        warn "Config file not found — onboarding may not have completed"
-        info "Re-run: openclaw onboard --install-daemon"
+        echo ""
+        fail "Config file not found: ${CONFIG_FILE}"
+        echo ""
+        info "The onboarding wizard should have created this file."
+        info "Did you complete the wizard?"
+        echo ""
+        echo -e "  ${BOLD}Options:${NC}"
+        echo -e "    1. Re-run: ${CYAN}openclaw onboard --install-daemon${NC}"
+        echo -e "    2. Skip for now (you can run it later)"
+        echo ""
+        
+        if confirm "Re-run onboarding now?"; then
+            openclaw onboard --install-daemon
+            
+            # Check again
+            if [ ! -f "$CONFIG_FILE" ]; then
+                echo ""
+                fail "Config file still not found. Cannot continue."
+                info "Run 'openclaw onboard' manually and then re-run this script with --resume"
+                exit 1
+            else
+                pass "Config file created successfully"
+            fi
+        else
+            warn "Onboarding skipped — config file will not be created"
+            info "Note: Subsequent steps may fail without a valid config"
+        fi
     fi
 
     mark_step "$step_name"
@@ -2216,6 +2243,25 @@ step_run_doctor() {
         warn "openclaw doctor exited with code ${doctor_exit}"
     fi
 
+    # Extract and display gateway token if it was generated
+    if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
+        local gateway_token
+        gateway_token=$(jq -r '.gateway.token // empty' "$CONFIG_FILE" 2>/dev/null || echo "")
+        
+        if [ -n "$gateway_token" ] && [ "$gateway_token" != "null" ]; then
+            echo ""
+            echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+            echo -e "${BOLD}  🔑 Gateway Token Generated${NC}"
+            echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+            echo ""
+            echo -e "  Your gateway token: ${CYAN}${gateway_token}${NC}"
+            echo ""
+            info "Save this token — you'll need it to connect the dashboard"
+            info "You can always find it in: ${CONFIG_FILE}"
+            echo ""
+        fi
+    fi
+
     mark_step "$step_name"
 }
 
@@ -2228,16 +2274,8 @@ step_final_verify() {
 
     step_header "Final Verification"
 
-    # Try to run the verify script
-    if [ -f "$VERIFY_SCRIPT" ]; then
-        info "Running openclaw-verify.sh for comprehensive check..."
-        echo ""
-        bash "$VERIFY_SCRIPT" || true
-        echo ""
-    else
-        info "Verification script not found at: ${VERIFY_SCRIPT}"
-        info "Running built-in checks instead..."
-        echo ""
+    info "Running built-in configuration checks..."
+    echo ""
 
         local checks_pass=0
         local checks_fail=0
@@ -2334,7 +2372,43 @@ step_final_verify() {
         else
             echo -e "  ${YELLOW}${BOLD}${checks_fail} issue(s) to address${NC}"
         fi
+
+    # Display connection instructions
+    echo ""
+    echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+    echo -e "${BOLD}  🎉 Setup Complete!${NC}"
+    echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "  Your OpenClaw bot is ready. Here's how to connect:"
+    echo ""
+    echo -e "  ${BOLD}1️⃣  Open the dashboard:${NC}"
+    echo -e "     ${CYAN}http://127.0.0.1:${GATEWAY_PORT}${NC}"
+    echo ""
+    
+    # Extract and show token
+    if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
+        local gateway_token
+        gateway_token=$(jq -r '.gateway.token // empty' "$CONFIG_FILE" 2>/dev/null || echo "")
+        
+        if [ -n "$gateway_token" ] && [ "$gateway_token" != "null" ]; then
+            echo -e "  ${BOLD}2️⃣  Paste your gateway token when prompted:${NC}"
+            echo -e "     ${CYAN}${gateway_token}${NC}"
+            echo ""
+            echo -e "     ${DIM}(Find it anytime in ~/.openclaw/openclaw.json)${NC}"
+        else
+            echo -e "  ${BOLD}2️⃣  Generate a gateway token:${NC}"
+            echo -e "     ${CYAN}openclaw doctor --generate-gateway-token${NC}"
+        fi
+    else
+        echo -e "  ${BOLD}2️⃣  Generate a gateway token:${NC}"
+        echo -e "     ${CYAN}openclaw doctor --generate-gateway-token${NC}"
     fi
+    
+    echo ""
+    echo -e "  ${BOLD}3️⃣  Start chatting with your bot!${NC}"
+    echo ""
+    echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+    echo ""
 
     mark_step "$step_name"
 }
@@ -2393,6 +2467,19 @@ main() {
 
     echo ""
     if ! $RESUME; then
+        # Show helpful intro for first-time users
+        echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+        echo -e "${BOLD}  Before we begin:${NC}"
+        echo -e "${BOLD}═══════════════════════════════════════════════════════${NC}"
+        echo ""
+        info "You'll be asked to confirm each step (press y + Enter)"
+        info "Some steps require your password (you won't see it as you type — this is normal)"
+        info "The whole process takes about 5-10 minutes"
+        info "You can safely quit and resume anytime"
+        echo ""
+        echo -e "  ${BOLD}Ready? Let's go! 🚀${NC}"
+        echo ""
+        
         if [ "$MODE" != "minimal" ]; then
             if ! confirm "Ready to begin?"; then
                 info "Exiting. Re-run when ready."
