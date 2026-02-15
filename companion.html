@@ -1463,93 +1463,65 @@
     <div class="step-header">
       <div class="step-number">Step 8 of 10</div>
       <h2 class="step-title">Answer the Questions</h2>
-      <p class="step-description">The script will ask you a few questions.</p>
+      <p class="step-description">The OpenClaw setup wizard will ask you a few questions.</p>
     </div>
     <div class="step-content">
+      <div class="instruction info" style="margin-bottom: var(--sp-6);">
+        <div class="instruction-title">ℹ️ What You'll Be Asked</div>
+        <p>The wizard will guide you through setup. Here's what to expect:</p>
+        <ul style="margin-left: var(--sp-6); margin-top: var(--sp-3); line-height: 1.8;">
+          <li><strong>AI Provider:</strong> Choose OpenRouter (recommended, $5-10 to start) or Anthropic</li>
+          <li><strong>API Key:</strong> Paste your API key (or press Enter to use free tier)</li>
+          <li><strong>Gateway Port:</strong> Accept the default (18789)</li>
+          <li><strong>Install Daemon:</strong> Say yes (keeps your bot running 24/7)</li>
+        </ul>
+        <p style="margin-top: var(--sp-3);"><strong>For most questions:</strong> Press <kbd>Enter</kbd> to accept the default.</p>
+      </div>
+
       <div class="instruction warning" style="margin-bottom: var(--sp-6);">
-        <div class="instruction-title">⚠️ IMPORTANT: Skip the Config Wizard</div>
-        <p style="font-size: 18px; font-weight: 700; margin-bottom: var(--sp-3);">When you see "OpenClaw Config Wizard", press <kbd>ESC</kbd> immediately</p>
-        <p>The wizard asks 20+ questions about tool permissions. ClawStarter already has a curated config — skipping saves 10 minutes.</p>
-      </div>
-
-      <h3 style="font-size: 20px; margin-bottom: var(--sp-4);">API Key Setup</h3>
-      <div class="terminal">
-        <span class="terminal-output">Which AI provider?</span><br>
-        <span class="terminal-output">1) OpenRouter (recommended - $5-10 to start)</span><br>
-        <span class="terminal-output">2) Anthropic (premium)</span><br>
-        <span class="terminal-output">3) Both</span><br>
-        <span class="terminal-prompt">Enter 1, 2, or 3:</span>
-      </div>
-
-      <div class="instruction">
-        <div class="instruction-title">👉 What to do (Option 1 — OpenRouter):</div>
-        <p>1. Type <strong>1</strong> and press <kbd>Enter</kbd></p>
-        <p>2. Paste your OpenRouter API key and press <kbd>Enter</kbd></p>
-      </div>
-
-      <div class="instruction">
-        <div class="instruction-title">💡 Typical costs: $5-15/month</div>
-        <p>• Simple chats: ~$0.01 each</p>
-        <p>• Complex tasks: ~$0.05-0.10 each</p>
-        <p>• You control your budget — set a limit in OpenRouter</p>
+        <div class="instruction-title">⚠️ SAVE THE GATEWAY TOKEN</div>
+        <p style="font-size: 18px; font-weight: 700; margin-bottom: var(--sp-3);">When you see a long random string (the gateway token), COPY IT SOMEWHERE SAFE.</p>
+        <p>You'll need this token to connect to the dashboard. Think of it like a password for your bot.</p>
+        <p style="margin-top: var(--sp-2); font-size: 14px; color: var(--text-secondary);">💡 Don't have a place to save it? Paste it into Notes, Messages, or take a screenshot.</p>
       </div>
 
       <details class="collapsible">
         <summary>🔑 Don't have an API key? Get one now</summary>
         <div class="collapsible-content">
-          <h4 style="margin-bottom: var(--sp-2);">OpenRouter (Recommended)</h4>
+          <h4 style="margin-bottom: var(--sp-2);">OpenRouter (Recommended — $5-10 to start)</h4>
           <ol style="margin-left: var(--sp-6); margin-top: var(--sp-2); line-height: 1.8;">
             <li>Go to <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--accent);">openrouter.ai/keys</a></li>
             <li>Sign up with email or Google</li>
             <li>Add $5-10 in credits</li>
-            <li>Create an API key in Settings</li>
-            <li>Copy the key (starts with <code>sk-or-v1-</code>) — <strong>save it somewhere safe!</strong> You won't be able to see it again.</li>
-            <li>Return to Terminal and paste it</li>
+            <li>Create an API key (starts with <code>sk-or-v1-</code>)</li>
+            <li><strong>Save it somewhere safe!</strong> You won't be able to see it again.</li>
+            <li>Return to Terminal and paste it when prompted</li>
           </ol>
-          <h4 style="margin-top: var(--sp-4); margin-bottom: var(--sp-2);">Or: Use Free Tier</h4>
-          <p>Just press <kbd>Enter</kbd> to skip. You'll use OpenCode's free model (no signup needed).</p>
+          
+          <h4 style="margin-top: var(--sp-4); margin-bottom: var(--sp-2);">Or: Use the Free Tier</h4>
+          <p>Just press <kbd>Enter</kbd> when asked for an API key. You'll use OpenCode's free model (no signup needed, limited features).</p>
+          
+          <h4 style="margin-top: var(--sp-4); margin-bottom: var(--sp-2);">💡 Typical Costs</h4>
+          <ul style="margin-left: var(--sp-6); line-height: 1.8;">
+            <li>Simple chats: ~$0.01 each</li>
+            <li>Complex tasks: ~$0.05-0.10 each</li>
+            <li>Most users spend $5-15/month</li>
+          </ul>
+          <p style="margin-top: var(--sp-3); font-size: 14px; color: var(--text-secondary);">You control your budget — set a spending limit in OpenRouter settings.</p>
         </div>
       </details>
 
-      <h3 style="font-size: 20px; margin-top: var(--sp-8); margin-bottom: var(--sp-4);">Budget Selection</h3>
-      <div class="terminal">
-        <span class="terminal-output">Monthly spending budget?</span><br>
-        <span class="terminal-output">1) Budget (~$5-15/mo)</span><br>
-        <span class="terminal-output">2) Balanced (~$15-50/mo) ⭐ RECOMMENDED</span><br>
-        <span class="terminal-output">3) Premium ($50+/mo)</span><br>
-        <span class="terminal-prompt">Enter 1, 2, or 3:</span>
-      </div>
-
-      <div class="instruction">
-        <div class="instruction-title">👉 Recommended:</div>
-        <p>Type <strong>2</strong> (Balanced) and press <kbd>Enter</kbd></p>
-        <p>For all other questions: <strong>Press <kbd>Enter</kbd> to accept defaults</strong></p>
-      </div>
-
       <details class="collapsible">
-        <summary>💰 What do I get at each budget level?</summary>
+        <summary>⚙️ What if I see "OpenClaw Config Wizard"?</summary>
         <div class="collapsible-content">
-          <table style="width: 100%; border-collapse: collapse; margin: var(--sp-4) 0;">
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: var(--sp-3);"><strong>Budget ($5-15)</strong></td>
-              <td style="padding: var(--sp-3);">~50-100 conversations/month. Good for occasional use, quick questions, light automation.</td>
-            </tr>
-            <tr style="border-bottom: 1px solid var(--border);">
-              <td style="padding: var(--sp-3);"><strong>Balanced ($15-50)</strong></td>
-              <td style="padding: var(--sp-3);">~200-500 conversations/month. Daily use, writing, coding assistance, calendar management. <em>Most users pick this.</em></td>
-            </tr>
-            <tr>
-              <td style="padding: var(--sp-3);"><strong>Premium ($50+)</strong></td>
-              <td style="padding: var(--sp-3);">Heavy daily use, complex research, code generation, multi-agent workflows. Power user territory.</td>
-            </tr>
-          </table>
-          <p style="color: var(--text-secondary); font-size: 14px;">💡 You can always change this later in OpenRouter settings. Start balanced and adjust based on usage.</p>
+          <p style="margin-bottom: var(--sp-2);"><strong>Press <kbd>ESC</kbd> to skip it.</strong></p>
+          <p>The Config Wizard asks 20+ questions about tool permissions. ClawStarter already has a curated config — skipping saves 10 minutes and uses safer defaults.</p>
         </div>
       </details>
     </div>
     <div class="step-navigation">
       <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
-      <button class="btn btn-primary btn-large" onclick="nextStep()">See 'SUCCESS'? →</button>
+      <button class="btn btn-primary btn-large" onclick="nextStep()">Wizard complete? →</button>
     </div>
   </section>
 
