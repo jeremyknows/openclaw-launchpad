@@ -66,8 +66,8 @@
 
     --text-primary: hsl(168, 15%, 92%);
     --text-heading: hsl(165, 20%, 96%);
-    --text-secondary: hsl(170, 8%, 62%);
-    --text-tertiary: hsl(170, 6%, 42%);
+    --text-secondary: hsl(170, 8%, 72%);
+    --text-tertiary: hsl(170, 6%, 52%);
     --text-emphasis: hsl(168, 20%, 98%);
     --text-code: hsl(168, 76%, 62%);
 
@@ -1066,7 +1066,63 @@
     }
   }
 
-  /* Mobile optimizations for new features */
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE OPTIMIZATIONS (PRISM Mobile Review Fixes)
+     ══════════════════════════════════════════════════════════ */
+  
+  /* Progress bar: collapse to minimal on small screens */
+  @media (max-width: 600px) {
+    .progress-bar {
+      gap: var(--sp-1);
+    }
+    
+    .step-indicator {
+      /* Increase touch target to 44px minimum */
+      min-width: 44px;
+      min-height: 44px;
+      justify-content: center;
+      padding: var(--sp-2);
+    }
+    
+    .step-dot {
+      width: 8px;
+      height: 8px;
+    }
+    
+    /* Hide step numbers on very small screens, show only dots */
+    .step-indicator .step-number {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    /* Even more compact for iPhone SE */
+    .progress-bar {
+      gap: 2px;
+    }
+    
+    .step-indicator {
+      min-width: 32px;
+      padding: var(--sp-1);
+    }
+    
+    .step-dot {
+      width: 6px;
+      height: 6px;
+    }
+  }
+  
+  /* Command blocks: prevent overflow */
+  .command-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .command-block code {
+    word-break: break-word;
+  }
+
+  /* Download disclaimer modal: mobile fixes */
   @media (max-width: 480px) {
     #download-disclaimer-modal > div {
       padding: var(--sp-6);
@@ -1086,12 +1142,65 @@
       font-size: 13px;
     }
   }
+  
+  /* Floating help button for mobile (bottom-right, accessible) */
+  @media (max-width: 768px) {
+    .mobile-help-fab {
+      position: fixed;
+      bottom: var(--sp-6);
+      right: var(--sp-4);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .mobile-help-fab:active {
+      transform: scale(0.95);
+    }
+    
+    /* Hide header help button on mobile (use FAB instead) */
+    .wizard-header .help-toggle {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-help-fab {
+      display: none;
+    }
+  }
+  
+  /* Form inputs: prevent iOS zoom (ensure 16px minimum) */
+  input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
 </style>
 </head>
 <body>
 
 <!-- Overlay for help panel -->
 <div class="overlay" id="overlay" onclick="toggleHelp()"></div>
+
+<!-- Mobile floating help button (thumb-friendly, bottom-right) -->
+<button class="mobile-help-fab" onclick="toggleHelp()" aria-label="Get help">
+  ?
+</button>
 
 <!-- Fixed Header -->
 <div class="wizard-header" role="banner">
@@ -1345,9 +1454,9 @@
       </div>
       
       <!-- Download Disclaimer Modal -->
-      <div id="download-disclaimer-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="max-width: 500px; background: var(--surface); border-radius: 16px; padding: var(--sp-8); text-align: center; margin: var(--sp-4);">
-          <h3 style="font-size: 24px; margin-bottom: var(--sp-4);">🦞 Ready to Dive In?</h3>
+      <div id="download-disclaimer-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="max-width: 500px; background: var(--bg-card); border-radius: 16px; padding: var(--sp-8); text-align: center; margin: var(--sp-4);">
+          <h3 id="disclaimer-title" style="font-size: 24px; margin-bottom: var(--sp-4);">🦞 Ready to Dive In?</h3>
           <p style="margin-bottom: var(--sp-4); line-height: 1.6;">
             You're about to embark on a wonderful journey designing your personal AI agent!
           </p>
@@ -2100,11 +2209,13 @@ function updateStepIndicators() {
   for (let i = 1; i <= totalSteps; i++) {
     const indicator = document.getElementById('step-ind-' + i);
     indicator.classList.remove('active', 'completed', 'disabled');
+    indicator.removeAttribute('aria-current');
     
     if (i < currentStep) {
       indicator.classList.add('completed');
     } else if (i === currentStep) {
       indicator.classList.add('active');
+      indicator.setAttribute('aria-current', 'step');
     } else {
       indicator.classList.add('disabled');
     }
@@ -2291,11 +2402,44 @@ function showDownloadDisclaimer() {
   modal.style.display = 'flex';
   document.getElementById('disclaimer-checkbox').checked = false;
   updateDownloadButton();
+  
+  // Focus trap: focus first interactive element
+  const checkbox = document.getElementById('disclaimer-checkbox');
+  checkbox.focus();
+  
+  // Trap focus within modal
+  modal.addEventListener('keydown', trapFocus);
 }
 
 function hideDownloadDisclaimer() {
   const modal = document.getElementById('download-disclaimer-modal');
   modal.style.display = 'none';
+  modal.removeEventListener('keydown', trapFocus);
+  
+  // Return focus to trigger button
+  document.getElementById('download-trigger-btn').focus();
+}
+
+function trapFocus(e) {
+  if (e.key === 'Escape') {
+    hideDownloadDisclaimer();
+    return;
+  }
+  
+  if (e.key !== 'Tab') return;
+  
+  const modal = document.getElementById('download-disclaimer-modal');
+  const focusable = modal.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 function updateDownloadButton() {
