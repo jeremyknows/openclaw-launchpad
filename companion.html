@@ -1233,10 +1233,52 @@
           <p style="font-size: 14px; color: var(--text-tertiary);">Recommended for production use.</p>
         </div>
       </div>
+
+      <!-- User account creation instructions (shown when "Same Mac" is selected) -->
+      <div id="create-user-section" style="display: none; margin-top: var(--sp-8);">
+        <div class="instruction warning">
+          <div class="instruction-title">⚠️ FIRST: Create a new Mac user account</div>
+          <p>Before continuing, you need to create a separate user account for your bot and <strong>log into that account</strong>.</p>
+        </div>
+
+        <details class="collapsible" open style="margin-top: var(--sp-4);">
+          <summary>📝 How to Create a Bot User Account</summary>
+          <div class="collapsible-content">
+            <h4 style="margin-bottom: var(--sp-3); color: var(--text-heading);">Create the Account:</h4>
+            <ol style="margin-left: var(--sp-6); line-height: 2;">
+              <li>Click the <strong>Apple menu</strong>  (top left) → <strong>System Settings</strong></li>
+              <li>Click <strong>Users & Groups</strong> in the sidebar</li>
+              <li>Click <strong>Add User...</strong> (you may need to unlock with your password first)</li>
+              <li>Fill in:
+                <ul style="margin-left: var(--sp-4); margin-top: var(--sp-2); margin-bottom: var(--sp-2);">
+                  <li><strong>Full Name:</strong> <code>Watson</code> (or any name for your bot)</li>
+                  <li><strong>Account Name:</strong> <code>watson</code> (lowercase, no spaces)</li>
+                  <li><strong>Password:</strong> Something you'll remember</li>
+                  <li><strong>Account Type:</strong> <code>Administrator</code> (required)</li>
+                </ul>
+              </li>
+              <li>Click <strong>Create User</strong></li>
+            </ol>
+
+            <h4 style="margin: var(--sp-6) 0 var(--sp-3); color: var(--text-heading);">Log Into the New Account:</h4>
+            <ol style="margin-left: var(--sp-6); line-height: 2;">
+              <li>Click <strong>Apple menu</strong>  → <strong>Log Out [Your Name]</strong></li>
+              <li>At the login screen, click your new bot user (<strong>Watson</strong>)</li>
+              <li>Enter the password and wait for the desktop to load</li>
+              <li>Open Safari and return to this page: <code style="background: var(--bg-card); padding: 2px 8px; border-radius: 4px;">clawstarter.xyz/companion</code></li>
+            </ol>
+
+            <div class="instruction success" style="margin-top: var(--sp-4);">
+              <div class="instruction-title">✅ Ready to continue?</div>
+              <p>Once you're logged into the bot user account, click "I'm in the bot account" below.</p>
+            </div>
+          </div>
+        </details>
+      </div>
     </div>
     <div class="step-navigation">
       <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
-      <button class="btn btn-primary btn-large" id="path-next" onclick="nextStep()">Got it →</button>
+      <button class="btn btn-primary btn-large" id="path-next" onclick="nextStep()">Select a path above →</button>
     </div>
   </section>
 
@@ -2016,10 +2058,18 @@ function selectPath(path) {
   document.getElementById('path-same').classList.remove('selected');
   document.getElementById('path-dedicated').classList.remove('selected');
   
+  // Show/hide user creation instructions based on path
+  var createUserSection = document.getElementById('create-user-section');
+  var pathNextBtn = document.getElementById('path-next');
+  
   if (path === 'same') {
     document.getElementById('path-same').classList.add('selected');
+    if (createUserSection) createUserSection.style.display = 'block';
+    if (pathNextBtn) pathNextBtn.textContent = "I'm in the bot account →";
   } else {
     document.getElementById('path-dedicated').classList.add('selected');
+    if (createUserSection) createUserSection.style.display = 'none';
+    if (pathNextBtn) pathNextBtn.textContent = "Got it →";
   }
   
   safeSet('clawstarter-path', path);
