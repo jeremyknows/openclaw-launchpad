@@ -1,273 +1,611 @@
 ---
-last_mapped: 2026-02-10T15:32:18Z
-total_files: 28
-total_tokens: 129373
+last_mapped: 2026-02-15T14:44:38Z
+total_files: 187
+total_tokens: 783806
 ---
 
-# OpenClaw Setup Package — Codebase Map
+# ClawStarter — Codebase Map
 
 ## Overview
 
-A complete documentation package for setting up the OpenClaw AI agent framework on macOS. Targets non-technical founders. Written in Bash, HTML/CSS/JS, and Markdown — no build step, no dependencies beyond macOS defaults + Python 3.
-
-The package provides 4 setup paths (interactive HTML, markdown, Claude.ai conversational, Claude Code CLI), 2 automation scripts (19-step autosetup + 18-check verifier), 8 workspace personality templates, and an 8-phase post-setup hardening playbook.
+ClawStarter is a production-grade setup automation toolkit for OpenClaw (personal AI assistant framework). It packages battle-tested production workflows into a beginner-friendly installer with an interactive companion webpage. Built with bash 3.2 (macOS default), HTML/CSS/JS (no dependencies), and Markdown documentation.
 
 ```mermaid
 flowchart TB
-    subgraph entry["Entry Points"]
-        start_here["START-HERE.txt"]
-        readme["README.md"]
+    subgraph User_Entry
+        landing[index.html]
+        companion[companion.html]
     end
-
-    subgraph guides["Setup Guides"]
-        html_guide["setup-guide.html\n(interactive configurator)"]
-        md_guide["SETUP-GUIDE.md\n(markdown version)"]
+    
+    subgraph Installation
+        quickstart[openclaw-quickstart-v2.sh]
+        autosetup[openclaw-autosetup.sh]
+        verify[openclaw-verify.sh]
     end
-
-    subgraph ai_prompts["AI-Assisted Prompts"]
-        claude_code["CLAUDE-CODE-SETUP.md\n(CLI automation)"]
-        claude_ai["CLAUDE-SETUP-PROMPT.txt\n(conversational)"]
+    
+    subgraph Templates
+        workspace[templates/workspace/*]
+        starter[starter-pack/*]
+        workflows[workflows/*]
     end
-
-    subgraph scripts["Scripts"]
-        autosetup["autosetup.sh\n(19 steps)"]
-        verify["verify.sh\n(18 checks)"]
+    
+    subgraph Security
+        fixes[fixes/phase1-*.sh]
+        checksums[Template SHA256]
+        keychain[macOS Keychain]
     end
-
-    subgraph templates["Workspace Templates"]
-        scaffold["workspace-scaffold-prompt.md"]
-        ws_files["8 template files\n(AGENTS, SOUL, USER, etc.)"]
+    
+    subgraph Output
+        config[openclaw.json]
+        plist[LaunchAgent plist]
+        agent_workspace[~/.openclaw/workspace]
     end
-
-    subgraph post_setup["Post-Setup"]
-        playbook["Foundation Playbook\n(8 phases)"]
-    end
-
-    start_here --> html_guide
-    readme --> html_guide
-    html_guide -->|"generates"| claude_ai
-    html_guide --> autosetup
-    md_guide --> autosetup
-    claude_code --> autosetup
-    autosetup -->|"Step 12"| ws_files
-    scaffold --> ws_files
-    autosetup -->|"Step 19"| verify
-    ws_files -->|"first chat"| playbook
+    
+    landing --> companion
+    companion --> quickstart
+    quickstart --> workspace
+    quickstart --> keychain
+    workspace --> agent_workspace
+    quickstart --> config
+    quickstart --> plist
+    fixes --> quickstart
+    checksums --> workspace
+    autosetup --> verify
+    autosetup --> agent_workspace
+    starter --> agent_workspace
+    workflows --> agent_workspace
 ```
 
 ## Directory Structure
 
 ```
-openclaw-setup/
-├── docs/
-│   └── CODEBASE_MAP.md              # This file
-├── templates/
-│   ├── workspace/                    # 8 workspace template files (single source of truth)
-│   │   ├── AGENTS.md                 # Operating manual — startup, safety, memory discipline
-│   │   ├── BOOTSTRAP.md              # First-run wizard (self-deletes after completion)
-│   │   ├── HEARTBEAT.md              # Scheduled check configuration
-│   │   ├── IDENTITY.md               # Bot name, emoji, vibe
-│   │   ├── MEMORY.md                 # Long-term memory template
-│   │   ├── SOUL.md                   # Personality and communication style
-│   │   ├── TOOLS.md                  # Infrastructure docs (providers, channels, devices)
-│   │   └── USER.md                   # Owner profile and preferences
-│   └── workspace-scaffold-prompt.md  # Standalone prompt for manual workspace setup
-├── openclaw-autosetup.sh             # Automated 19-step setup script
-├── openclaw-verify.sh                # Post-setup diagnostic (18 checks)
-├── openclaw-setup-guide.html         # Interactive HTML guide with configurator
-├── OPENCLAW-SETUP-GUIDE.md           # Markdown setup guide (8 steps)
-├── OPENCLAW-CLAUDE-CODE-SETUP.md     # Claude Code CLI setup prompt (9 steps)
-├── OPENCLAW-CLAUDE-SETUP-PROMPT.txt  # Claude.ai conversational setup prompt (8 phases)
-├── OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md  # Post-setup hardening (8 phases)
-├── CLAUDE.md                         # Agent reference (this repo)
-├── README.md                         # Package index and navigation
-├── START-HERE.txt                    # Minimal entry point
-├── ROADMAP.md                        # Maintainer roadmap (not user-facing)
-├── LICENSE                           # MIT
-└── .gitignore
+clawstarter/
+├── companion.html                      # Interactive setup walkthrough
+├── index.html                          # Marketing landing page
+├── openclaw-quickstart-v2.sh          # Primary installer (v2.7.0-prism-fixed)
+├── openclaw-autosetup.sh              # 19-step automated setup
+├── openclaw-verify.sh                 # 18-check diagnostic
+├── CLAUDE.md                          # Agent reference (you are here)
+├── README.md                          # User-facing overview
+├── ROADMAP.md                         # Development roadmap
+├── SECURITY.md                        # Security policy
+├── CONTRIBUTING.md                    # Contributor guidelines
+├── LICENSE                            # MIT License
+├── docs/                              # Documentation
+│   ├── CODEBASE_MAP.md               # This file
+│   ├── subagent-1-core.md            # Core scripts analysis
+│   ├── subagent-2-templates.md       # Templates analysis
+│   ├── subagent-3-reviews.md         # PRISM review index
+│   └── subagent-4-fixes-research.md  # Security & research
+├── templates/                         # Workspace templates
+│   └── workspace/                     # 8 core templates
+│       ├── AGENTS.md                 # Operating manual
+│       ├── SOUL.md                   # Personality
+│       ├── IDENTITY.md               # Name/emoji/vibe
+│       ├── USER.md                   # Owner profile
+│       ├── MEMORY.md                 # Long-term memory
+│       ├── HEARTBEAT.md              # Daily rhythm
+│       ├── BOOTSTRAP.md              # First-run wizard (self-deletes)
+│       └── TOOLS.md                  # Infrastructure notes
+├── starter-pack/                      # Beginner-friendly configs
+│   ├── STARTER-PACK-MANIFEST.md      # Complete guide
+│   ├── AGENTS-STARTER.md             # Simplified operating manual
+│   ├── SOUL-STARTER.md               # Personality template
+│   ├── CRON-TEMPLATES.md             # 5 pre-configured jobs
+│   ├── SECURITY-AUDIT-PROMPT.md      # Self-audit checklist
+│   └── SKILLS-STARTER-PACK.md        # Skill installation guide
+├── workflows/                         # Domain-specific bundles
+│   ├── content-creator/              # Social, video, podcasts
+│   ├── app-builder/                  # Coding, GitHub, dev tools
+│   └── workflow-optimizer/           # Email, calendar, tasks
+├── fixes/                             # Security patches
+│   ├── phase1-1-api-key-security.sh
+│   ├── phase1-2-injection-prevention.sh
+│   ├── phase1-3-race-condition.sh
+│   ├── phase1-4-template-checksums.sh
+│   ├── phase1-5-plist-injection.sh
+│   ├── stdin-tty-fix.patch
+│   ├── re-enable-checksums.sh
+│   └── critical-fixes-tests.sh       # 52+ test cases
+└── reviews/                           # PRISM marathon output
+    ├── prism-01-security-audit.md    # Security findings
+    ├── prism-01-ux-flow.md           # UX analysis
+    ├── prism-05-positioning.md       # Business strategy
+    ├── prism-07-go-to-market.md      # GTM plan
+    └── PRISM-MARATHON-EXECUTIVE-SUMMARY.md
 ```
 
 ## Module Guide
 
-### Root — Setup Guides & Scripts
+### Root Scripts
 
-**Purpose:** Everything needed to go from zero to a running, secured OpenClaw agent on macOS.
+**openclaw-quickstart-v2.sh** — Primary installer
+- **Version:** 2.7.0-prism-fixed
+- **Size:** 19,470 tokens
+- **Purpose:** Security-hardened automated installation (3 questions, 15-20 minutes)
 
-**Entry point:** `START-HERE.txt` (points to `openclaw-setup-guide.html`)
+| Function | Purpose | Key exports |
+|----------|---------|-------------|
+| `step1_install()` | Homebrew + Node.js + OpenClaw installation | None (modifies system) |
+| `step2_configure()` | 3-question wizard (API key, use case, setup type) | Determines model/personality/security |
+| `step3_setup()` | Config generation, workspace scaffolding, LaunchAgent | Creates openclaw.json + plist |
+| `keychain_store()` | macOS Keychain integration | Stores API keys securely |
+| `validate_api_key()` | Format validation (sk-or-*, sk-ant-*) | Blocks invalid keys |
+| `verify_and_download_template()` | Template download + checksum verification | Downloads from GitHub |
+| `guided_api_signup()` | Interactive API key acquisition | Guides users through signup |
 
-| File | Purpose | Tokens |
-|------|---------|--------|
-| `openclaw-setup-guide.html` | Interactive guide with configurator; generates custom Claude.ai prompt on completion page | 27,024 |
-| `openclaw-autosetup.sh` | 19-step automated setup; idempotent steps, progress tracking, atomic config editing, security hardening (secrets migration, mDNS, gateway token) | 22,570 |
-| `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` | Post-setup hardening; 8 phases (one/week, Phase 1 urgent), 25 community gotchas appendix | 14,256 |
-| `openclaw-verify.sh` | Post-setup diagnostic; 18 check sections incl. FileVault, color-coded pass/fail/warn output | 7,787 |
-| `OPENCLAW-SETUP-GUIDE.md` | Markdown version of setup guide; 8 steps, security risks section, glossary | 6,548 |
-| `OPENCLAW-CLAUDE-CODE-SETUP.md` | Claude Code CLI prompt; 9 steps with 7 safety rules, troubleshooting | 6,238 |
-| `OPENCLAW-CLAUDE-SETUP-PROMPT.txt` | Conversational Claude.ai prompt; 8 phases, Terminal comfort assessment (A/B/C), warm personality | 3,688 |
-| `README.md` | Package index with file tables and ASCII decision tree | 1,380 |
-| `ROADMAP.md` | Maintainer roadmap; completed items, remaining work, deferred features | 404 |
-| `START-HERE.txt` | Absolute minimal entry point: "Open openclaw-setup-guide.html" | 52 |
+**openclaw-autosetup.sh** — Full automation (19 steps)
+- **Size:** 22,570 tokens
+- **Purpose:** Comprehensive setup with progress tracking and resume capability
 
-### Scripts — Security Architecture
+| Function | Purpose | Key exports |
+|----------|---------|-------------|
+| `atomic_config_edit()` | Atomic JSON config editing with rollback | Safe config updates |
+| `mark_step()` | Progress tracking to JSON file | Enables --resume |
+| `is_step_done()` | Check step completion status | Skip completed steps |
+| `pause_for_human()` | Human checkpoint for manual steps | Waits for user action |
 
-Both scripts now implement a comprehensive security hardening layer:
+**openclaw-verify.sh** — Post-install diagnostic (18 checks)
+- **Size:** 7,787 tokens
+- **Purpose:** Comprehensive verification with color-coded output
 
-**Python-embedded code safety:** All 22 Python blocks (12 in autosetup, 10 in verify) use `sys.argv` + single-quoted heredocs (`<< 'PYEOF'`) to prevent shell injection. No string interpolation of user data into Python code.
+| Check | Validates | Fix instructions |
+|-------|-----------|------------------|
+| Node.js version | v22+ requirement | Upgrade via Homebrew |
+| OpenClaw version | Min 2026.1.29, recommend 2026.2.9+ | Update via curl |
+| Gateway status | LaunchAgent loaded, port 18789 open | Restart gateway |
+| Config validity | JSON structure, permissions, API keys | Regenerate config |
+| Security | FileVault, exposed keys, TCC permissions | Enable encryption, move keys |
 
-**Secrets migration (autosetup Step 16 — `step_harden_secrets`):**
-1. Reads 7 known secret paths from `openclaw.json`
-2. Replaces plaintext values with `${ENV_VAR_NAME}` references
-3. Stores actual values in LaunchAgent plist `EnvironmentVariables` dict via PlistBuddy
-4. Generates cryptographic gateway token (`openssl rand -hex 32`) if missing or weak
-5. Disables mDNS/Bonjour via `OPENCLAW_DISABLE_BONJOUR=1`
-6. Exports `OPENCLAW_GATEWAY_TOKEN` to `~/.zshrc` for bridge script access
+### Web Pages
 
-**Known limitation:** OpenClaw gateway resolves `${VAR_NAME}` references and writes plaintext back to `openclaw.json` on restart. The LaunchAgent plist is the canonical secret store.
+**companion.html** — Interactive setup walkthrough
+- **Size:** 18,872 tokens
+- **Purpose:** Step-by-step guide synchronized with Terminal output
 
-**Key autosetup functions with line numbers:**
-- `progress_init/mark_step/is_step_done/show_progress` (110-210) — JSON progress tracking
-- `json_set/json_get/json_validate` (289-392) — Python 3 JSON manipulation
-- `atomic_config_edit` (398-462) — backup → edit → validate → rename
-- `version_gte` (468-477) — semver comparison via Python
-- 19 step functions (569-2238) — see `show_help()` for step descriptions
-- `main` (2244-2421) — orchestration with mode detection
+| Section | Purpose | Interactive elements |
+|---------|---------|---------------------|
+| Before You Start | Pre-install checklist | Checkboxes (localStorage) |
+| Steps 1-4 | Download + Terminal launch | Copy buttons |
+| Steps 5-10 | Terminal walkthrough | Accordions matching script output |
+| Now What? | Post-install actions | Links to dashboard/Discord |
 
-**Key verify check functions with line numbers:**
-- Sections 1-12 (41-478) — inline checks (user isolation, Node, OpenClaw, config, gateway, Discord, sleep, doctor, logs, access profiles, spending, security)
-- Section 13: FileVault (481-491) — `fdesetup status` check
-- `check_tcc_permissions` (496-534) — TCC database query
-- `check_memory_search` (539-608) — memory provider + API key validation
-- `check_api_connectivity` (613-653) — OpenRouter + Discord token check (skips `${...}` refs)
-- `check_docker_sandbox` (658-702) — Docker + sandbox mode
-- `check_workspace_templates` (707-740) — 7 expected template files
+**index.html** — Marketing landing page
+- **Size:** 13,875 tokens
+- **Purpose:** Video hero, feature highlights, installation quick-start
 
-### Templates — Workspace Files
+| Section | Purpose | Interactive elements |
+|---------|---------|---------------------|
+| Hero | Main value prop + CTA | Video player, copy command |
+| Installation | One-command install | Click-to-copy pre block |
+| Features | 6 feature cards | Hover effects |
+| FAQ | 8 common questions | Accordion |
 
-**Purpose:** Starter files for the bot's workspace (`~/.openclaw/workspace/`). Copied during autosetup Step 12 or via the scaffold prompt.
+### Starter Pack
 
-**Entry point:** `templates/workspace-scaffold-prompt.md` (manual setup) or autosetup Step 12 (scripted setup)
+**Purpose:** Pre-configured production-tested foundation for beginners (45KB total)
 
-| File | Purpose | Tokens |
-|------|---------|--------|
-| `workspace/AGENTS.md` | Operating manual — startup procedure, memory discipline, safety rules, heartbeat vs. cron decision tree | 2,850 |
-| `workspace/HEARTBEAT.md` | Daily check schedule (morning/midday/evening), alert decision tree, gateway watchdog | 2,083 |
-| `workspace/MEMORY.md` | Long-term knowledge base — critical rules, owner profile, projects, preferences, lessons, system state | 1,910 |
-| `workspace/SOUL.md` | Personality framework — communication principles, boundaries, decision-making | 1,627 |
-| `workspace/USER.md` | Owner profile — preferences, projects, working style, automation philosophy | 1,521 |
-| `workspace/BOOTSTRAP.md` | First-run wizard — 9 questions, fills IDENTITY/USER/SOUL/HEARTBEAT/MEMORY, self-deletes | 1,359 |
-| `workspace-scaffold-prompt.md` | Standalone prompt for workspace setup; creates dirs, copies templates, runs BOOTSTRAP | 809 |
-| `workspace/TOOLS.md` | Infrastructure docs — API providers table, channels, connected devices, env vars | 635 |
-| `workspace/IDENTITY.md` | Bot's name, nature, vibe, visual identity (emoji) | 506 |
+| File | Size | Purpose |
+|------|------|---------|
+| STARTER-PACK-MANIFEST.md | 12KB | Complete installation guide, operating costs, learning path |
+| AGENTS-STARTER.md | 7KB | Simplified operating manual (from 24KB production version) |
+| SOUL-STARTER.md | 4KB | Personality template |
+| CRON-TEMPLATES.md | 12KB | 5 pre-configured jobs (~$0.37/month overhead) |
+| SECURITY-AUDIT-PROMPT.md | 10KB | Self-service security checklist |
 
-**Template lifecycle:**
-1. Templates live in `templates/workspace/` (single source of truth)
-2. Autosetup Step 12 copies them with `cp -n` (won't overwrite existing)
-3. BOOTSTRAP.md runs on first chat (9 personalization questions)
-4. BOOTSTRAP fills in IDENTITY, USER, SOUL, HEARTBEAT, MEMORY
-5. BOOTSTRAP self-deletes (signals first-run complete)
-6. AGENTS.md governs every subsequent session (startup checklist, safety rules)
+### Workspace Templates
+
+**Purpose:** Universal base files for any OpenClaw agent
+
+| Template | Size | Purpose | Personalized by |
+|----------|------|---------|----------------|
+| AGENTS.md | 24KB | Complete operating manual | User (manual) |
+| SOUL.md | Variable | Personality framework | BOOTSTRAP.md |
+| IDENTITY.md | <1KB | Agent self-concept (name/emoji/vibe) | BOOTSTRAP.md |
+| USER.md | Variable | Owner profile | BOOTSTRAP.md |
+| MEMORY.md | Variable | Long-term knowledge base | BOOTSTRAP.md + ongoing |
+| HEARTBEAT.md | Variable | Daily rhythm configuration | BOOTSTRAP.md |
+| BOOTSTRAP.md | Variable | First-run wizard (self-deletes) | Self (deletes) |
+| TOOLS.md | Variable | Environment infrastructure notes | User (optional) |
+
+### Workflows
+
+**Purpose:** Domain-specific skill bundles with pre-configured AGENTS.md + skills + crons
+
+| Workflow | Best for | Difficulty | Time to value | Skills included |
+|----------|----------|------------|---------------|-----------------|
+| content-creator | Social, video, podcasts | Beginner | 5-10 min | summarize, gifgrep, tts, image |
+| app-builder | Coding, GitHub, dev tools | Intermediate | 10-15 min | github, jq, ripgrep |
+| workflow-optimizer | Email, calendar, tasks | Beginner | 5-10 min | gog, apple-notes, reminders, himalaya |
+
+Each workflow contains:
+- `AGENTS.md` — Domain-specific behavior
+- `GETTING-STARTED.md` — 5-minute setup guide
+- `TROUBLESHOOTING.md` — Common issues + fixes
+- `template.json` — Metadata (skills, crons, difficulty)
+- `skills.sh` — One-command installer
+- `crons/` — Pre-configured automation jobs
+
+### Fixes
+
+**Purpose:** Security patches applied to openclaw-quickstart-v2.sh (v2.7.0-prism-fixed)
+
+| Fix | Status | Impact | CVSS reduction |
+|-----|--------|--------|----------------|
+| stdin-tty-fix.patch | ✅ Applied | Fixes `curl \| bash` execution | N/A (usability) |
+| Phase 1.1: API Key Security | ✅ Applied | Keychain isolation | 9.0 → 5.0 |
+| Phase 1.2: Command Injection | ✅ Applied | Input validation, quoted heredocs | 5.0 → 3.0 |
+| Phase 1.3: Race Conditions | ✅ Applied | Atomic file creation | 3.0 → 2.0 |
+| Phase 1.4: Template Checksums | ⏳ Pending | MITM protection | 2.0 → 1.0 |
+| Phase 1.5: XML Injection | ✅ Applied | LaunchAgent plist escaping | 1.0 → 1.0 |
+
+**Total risk reduction:** 90% (CVSS 9.0 → 1.0 after all fixes)
+
+### Reviews
+
+**Purpose:** 20-PRISM marathon audit results (11/20 complete, 55% coverage)
+
+| Category | Files | Key findings |
+|----------|-------|--------------|
+| Synthesis | 3 files | NO-SHIP verdict, 4-5 hours to ship-ready |
+| Business Strategy | 7 files (PRISMs 5-11) | Position as "next step after ChatGPT" |
+| Technical | 9 files (PRISMs 1-4, 6) | Security excellent, UX needs companion page |
+| Cycle 2 | 5 files | Improvement validation after fixes |
 
 ## Data Flow
 
-### Setup Flow: Zero to Running Agent
+### User Journey: Download → Run → Configure → BOOTSTRAP → First Chat → Add Channel
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Guide as HTML Guide
-    participant Script as autosetup.sh
-    participant Verify as verify.sh
-    participant Bot as OpenClaw Agent
+    participant Browser
+    participant Terminal
+    participant Script
+    participant Keychain
+    participant Gateway
+    participant Agent
 
-    User->>Guide: Open setup-guide.html
-    Guide->>Guide: Configurator (provider, channels, autonomy)
-    Guide->>Script: User runs autosetup.sh
-    Script->>Script: Steps 1-7: Admin tasks (firewall, sleep, mac user)
-    Note over Script: User switches to bot account
-    Script->>Script: Steps 8-12: Install, onboard, scaffold workspace
-    Script->>Script: Steps 13-14: Discord, system hardening
-    Script->>Script: Steps 15-16: Permissions + secrets migration
-    Script->>Script: Steps 17-18: Access profile, doctor check
-    Script->>Verify: Step 19: Final verification
-    Verify-->>User: 18-section diagnostic report
-    User->>Bot: First chat
-    Bot->>Bot: Read BOOTSTRAP.md, ask 9 questions
-    Bot->>Bot: Fill IDENTITY, USER, SOUL, HEARTBEAT, MEMORY
-    Bot->>Bot: Delete BOOTSTRAP.md
-    Bot-->>User: Personalized agent ready
+    User->>Browser: Open companion.html
+    Browser->>User: Step-by-step guide
+    User->>Terminal: bash openclaw-quickstart-v2.sh
+    Script->>User: Question 1: API key?
+    User->>Script: Paste key (or guided signup)
+    Script->>Keychain: Store key securely
+    Script->>User: Question 2: Use case?
+    User->>Script: Content creator + Workflow optimizer
+    Script->>Script: Infer: casual personality, balanced tier
+    Script->>User: Question 3: Fresh account or same Mac?
+    User->>Script: Same Mac (for now)
+    Script->>Script: Install Homebrew, Node.js, OpenClaw
+    Script->>Script: Download templates (verify checksums)
+    Script->>Script: Generate openclaw.json with ${VAR_NAME} refs
+    Script->>Script: Create LaunchAgent plist with actual secrets
+    Script->>Gateway: Start gateway via launchctl
+    Gateway->>Gateway: Resolve ${VAR_NAME} from env vars
+    Script->>User: Setup complete! Dashboard: http://127.0.0.1:18789
+    User->>Agent: First chat
+    Agent->>Agent: BOOTSTRAP.md exists? Run wizard.
+    Agent->>User: 9 personalization questions
+    User->>Agent: Answers (name, timezone, preferences)
+    Agent->>Agent: Update IDENTITY.md, SOUL.md, USER.md, MEMORY.md
+    Agent->>Agent: Delete BOOTSTRAP.md (first-run complete)
+    Agent->>User: You're all set! What would you like to do?
 ```
 
-### Secrets Architecture (autosetup Step 16)
+### Template Download & Verification Flow
 
 ```mermaid
-flowchart LR
-    config["openclaw.json\n(${VAR_NAME} refs)"]
-    plist["LaunchAgent plist\n(EnvironmentVariables\ndict — actual values)"]
-    zshrc["~/.zshrc\n(GATEWAY_TOKEN\nexport)"]
-    gateway["OpenClaw Gateway\n(resolves ${...}\nat startup)"]
+sequenceDiagram
+    participant Script
+    participant GitHub
+    participant Checksum_DB
+    participant Workspace
 
-    plist -->|"launchctl loads"| gateway
-    config -->|"reads"| gateway
-    zshrc -->|"bridge scripts"| gateway
+    Script->>Checksum_DB: get_template_checksum("AGENTS.md")
+    Checksum_DB-->>Script: Expected: abc123...
+    Script->>GitHub: curl templates/workspace/AGENTS.md
+    GitHub-->>Script: File content
+    Script->>Script: shasum -a 256 (actual checksum)
+    Script->>Script: Compare expected vs actual
+    alt Checksums match
+        Script->>Workspace: cp template to ~/.openclaw/workspace/
+        Script-->>Script: ✅ Template verified
+    else Checksums mismatch
+        Script-->>Script: ⚠️ Warning (allow for upstream updates)
+        Script->>Workspace: cp template anyway (non-blocking)
+    end
 ```
 
-### Atomic Config Editing (autosetup.sh pattern)
+### API Key Storage & Resolution Flow
 
 ```mermaid
-flowchart LR
-    backup["Backup\nopenclaw.json\n→ .json.backup"]
-    edit["Edit via\nPython 3\njson_set()"]
-    validate["Validate\nwith Zod\nvia openclaw"]
-    commit["Rename\n.json.tmp\n→ .json"]
-    restore["Restore\nfrom\n.json.backup"]
+sequenceDiagram
+    participant User
+    participant Script
+    participant Keychain
+    participant Config
+    participant Plist
+    participant Gateway
 
-    backup --> edit --> validate
-    validate -->|"pass"| commit
-    validate -->|"fail"| restore
+    User->>Script: Paste API key: sk-or-v1-abc123
+    Script->>Script: validate_api_key() — check format
+    Script->>Keychain: keychain_store(openrouter-api-key, value)
+    Keychain-->>Script: Stored in ai.openclaw service
+    Script->>Config: Write ${OPENROUTER_API_KEY} reference
+    Script->>Plist: EnvironmentVariables dict: OPENROUTER_API_KEY=sk-or-v1-abc123
+    Script->>Gateway: launchctl load plist
+    Gateway->>Plist: Read env vars
+    Gateway->>Config: Resolve ${OPENROUTER_API_KEY}
+    Gateway->>Gateway: Rewrite config with plaintext (OpenClaw behavior)
+    Gateway-->>Gateway: ✅ Ready to make API calls
 ```
-
-## Cross-File Consistency
-
-These values MUST stay synchronized across all 7 content files:
-
-| Constant | Value | Files that reference it |
-|----------|-------|------------------------|
-| Min OpenClaw version | `2026.1.29` | All scripts + all docs |
-| Recommended version | `2026.2.9+` | All scripts + all docs |
-| CVE (RCE) | `CVE-2026-25253` (CVSS 8.8) | Playbook (full), others (plain English) |
-| CVE (cmd injection) | `CVE-2026-25157` | Playbook (full), others (plain English) |
-| API key prefix (OpenRouter) | `sk-or-v1-` | Scripts + all docs |
-| API key prefix (Anthropic) | `sk-ant-` | Scripts + all docs |
-| API key prefix (Voyage AI) | `pa-` | Scripts + all docs |
-| Access profiles | Explorer, Guarded, Restricted | Scripts + all docs |
-| Workspace templates | 8 files | Autosetup, scaffold prompt, Playbook |
 
 ## Conventions
 
-- **Naming:** Files use `OPENCLAW-` prefix + `SCREAMING-KEBAB-CASE` for docs, `lowercase` for scripts. Templates use `UPPERCASE.md`.
-- **Cross-file consistency:** All 7 content files reference the same CVE numbers, version thresholds, API key prefixes, and access profiles. When updating one, update all (see table above).
-- **CVE language:** User-facing files use plain English ("serious security bug that's been fixed"). CVE numbers kept in scripts and Foundation Playbook for technical contexts.
-- **Account-switching flow:** All admin/sudo tasks consolidated into Steps 1-7. User switches to bot user ONCE and stays there.
-- **Config editing:** Always atomic — backup, edit with Python 3, validate with Zod, rename or restore. Never edit `~/.openclaw/openclaw.json` directly.
-- **Python safety:** All embedded Python uses `sys.argv` + `<< 'PYEOF'` heredocs. Never interpolate shell variables into Python strings.
-- **Workspace templates:** Always `cp -n` from `templates/workspace/`. Never heredoc template content into scripts.
-- **Backup permissions:** `cp -p` preserves file permissions on backup copies.
-- **Color-coded output:** Both scripts use matching style — GREEN/PASS, RED/FAIL, YELLOW/WARN, CYAN/INFO.
-- **HTML conditional visibility:** `data-requires` attributes on elements, evaluated against configurator selections. `localStorage` with `sessionStorage` fallback.
+### Naming
+
+- **Scripts:** `openclaw-{action}.sh` (e.g., `openclaw-quickstart-v2.sh`)
+- **Templates:** `{PURPOSE}.md` in UPPERCASE (e.g., `AGENTS.md`, `SOUL.md`)
+- **Workflow packages:** `{domain}/{file}` (e.g., `content-creator/AGENTS.md`)
+- **Functions:** `snake_case()` (e.g., `validate_api_key()`, `step1_install()`)
+- **Constants:** `SCREAMING_SNAKE_CASE` (e.g., `DEFAULT_GATEWAY_PORT=18789`)
+
+### Security Patterns
+
+1. **Input validation:** All user inputs validated against strict allowlists before use
+2. **Quoted heredocs:** `<< 'EOF'` prevents shell expansion in literal content
+3. **Atomic file operations:** `touch + chmod 600` before write (eliminates race conditions)
+4. **XML escaping:** `escape_xml()` function for all LaunchAgent plist values
+5. **Checksum verification:** SHA256 for all downloaded templates (currently disabled, re-enable via fixes/re-enable-checksums.sh)
+6. **Keychain isolation:** API keys stored in macOS Keychain, not config files
+
+### Bash Compatibility (3.2)
+
+**Allowed:**
+- `set -euo pipefail` (strict mode)
+- `[[ ... ]]` tests (modern conditionals)
+- `read -r` (literal input)
+- Heredocs (both quoted and unquoted)
+- Indexed arrays
+- Case statements
+
+**Forbidden (Bash 4+ only):**
+- Associative arrays → Use case statements instead
+- `&>>` redirect → Use `2>&1` or `&>/dev/null`
+- `read -i` → Implement defaults manually
+- `**` globstar
+- `|&` pipe operator
+
+### Template Checksums
+
+**Format:** SHA256 hash lookup via case statement (bash 3.2 compatible)
+
+```bash
+get_template_checksum() {
+    local template_path="$1"
+    case "$template_path" in
+        "templates/workspace/AGENTS.md")
+            echo "abc123..." ;;
+        "templates/workspace/SOUL.md")
+            echo "def456..." ;;
+        *)
+            echo "" ;;
+    esac
+}
+```
+
+**Regeneration:** Run `fixes/generate-checksums.sh` after updating templates
+
+### Design System (Glacial Depths)
+
+**Color Palette:**
+- Background (dark): `#0A0E14` (hsl(172, 12%, 6%))
+- Background (light): `#F5F7F9` (hsl(168, 20%, 97%))
+- Accent: `#5CCFE6` (hsl(168, 76%, 52%)) — glacial cyan
+- Text: `#B3B1AD` (warm gray)
+- Success: `#BAE67E` (aurora green)
+
+**Spacing:** 8-point scale (8px, 16px, 24px, 32px, 40px, 48px)
+
+**Border Radius:** 6px (small), 12px (medium), 24px (large)
+
+**Accessibility:**
+- WCAG Level AA compliance
+- Focus indicators: 2px outline at 2px offset
+- Semantic HTML (`<nav>`, `<section>`, `<details>`, `<kbd>`)
+- ARIA labels on interactive elements
+- Reduced motion support
 
 ## Navigation Guide
 
-> These are the most actionable entries for agents working in this codebase.
+### To fix a bug in the install script
 
-- **To add a new setup step:** Add step function in `openclaw-autosetup.sh`, increment `STEP_TOTAL` (line 60), add to `main()` (lines 2295-2369), add to `show_help()` (lines 542-562). Add corresponding page in `openclaw-setup-guide.html`, section in `OPENCLAW-SETUP-GUIDE.md`, step in `OPENCLAW-CLAUDE-CODE-SETUP.md`, phase in `OPENCLAW-CLAUDE-SETUP-PROMPT.txt`. Update step/phase counts in all files.
-- **To add a verification check:** Add check function or inline section in `openclaw-verify.sh`, renumber subsequent sections, update results summary (lines 743-768).
-- **To modify security hardening:** Touch `step_harden_permissions()` (1756-1856), `step_harden_secrets()` (1858-1993), `step_apply_access_profile()` (1995-2075) in autosetup. Touch sections 12-13 in verify. Update `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` Phase 1 for consistency.
-- **To modify workspace templates:** Edit files in `templates/workspace/`. Autosetup copies from here (Step 12). Test with `workspace-scaffold-prompt.md` on a fresh workspace.
-- **To update provider/model recommendations:** Touch `openclaw-setup-guide.html` (configurator + tier cards), `OPENCLAW-SETUP-GUIDE.md` (Step 4 tables), `openclaw-autosetup.sh` (DEFAULT_MODEL + FALLBACK_MODEL + Step 10), `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md` (Configuration YAML). Keep API key prefixes consistent.
-- **To change the account-switching flow:** All admin tasks must stay in Steps 1-7 before Step 8. Touch `openclaw-autosetup.sh`, `openclaw-setup-guide.html` (Step 1), `OPENCLAW-SETUP-GUIDE.md` (Step 1), both Claude prompts (Phase 1).
-- **To update CVE references:** Touch all 7 content files: `openclaw-autosetup.sh`, `openclaw-verify.sh`, `openclaw-setup-guide.html`, `OPENCLAW-SETUP-GUIDE.md`, `OPENCLAW-CLAUDE-CODE-SETUP.md`, `OPENCLAW-CLAUDE-SETUP-PROMPT.txt`, `OPENCLAW-FOUNDATION-PLAYBOOK-TEMPLATE.md`. Plain English in user-facing, CVE numbers in technical.
-- **To update version thresholds:** Search for `2026.1.29` and `2026.2.9` across all files. Touch `openclaw-autosetup.sh` (MIN_VERSION, REC_VERSION), `openclaw-verify.sh` (version comparison), all docs, HTML guide.
-- **To modify first-run personalization:** Edit `templates/workspace/BOOTSTRAP.md` (questions + file-update instructions). Ensure changes flow to IDENTITY, USER, SOUL, HEARTBEAT, MEMORY.
-- **To add a new workspace template file:** Create `templates/workspace/NEW.md`, add to autosetup Step 12 copy logic, add to `workspace-scaffold-prompt.md`, document in README workspace table, reference in `templates/workspace/AGENTS.md` startup procedure if core.
-- **To debug JSON manipulation issues:** All Python blocks marked with `<< 'PYEOF'` — grep for this pattern. Check `sys.argv` parameter count. Verify single-quoted heredoc delimiter. Test with malformed input.
-- **To add a new security feature:** Implement in autosetup (new function or extend `step_harden_secrets`), add check in verify, document in Playbook Phase 1, add mention in all 5 doc files. See ROADMAP.md for pending security doc updates.
+1. **Identify the issue:** Read error message, reproduce locally
+2. **Check if fix exists:** Search `fixes/` directory for similar issue
+3. **Create patch:** Edit `openclaw-quickstart-v2.sh`, test thoroughly
+4. **Update version:** Increment version number in script header
+5. **Add to fixes:** Create `fixes/phase1-X-{name}.sh` with fix logic
+6. **Write tests:** Add test cases to `fixes/critical-fixes-tests.sh`
+7. **Document:** Add entry to `fixes/COMPLETION-REPORT.md`
+8. **Verify:** Run `bash fixes/critical-fixes-tests.sh` (must pass 100%)
+
+**Files to touch:**
+- `openclaw-quickstart-v2.sh` (the fix itself)
+- `fixes/phase1-X-{name}.sh` (standalone fix script)
+- `fixes/phase1-X-{name}.md` (documentation)
+- `fixes/critical-fixes-tests.sh` (add test cases)
+- `fixes/COMPLETION-REPORT.md` (update summary)
+- `CLAUDE.md` (update version number if needed)
+- `README.md` (update version number if needed)
+
+### To add a new workflow/skill pack
+
+1. **Create workflow directory:** `workflows/{name}/`
+2. **Add required files:**
+   - `AGENTS.md` — Domain-specific behavior and patterns
+   - `GETTING-STARTED.md` — 5-minute setup guide
+   - `TROUBLESHOOTING.md` — Common issues and fixes
+   - `template.json` — Metadata (skills, crons, difficulty)
+   - `skills.sh` — One-command installer (Homebrew + skill installs)
+   - `crons/` — Directory with pre-configured job JSON files
+3. **Update workflows/README.md:** Add row to comparison table
+4. **Test end-to-end:** Fresh macOS VM, run skills.sh, verify examples work
+5. **Document common failures:** Add to TROUBLESHOOTING.md
+
+**Template.json format:**
+```json
+{
+  "name": "my-workflow",
+  "displayName": "My Workflow",
+  "description": "What this workflow does",
+  "emoji": "🔮",
+  "skills": {
+    "external": ["skill1", "skill2"],
+    "builtin": ["web_search", "web_fetch"]
+  },
+  "crons": ["job-name-1", "job-name-2"],
+  "tags": ["category1", "category2"],
+  "difficulty": "beginner",
+  "timeToValue": "X minutes"
+}
+```
+
+### To update a template and regenerate checksums
+
+1. **Edit template:** `templates/workspace/{TEMPLATE}.md`
+2. **Test with BOOTSTRAP:** Verify placeholders still work, personalization fills correctly
+3. **Update starter pack:** If simplified version exists (e.g., AGENTS-STARTER.md)
+4. **Regenerate checksums:**
+   ```bash
+   cd fixes/
+   bash generate-checksums.sh
+   # Copy output into openclaw-quickstart-v2.sh get_template_checksum()
+   ```
+5. **Update version:** Increment in `starter-pack/STARTER-PACK-MANIFEST.md`
+6. **Test workflows:** Verify all 3 workflows still import correctly
+7. **Commit together:** Template changes + checksum updates in same commit
+
+**Files to touch:**
+- `templates/workspace/{TEMPLATE}.md` (the change)
+- `starter-pack/{TEMPLATE}-STARTER.md` (if simplified version exists)
+- `openclaw-quickstart-v2.sh` (updated checksums in case statement)
+- `starter-pack/STARTER-PACK-MANIFEST.md` (version + last updated)
+
+### To update the companion page
+
+1. **Edit HTML:** `companion.html`
+2. **Sync with script output:** Ensure accordion sections match script's echo statements
+3. **Test interactivity:**
+   - Checkboxes persist to localStorage
+   - Copy buttons work (test on file:// and https://)
+   - Theme toggle works
+   - Accordion expand/collapse
+   - Scroll reveal animations
+4. **Test mobile:** iPhone, iPad, Android (verify layout, copy buttons)
+5. **Update version:** Data attribute or comment at top of file
+6. **Accessibility check:** Run axe DevTools, fix violations
+
+**Files to touch:**
+- `companion.html` (the changes)
+- `index.html` (if shared design system changes needed)
+
+**Critical sync points:**
+- Step numbers match script output
+- Terminal examples match actual script echo statements
+- Warnings (invisible password, etc.) match script warnings
+- "Now what?" section matches actual post-install state
+
+### To add a new security fix
+
+1. **Document vulnerability:** Create `fixes/phase1-X-{name}.md` with:
+   - What the vulnerability is
+   - How it's exploited
+   - CVSS score estimate
+   - Fix approach
+2. **Create fix script:** `fixes/phase1-X-{name}.sh` with:
+   - Before/after comparison
+   - Patch logic
+   - Integration instructions
+3. **Write tests:** `fixes/phase1-X-test-suite.sh` with 10+ test cases
+4. **Apply to main script:** Integrate fix into `openclaw-quickstart-v2.sh`
+5. **Update security docs:**
+   - `SECURITY.md` — Add to protections list
+   - `fixes/COMPLETION-REPORT.md` — Add to summary
+   - `fixes/SUMMARY.md` — Add phase
+6. **Run full test suite:** `bash fixes/critical-fixes-tests.sh` (must pass 100%)
+7. **Update CVSS:** Recalculate risk after fix applied
+
+**Files to touch:**
+- `openclaw-quickstart-v2.sh` (apply fix)
+- `fixes/phase1-X-{name}.sh` (standalone fix)
+- `fixes/phase1-X-{name}.md` (documentation)
+- `fixes/phase1-X-test-suite.sh` (test cases)
+- `fixes/critical-fixes-tests.sh` (integrate tests)
+- `fixes/COMPLETION-REPORT.md` (update summary)
+- `SECURITY.md` (update protections)
+
+### To modify the landing page design
+
+1. **Edit styles:** `index.html` — CSS in `<style>` block
+2. **Update color palette:** CSS custom properties in `:root` and `[data-theme="dark"]`
+3. **Test responsiveness:** Desktop (1920px), tablet (768px), mobile (375px)
+4. **Test dark/light modes:** Verify contrast ratios (WCAG AA)
+5. **Test canvas animations:** Verify performance on low-end devices, disable on mobile/reduced-motion
+6. **Update design docs:** `reviews/DESIGN-REVIEW.md` (if major changes)
+7. **Accessibility audit:** Run axe DevTools, fix violations
+
+**Files to touch:**
+- `index.html` (styles, HTML structure)
+- `companion.html` (if shared design system)
+- `reviews/DESIGN-REVIEW.md` (document major changes)
+
+**Design system constraints:**
+- Maintain Glacial Depths palette (don't drift from brand)
+- WCAG Level AA minimum (4.5:1 contrast for text)
+- Single-file design (no external CSS/JS dependencies)
+- Progressive enhancement (works without JavaScript)
+
+### To update the starter pack
+
+1. **Edit starter pack files:** `starter-pack/{FILE}.md`
+2. **Update manifest:** `starter-pack/STARTER-PACK-MANIFEST.md`
+   - Increment version
+   - Update "Last updated" date
+   - Add to version history if significant change
+3. **Regenerate checksums:** If templates changed
+4. **Test cron jobs:** Import to OpenClaw, verify execution
+5. **Update operating costs:** Recalculate if jobs added/changed
+6. **Test security audit:** Run `SECURITY-AUDIT-PROMPT.md` against live setup
+
+**Files to touch:**
+- `starter-pack/{FILE}.md` (the changes)
+- `starter-pack/STARTER-PACK-MANIFEST.md` (version, last updated)
+- `openclaw-quickstart-v2.sh` (if checksums change)
+
+**Starter pack principles:**
+- Keep AGENTS-STARTER.md under 7KB (simplified from 24KB production)
+- All cron jobs must cost <$0.10/month each
+- Security audit prompt must work with current templates
+- Skill pack lists must be current (no dead links)
+
+### To review PRISM analysis
+
+1. **Start with executive summary:** `reviews/PRISM-MARATHON-EXECUTIVE-SUMMARY.md`
+2. **Check ship decision:** `reviews/PRISM-20-FINAL-SYNTHESIS.md`
+3. **Business strategy:** Read PRISMs 5-11 (positioning, GTM, monetization)
+4. **Technical issues:** Read PRISMs 1-4, 6 (security, UX, simplicity)
+5. **Track fixes:** `reviews/SCRIPT-FIXES-APPLIED.md` shows what was fixed
+6. **Remaining work:** `reviews/PRISM-MARATHON-EXECUTIVE-SUMMARY.md` → "Remaining Open Items"
+
+**PRISM categories:**
+- **Synthesis:** Round 1, Marathon, Final (3 files)
+- **Business:** PRISMs 5-11 (7 files)
+- **Technical:** PRISMs 1-4, 6 (5+ files)
+- **Cycle 2:** Edge cases, integration, regression, security, UX (5 files)
+
+**Key findings navigation:**
+- **NO-SHIP verdict:** 2/4 criteria fail, 4-5 hours to fix
+- **P0 blockers:** stdin bug (fixed), accessibility (open), user testing (open)
+- **Security:** Excellent, keychain usage strong, re-enable checksums
+- **UX:** Companion page needed (built), "now what?" gap (BOOTSTRAP.md designed)
