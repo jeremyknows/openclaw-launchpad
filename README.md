@@ -8,9 +8,9 @@ Your battle-tested OpenClaw production setup, packaged as a beginner-friendly in
 
 ## Project Status
 
-**Current version:** v2.7.0-prism-fixed (2026-02-15)  
-**Status:** Production-ready with security hardening complete  
-**Coverage:** 11/20 PRISM reviews complete (business strategy ✅, security ✅, core UX ✅)
+**Current version:** v2.8.0 (2026-02-15)  
+**Status:** Production-ready — live tested and PRISM-audited  
+**Coverage:** 13/20 PRISM reviews complete (security ✅, UX ✅, docs ✅)
 
 **What works:**
 - ✅ One-command install (`openclaw-quickstart-v2.sh`)
@@ -41,8 +41,8 @@ Open **`companion.html`** in your browser and follow the step-by-step walkthroug
 
 | File | What it is | Best for |
 |------|-----------|----------|
-| `openclaw-setup-guide.html` | Interactive step-by-step guide with a configurator | Most people (recommended) |
-| `OPENCLAW-SETUP-GUIDE.md` | Same guide as plain text | People who prefer reading markdown |
+| `companion.html` | Interactive setup wizard (10 steps) | Most people (recommended) |
+| `OPENCLAW-SETUP-GUIDE.md` | Text version of the setup guide | People who prefer reading markdown |
 
 ### AI-Assisted Setup (optional)
 
