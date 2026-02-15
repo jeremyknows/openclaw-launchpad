@@ -285,14 +285,14 @@
   }
 
   .theme-toggle, .help-toggle {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--r-md);
     border: 1px solid var(--border);
     background: var(--bg-card);
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1072,18 +1072,59 @@
      MOBILE OPTIMIZATIONS (PRISM Mobile Review Fixes)
      ══════════════════════════════════════════════════════════ */
   
-  /* Progress bar: collapse to minimal on small screens */
-  @media (max-width: 600px) {
+  /* Progress bar: collapse to text-only on small screens */
+  @media (max-width: 500px) {
+    /* Hide all step indicators, show mobile progress text instead */
+    .progress-bar .step-indicator {
+      display: none;
+    }
+    
+    .progress-bar .step-divider {
+      display: none;
+    }
+    
+    /* Show mobile-friendly progress indicator */
+    .mobile-progress {
+      display: flex !important;
+      align-items: center;
+      gap: var(--sp-3);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .mobile-progress-text {
+      white-space: nowrap;
+    }
+    
+    .mobile-progress-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    
+    .mobile-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+  }
+  
+  /* Medium screens: compact dot mode */
+  @media (min-width: 501px) and (max-width: 700px) {
     .progress-bar {
       gap: var(--sp-1);
     }
     
     .step-indicator {
-      /* Increase touch target to 44px minimum */
-      min-width: 44px;
+      min-width: 28px;
       min-height: 44px;
       justify-content: center;
-      padding: var(--sp-2);
+      padding: var(--sp-1);
     }
     
     .step-dot {
@@ -1091,26 +1132,19 @@
       height: 8px;
     }
     
-    /* Hide step numbers on very small screens, show only dots */
     .step-indicator .step-number {
       display: none;
     }
+    
+    .step-divider {
+      width: 8px;
+    }
   }
   
-  @media (max-width: 400px) {
-    /* Even more compact for iPhone SE */
-    .progress-bar {
-      gap: 2px;
-    }
-    
-    .step-indicator {
-      min-width: 32px;
-      padding: var(--sp-1);
-    }
-    
-    .step-dot {
-      width: 6px;
-      height: 6px;
+  /* Hide mobile progress on larger screens */
+  @media (min-width: 501px) {
+    .mobile-progress {
+      display: none !important;
     }
   }
   
@@ -1203,52 +1237,60 @@
     </a>
 
     <div class="progress-bar" role="navigation" aria-label="Setup progress">
-      <div class="step-indicator" id="step-ind-1" onclick="jumpToStep(1)" role="button" tabindex="0" aria-label="Step 1: Welcome">
+      <!-- Mobile-friendly progress indicator (hidden on desktop) -->
+      <div class="mobile-progress" id="mobile-progress" style="display: none;">
+        <span class="mobile-progress-text" id="mobile-progress-text">Step 1 of 10</span>
+        <div class="mobile-progress-bar">
+          <div class="mobile-progress-fill" id="mobile-progress-fill" style="width: 10%;"></div>
+        </div>
+      </div>
+      
+      <div class="step-indicator" id="step-ind-1" onclick="jumpToStep(1)" onkeydown="handleStepKey(event, 1)" role="button" tabindex="0" aria-label="Step 1: Welcome">
         <span class="step-dot"></span>
         <span class="step-name">Welcome</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-2" onclick="jumpToStep(2)" role="button" tabindex="0" aria-label="Step 2: Checklist">
+      <div class="step-indicator" id="step-ind-2" onclick="jumpToStep(2)" onkeydown="handleStepKey(event, 2)" role="button" tabindex="0" aria-label="Step 2: Checklist">
         <span class="step-dot"></span>
         <span class="step-name">Checklist</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-3" onclick="jumpToStep(3)" role="button" tabindex="0" aria-label="Step 3: Path">
+      <div class="step-indicator" id="step-ind-3" onclick="jumpToStep(3)" onkeydown="handleStepKey(event, 3)" role="button" tabindex="0" aria-label="Step 3: Path">
         <span class="step-dot"></span>
         <span class="step-name">Path</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-4" onclick="jumpToStep(4)" role="button" tabindex="0" aria-label="Step 4: Download">
+      <div class="step-indicator" id="step-ind-4" onclick="jumpToStep(4)" onkeydown="handleStepKey(event, 4)" role="button" tabindex="0" aria-label="Step 4: Download">
         <span class="step-dot"></span>
         <span class="step-name">Download</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-5" onclick="jumpToStep(5)" role="button" tabindex="0" aria-label="Step 5: Terminal">
+      <div class="step-indicator" id="step-ind-5" onclick="jumpToStep(5)" onkeydown="handleStepKey(event, 5)" role="button" tabindex="0" aria-label="Step 5: Terminal">
         <span class="step-dot"></span>
         <span class="step-name">Terminal</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-6" onclick="jumpToStep(6)" role="button" tabindex="0" aria-label="Step 6: Run">
+      <div class="step-indicator" id="step-ind-6" onclick="jumpToStep(6)" onkeydown="handleStepKey(event, 6)" role="button" tabindex="0" aria-label="Step 6: Run">
         <span class="step-dot"></span>
         <span class="step-name">Run</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-7" onclick="jumpToStep(7)" role="button" tabindex="0" aria-label="Step 7: Install">
+      <div class="step-indicator" id="step-ind-7" onclick="jumpToStep(7)" onkeydown="handleStepKey(event, 7)" role="button" tabindex="0" aria-label="Step 7: Install">
         <span class="step-dot"></span>
         <span class="step-name">Install</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-8" onclick="jumpToStep(8)" role="button" tabindex="0" aria-label="Step 8: Configure">
+      <div class="step-indicator" id="step-ind-8" onclick="jumpToStep(8)" onkeydown="handleStepKey(event, 8)" role="button" tabindex="0" aria-label="Step 8: Configure">
         <span class="step-dot"></span>
         <span class="step-name">Configure</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-9" onclick="jumpToStep(9)" role="button" tabindex="0" aria-label="Step 9: Success">
+      <div class="step-indicator" id="step-ind-9" onclick="jumpToStep(9)" onkeydown="handleStepKey(event, 9)" role="button" tabindex="0" aria-label="Step 9: Success">
         <span class="step-dot"></span>
         <span class="step-name">Success</span>
       </div>
       <div class="step-divider"></div>
-      <div class="step-indicator" id="step-ind-10" onclick="jumpToStep(10)" role="button" tabindex="0" aria-label="Step 10: Next Steps">
+      <div class="step-indicator" id="step-ind-10" onclick="jumpToStep(10)" onkeydown="handleStepKey(event, 10)" role="button" tabindex="0" aria-label="Step 10: Next Steps">
         <span class="step-dot"></span>
         <span class="step-name">Next</span>
       </div>
@@ -1446,8 +1488,8 @@
       </div>
       
       <!-- Download Disclaimer Modal -->
-      <div id="download-disclaimer-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="max-width: 500px; background: var(--bg-card); border-radius: 16px; padding: var(--sp-8); text-align: center; margin: var(--sp-4);">
+      <div id="download-disclaimer-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; overflow-y: auto; padding: var(--sp-4);">
+        <div style="max-width: 500px; max-height: 90vh; overflow-y: auto; background: var(--bg-card); border-radius: 16px; padding: var(--sp-8); text-align: center; margin: auto;">
           <h3 id="disclaimer-title" style="font-size: 24px; margin-bottom: var(--sp-4);">🦞 Ready to Dive In?</h3>
           <p style="margin-bottom: var(--sp-4); line-height: 1.6;">
             You're about to embark on a wonderful journey designing your personal AI agent!
@@ -2212,6 +2254,14 @@ function updateStepIndicators() {
       indicator.classList.add('disabled');
     }
   }
+  
+  // Update mobile progress indicator
+  const mobileText = document.getElementById('mobile-progress-text');
+  const mobileFill = document.getElementById('mobile-progress-fill');
+  if (mobileText && mobileFill) {
+    mobileText.textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+    mobileFill.style.width = ((currentStep / totalSteps) * 100) + '%';
+  }
 }
 
 function showStep(stepNum) {
@@ -2260,6 +2310,14 @@ function jumpToStep(stepNum) {
   // Can only jump to completed steps or next step
   if (completedSteps.includes(stepNum) || stepNum === currentStep + 1) {
     showStep(stepNum);
+  }
+}
+
+function handleStepKey(event, stepNum) {
+  // Activate step indicator on Enter or Space (accessibility)
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    jumpToStep(stepNum);
   }
 }
 
